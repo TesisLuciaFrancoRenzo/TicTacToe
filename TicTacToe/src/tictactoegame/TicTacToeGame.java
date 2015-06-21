@@ -4,12 +4,20 @@
  */
 package tictactoegame;
 
+import ar.edu.unrc.tdlearning.perceptron.interfaces.IAction;
+import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
+import ar.edu.unrc.tdlearning.perceptron.interfaces.IProblem;
+import ar.edu.unrc.tdlearning.perceptron.interfaces.IState;
+import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
+import ar.edu.unrc.tdlearning.perceptron.learning.StateProbability;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -21,7 +29,8 @@ import javax.swing.SwingUtilities;
  *
  * @author Gyarmati János
  */
-public class TicTacToeGame extends JFrame {
+public class TicTacToeGame extends JFrame implements IProblem {
+
     private static String[] arguments;
 
     public static void main(String[] args) {
@@ -38,6 +47,7 @@ public class TicTacToeGame extends JFrame {
         });
     }
     private String about;
+    private Board board;
 
     private Container contentPanel;
     private int frameHeight;
@@ -68,7 +78,8 @@ public class TicTacToeGame extends JFrame {
         contentPanel.setLayout(new GridLayout(1, 2));
         contentPanel.add(playPanel = new PlayPanel(getSize(), show));
         contentPanel.add(infoPanel);
-        playPanel.uploadPanelWithSquares();
+        board = new Board();
+        playPanel.uploadPanelWithSquares(board);
         playPanel.setPlayer1(player1);
         playPanel.setPlayer2(player2);
         playPanel.setInfoPanel(infoPanel);
@@ -77,11 +88,81 @@ public class TicTacToeGame extends JFrame {
 
     }
 
+    @Override
+    public IState computeAfterState(IState turnInitialState, IAction action) {
+        Board afterState = (Board) turnInitialState.getCopy();
+        playPanel.mouseClickedOnSquare(afterState, (Action) action);
+        return afterState;
+    }
+
+    @Override
+    public IState computeNextTurnStateFromAfterstate(IState afterstate) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IsolatedComputation<Double> computeNumericRepresentationFor(Object[] output, IActor actor) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double denormalizeValueFromPerceptronOutput(Object value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IsolatedComputation<Object[]> evaluateBoardWithPerceptron(IState state) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IActor getActorToTrain() {
+        return player1; //TODO: Implementar ramdom para que juegue tanto con1 como con 2 y recordar modificar initialize
+    }
+
+    @Override
+    public void setCurrentState(IState nextTurnState) {
+        board = (Board) nextTurnState;
+        playPanel.nextTurn();
+    }
+
+    @Override
+    public double getFinalReward(int outputNeuron) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IState initialize(IActor actor) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ArrayList<IAction> listAllPossibleActions(IState turnInitialState) {
+        Board initialBoard = (Board) turnInitialState;
+        ArrayList<IAction> possibles = new ArrayList<>(9);
+        for ( int i = 0; i < initialBoard.getSquares().size(); i++ ) {
+            if ( !initialBoard.getSquares().get(i).isClicked() ) {
+                possibles.add(PlayPanel.squareIndexToAction(i));
+            }
+        }
+        return possibles;
+    }
+
+    @Override
+    public List<StateProbability> listAllPossibleNextTurnStateFromAfterstate(IState afterState) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public void newGameMenuItemActionPerformed(ActionEvent e) {
         dispose();
         String args[] = {player1.getName(), player2.getName(),
             Integer.toString(player1.getScore()), Integer.toString(player2.getScore())};
         main(args);
+    }
+
+    @Override
+    public double normalizeValueToPerceptronOutput(Object value) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void aboutMenuItemActionPerformed(ActionEvent e) {
@@ -157,7 +238,7 @@ public class TicTacToeGame extends JFrame {
         miAbout = new JMenuItem();
         miHowto = new JMenuItem();
         //playPanel = new PlayPanel();
-        
+
         howToPlay = "The X player usually goes first[citation needed]."
                 + "\nThe player who succeeds in placing three respective marks in a "
                 + "\nhorizontal, vertical, or diagonal row wins the game."
@@ -169,7 +250,7 @@ public class TicTacToeGame extends JFrame {
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frameWidth = (screenSize.width) / 2;
         frameHeight = (screenSize.height) / 2;
-        
+
         if ( arguments.length < 1 ) {
             player1 = new Player("Player 1", 0);
             player2 = new Player("Player 2", 0);

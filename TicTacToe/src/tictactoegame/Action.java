@@ -24,7 +24,7 @@ public enum Action implements IAction {
     /**
      * Tercer Cuadrado Arriba a la derecha
      */
-    s2,
+    S2,
     /**
      * Cuarto Cuadrado Medio a la izquierda
      */
@@ -36,7 +36,7 @@ public enum Action implements IAction {
     /**
      * Sexto Cuadrado Medio a la derecha
      */
-    s5,
+    S5,
     /**
      * Septimo Cuadrado Abajo a la izquierda
      */
@@ -48,7 +48,7 @@ public enum Action implements IAction {
     /**
      * Noveno Cuadrado Abajo a la derecha
      */
-    s8,
+    S8,
     /**
      * Restablecer
      */
