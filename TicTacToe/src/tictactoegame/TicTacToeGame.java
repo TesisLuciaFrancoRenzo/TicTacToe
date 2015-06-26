@@ -91,7 +91,7 @@ public class TicTacToeGame extends JFrame implements IProblem {
     @Override
     public IState computeAfterState(IState turnInitialState, IAction action) {
         Board afterState = (Board) turnInitialState.getCopy();
-        playPanel.mouseClickedOnSquare(afterState, (Action) action);
+        playPanel.mouseClickedOnSquare(afterState, (Action) action, playPanel.getClicks());
         return afterState;
     }
 
@@ -150,7 +150,7 @@ public class TicTacToeGame extends JFrame implements IProblem {
 
     @Override
     public List<StateProbability> listAllPossibleNextTurnStateFromAfterstate(IState afterState) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return playPanel.listAllPossibleNextTurnStateFromAfterstate((Board) afterState); //TODO: implementando esta se armo el quilombo
     }
 
     public void newGameMenuItemActionPerformed(ActionEvent e) {

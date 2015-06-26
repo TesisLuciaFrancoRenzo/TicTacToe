@@ -28,7 +28,17 @@ public class Board implements IStatePerceptron {
 
     @Override
     public IState getCopy() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Board copy = new Board();
+        for ( int i = 0; i < OIndexList.size(); i++ ) {
+            copy.OIndexList.add(i, OIndexList.get(i));
+        }
+        for ( int i = 0; i < XIndexList.size(); i++ ) {
+            copy.XIndexList.add(i, XIndexList.get(i));
+        }
+        for ( int i = 0; i < squares.size(); i++ ) {
+            copy.squares.add(i, new Square(squares.get(i)));
+        }
+        return copy;
     }
 
     /**

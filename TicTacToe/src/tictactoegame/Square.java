@@ -28,6 +28,13 @@ class Square extends JComponent {
         this.paintType = 0;
     }
 
+    public Square(Square oldSquare) {
+        this.width = oldSquare.width;
+        this.height = oldSquare.height;
+        this.clicked = oldSquare.clicked;
+        this.paintType = oldSquare.paintType;
+    }
+
     public int getPaintType() {
         return paintType;
     }
