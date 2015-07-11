@@ -25,7 +25,7 @@ class Square extends JComponent {
         this.width = width;
         this.height = height;
         this.clicked = false;
-        this.paintType = 0;
+        this.paintType = -1;
     }
 
     public Square(Square oldSquare) {

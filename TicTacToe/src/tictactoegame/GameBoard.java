@@ -14,13 +14,34 @@ import java.util.ArrayList;
  *
  * @author Renzo Bianchini
  */
-public class Board implements IStatePerceptron {
+public class GameBoard implements IStatePerceptron {
 
     private ArrayList OIndexList;
     private ArrayList XIndexList;
     private ArrayList<Square> squares;
+    private final int[][] winIndexes = {
+        {0, 1, 2},
+        {3, 4, 5},
+        {6, 7, 8},
+        {0, 3, 6},
+        {1, 4, 7},
+        {2, 5, 8},
+        {0, 4, 8},
+        {2, 4, 6}
+    };
 
-    public Board() {
+    public ArrayList<Integer> getAllPossibleMovements() {
+        ArrayList libres = (ArrayList) this.squares.clone();
+        libres.removeAll(OIndexList);
+        libres.removeAll(XIndexList);
+        return libres;
+    }
+
+    public int[][] getWinIndexes() {
+        return winIndexes;
+    }
+
+    public GameBoard() {
         this.squares = new ArrayList(9);
         OIndexList = new ArrayList(5);
         XIndexList = new ArrayList(5);
@@ -28,7 +49,7 @@ public class Board implements IStatePerceptron {
 
     @Override
     public IState getCopy() {
-        Board copy = new Board();
+        GameBoard copy = new GameBoard();
         for ( int i = 0; i < OIndexList.size(); i++ ) {
             copy.OIndexList.add(i, OIndexList.get(i));
         }
@@ -69,11 +90,6 @@ public class Board implements IStatePerceptron {
         this.squares = squares;
     }
 
-    @Override
-    public double getStateReward(int outputNeuron) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      * @return the XIndexList
      */
@@ -90,12 +106,31 @@ public class Board implements IStatePerceptron {
 
     @Override
     public boolean isTerminalState() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList winList = new ArrayList();
+        for ( int i = 0; i < getWinIndexes().length; i++ ) {
+            winList.add(winIndexes[i][0]);
+            winList.add(winIndexes[i][1]);
+            winList.add(winIndexes[i][2]);
+            if ( OIndexList.containsAll(winList) ) {
+                return true;
+            } else if ( XIndexList.containsAll(winList) ) {
+                return true;
+            }
+            winList.clear();
+        }
+        return OIndexList.size() == 5 && XIndexList.size() == 4;
     }
 
     @Override
     public IsolatedComputation<Double> translateToPerceptronInput(int neuronIndex) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return () -> {
+            return ((Square) this.squares.get(neuronIndex)).getPaintType() * 1d;
+        };
+    }
+
+    @Override
+    public double getStateReward(int outputNeuron) {
+        return 0d;
     }
 
 }

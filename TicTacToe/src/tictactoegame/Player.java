@@ -15,10 +15,20 @@ public class Player implements IActor {
     private String name;
     private int score;
     private boolean winner;
+    private int token;
 
-    public Player(String name, int score) {
+    public int getToken() {
+        return token;
+    }
+
+    public void setToken(int token) {
+        this.token = token;
+    }
+
+    public Player(String name, int score, int token) {
         this.name = name;
         this.score = score;
+        this.token = token;
     }
 
     public String getName() {
