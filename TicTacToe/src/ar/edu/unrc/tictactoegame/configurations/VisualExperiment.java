@@ -5,12 +5,12 @@
  */
 package ar.edu.unrc.tictactoegame.configurations;
 
+import ar.edu.unrc.tictactoegame.GameTicTacToe;
+import ar.edu.unrc.tictactoegame.PerceptronConfigurationTicTacToe;
 import java.io.File;
 import static java.lang.Thread.sleep;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import ar.edu.unrc.tictactoegame.GameTicTacToe;
-import ar.edu.unrc.tictactoegame.PerceptronConfigurationTicTacToe;
 
 /**
  *

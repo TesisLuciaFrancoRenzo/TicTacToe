@@ -4,6 +4,15 @@
  */
 package ar.edu.unrc.tictactoegame;
 
+import static ar.edu.unrc.tictactoegame.Action.S0;
+import static ar.edu.unrc.tictactoegame.Action.S1;
+import static ar.edu.unrc.tictactoegame.Action.S2;
+import static ar.edu.unrc.tictactoegame.Action.S3;
+import static ar.edu.unrc.tictactoegame.Action.S4;
+import static ar.edu.unrc.tictactoegame.Action.S5;
+import static ar.edu.unrc.tictactoegame.Action.S6;
+import static ar.edu.unrc.tictactoegame.Action.S7;
+import static ar.edu.unrc.tictactoegame.Action.S8;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -17,15 +26,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
-import static ar.edu.unrc.tictactoegame.Action.S0;
-import static ar.edu.unrc.tictactoegame.Action.S1;
-import static ar.edu.unrc.tictactoegame.Action.S2;
-import static ar.edu.unrc.tictactoegame.Action.S3;
-import static ar.edu.unrc.tictactoegame.Action.S4;
-import static ar.edu.unrc.tictactoegame.Action.S5;
-import static ar.edu.unrc.tictactoegame.Action.S6;
-import static ar.edu.unrc.tictactoegame.Action.S7;
-import static ar.edu.unrc.tictactoegame.Action.S8;
 
 /**
  *
@@ -33,18 +33,82 @@ import static ar.edu.unrc.tictactoegame.Action.S8;
  */
 class PlayPanel extends JPanel {
 
-    private int clicks = 0;
-
-    public int getClicks() {
-        return clicks;
+    public static int actionToSquareIndex(Action action) {
+        switch ( action ) {
+            case S0: {
+                return 0;
+            }
+            case S1: {
+                return 1;
+            }
+            case S2: {
+                return 2;
+            }
+            case S3: {
+                return 3;
+            }
+            case S4: {
+                return 4;
+            }
+            case S5: {
+                return 5;
+            }
+            case S6: {
+                return 6;
+            }
+            case S7: {
+                return 7;
+            }
+            case S8: {
+                return 0;
+            }
+            default:
+                throw new IllegalArgumentException();
+        }
     }
+
+    public static Action squareIndexToAction(int squareIndex) {
+        switch ( squareIndex ) {
+            case 0: {
+                return S0;
+            }
+            case 1: {
+                return S1;
+            }
+            case 2: {
+                return S2;
+            }
+            case 3: {
+                return S3;
+            }
+            case 4: {
+                return S4;
+            }
+            case 5: {
+                return S5;
+            }
+            case 6: {
+                return S6;
+            }
+            case 7: {
+                return S7;
+            }
+            case 8: {
+                return S8;
+            }
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    private int clicks = 0;
+    private final int delayPerMove;
     private InfoPanel infoPanel;
     private final Dimension panelSize;
     private Player player1;
     private Player player2;
-    private Player winner;
     private final boolean repaint;
-    private final int delayPerMove;
+    private Player winner;
 
     public PlayPanel(Dimension size, boolean repaint, int delayPerMove) {
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.lightGray, Color.black));
@@ -55,12 +119,8 @@ class PlayPanel extends JPanel {
         this.delayPerMove = delayPerMove;
     }
 
-    public Player getWinner() {
-        return winner;
-    }
-
-    public void setWinner(Player winner) {
-        this.winner = winner;
+    public int getClicks() {
+        return clicks;
     }
 
     public InfoPanel getInfoPanel() {
@@ -87,6 +147,33 @@ class PlayPanel extends JPanel {
         this.player2 = player2;
     }
 
+    public Player getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Player winner) {
+        this.winner = winner;
+    }
+
+    public void mouseClickedOnSquare(GameBoard board, Action action, int turn) {
+        int actualSquareIndex = actionToSquareIndex(action);
+        drawOnActualSquare(board, actualSquareIndex, turn);
+        if ( repaint ) {
+            board.getSquares().get(actualSquareIndex).repaint();
+            if ( this.delayPerMove > 0 ) {
+                try {
+                    sleep(this.delayPerMove);
+                } catch ( InterruptedException ex ) {
+                    Logger.getLogger(GameTicTacToe.class.getName()).log(Level.SEVERE, null, ex);
+                    
+                }
+                
+            }
+        }
+        board.getSquares().get(actualSquareIndex).setClicked();
+        
+    }
+
     public void uploadPanelWithSquares(GameBoard board) {
         Square square;
         setSize(panelSize.width, panelSize.height);
@@ -104,9 +191,9 @@ class PlayPanel extends JPanel {
     }
 
     /*@Override
-     protected void paintComponent(Graphics g) {
-     super.paintComponent(g);
-     }*/
+    protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    }*/
     /**
      *
      * @param board
@@ -174,95 +261,6 @@ class PlayPanel extends JPanel {
                 nextTurn();
             }
         }
-    }
-
-    public static int actionToSquareIndex(Action action) {
-        switch ( action ) {
-            case S0: {
-                return 0;
-            }
-            case S1: {
-                return 1;
-            }
-            case S2: {
-                return 2;
-            }
-            case S3: {
-                return 3;
-            }
-            case S4: {
-                return 4;
-            }
-            case S5: {
-                return 5;
-            }
-            case S6: {
-                return 6;
-            }
-            case S7: {
-                return 7;
-            }
-            case S8: {
-                return 0;
-            }
-            default:
-                throw new IllegalArgumentException();
-        }
-
-    }
-
-    public static Action squareIndexToAction(int squareIndex) {
-        switch ( squareIndex ) {
-            case 0: {
-                return S0;
-            }
-            case 1: {
-                return S1;
-            }
-            case 2: {
-                return S2;
-            }
-            case 3: {
-                return S3;
-            }
-            case 4: {
-                return S4;
-            }
-            case 5: {
-                return S5;
-            }
-            case 6: {
-                return S6;
-            }
-            case 7: {
-                return S7;
-            }
-            case 8: {
-                return S8;
-            }
-            default:
-                throw new IllegalArgumentException();
-        }
-
-    }
-
-    public void mouseClickedOnSquare(GameBoard board, Action action, int turn) {
-        int actualSquareIndex = actionToSquareIndex(action);
-        drawOnActualSquare(board, actualSquareIndex, turn);
-        if ( repaint ) {
-            board.getSquares().get(actualSquareIndex).repaint();
-            if ( this.delayPerMove > 0 ) {
-                try {
-                    sleep(this.delayPerMove);
-                } catch ( InterruptedException ex ) {
-                    Logger.getLogger(GameTicTacToe.class.getName()).log(Level.SEVERE, null, ex);
-
-                }
-
-            }
-        }
-        board.getSquares().get(actualSquareIndex).setClicked();
-
     }
 
     private boolean somePlayerWins(GameBoard board) {
@@ -366,4 +364,5 @@ class PlayPanel extends JPanel {
     void nextTurn() {
         clicks++;
     }
+
 }

@@ -8,12 +8,12 @@ package ar.edu.unrc.tictactoegame.configurations.libraries;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
-import java.io.File;
-import java.util.ArrayList;
 import ar.edu.unrc.tictactoegame.Action;
 import ar.edu.unrc.tictactoegame.GameTicTacToe;
 import ar.edu.unrc.tictactoegame.PerceptronConfigurationTicTacToe;
 import ar.edu.unrc.tictactoegame.configurations.INeuralNetworkInterfaceForTicTacToe;
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  *

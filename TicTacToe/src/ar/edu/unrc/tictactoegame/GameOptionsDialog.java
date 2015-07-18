@@ -28,6 +28,10 @@ public class GameOptionsDialog extends JDialog {
     private JTextField tfP1;
     private JTextField tfP2;
 
+    /**
+     *
+     * @param owner
+     */
     public GameOptionsDialog(JFrame owner) {
         super(owner, "Options", true);
         p1name = "Player 1";
@@ -73,18 +77,34 @@ public class GameOptionsDialog extends JDialog {
         cp.add(pn3);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getP1name() {
         return p1name;
     }
 
+    /**
+     *
+     * @param p1name
+     */
     public void setP1name(String p1name) {
         this.p1name = p1name;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getP2name() {
         return p2name;
     }
 
+    /**
+     *
+     * @param p2name
+     */
     public void setP2name(String p2name) {
         this.p2name = p2name;
     }

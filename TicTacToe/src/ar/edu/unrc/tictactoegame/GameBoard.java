@@ -30,21 +30,17 @@ public class GameBoard implements IStatePerceptron {
         {2, 4, 6}
     };
 
+    public GameBoard() {
+        this.squares = new ArrayList(9);
+        OIndexList = new ArrayList(5);
+        XIndexList = new ArrayList(5);
+    }
+
     public ArrayList<Integer> getAllPossibleMovements() {
         ArrayList libres = (ArrayList) this.squares.clone();
         libres.removeAll(OIndexList);
         libres.removeAll(XIndexList);
         return libres;
-    }
-
-    public int[][] getWinIndexes() {
-        return winIndexes;
-    }
-
-    public GameBoard() {
-        this.squares = new ArrayList(9);
-        OIndexList = new ArrayList(5);
-        XIndexList = new ArrayList(5);
     }
 
     @Override
@@ -90,6 +86,15 @@ public class GameBoard implements IStatePerceptron {
         this.squares = squares;
     }
 
+    @Override
+    public double getStateReward(int outputNeuron) {
+        return 0d;
+    }
+
+    public int[][] getWinIndexes() {
+        return winIndexes;
+    }
+
     /**
      * @return the XIndexList
      */
@@ -126,11 +131,6 @@ public class GameBoard implements IStatePerceptron {
         return () -> {
             return ((Square) this.squares.get(neuronIndex)).getPaintType() * 1d;
         };
-    }
-
-    @Override
-    public double getStateReward(int outputNeuron) {
-        return 0d;
     }
 
 }

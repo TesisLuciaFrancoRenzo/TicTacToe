@@ -8,10 +8,10 @@ package ar.edu.unrc.tictactoegame.configurations.learning.random;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import ar.edu.unrc.tdlearning.perceptron.ntuple.NTupleSystem;
-import java.io.File;
-import org.encog.neural.networks.BasicNetwork;
 import ar.edu.unrc.tictactoegame.configurations.LearningExperiment;
 import ar.edu.unrc.tictactoegame.configurations.libraries.RandomExperimentInterface;
+import java.io.File;
+import org.encog.neural.networks.BasicNetwork;
 
 /**
  * @author lucia bressan, franco pellegrini, renzo bianchini

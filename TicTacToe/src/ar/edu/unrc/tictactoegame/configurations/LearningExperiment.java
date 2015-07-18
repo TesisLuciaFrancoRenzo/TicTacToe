@@ -5,13 +5,14 @@
  */
 package ar.edu.unrc.tictactoegame.configurations;
 
-import ar.edu.unrc.utils.StringAndFiles;
-import ar.edu.unrc.utils.StringIterator;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.learning.EExplorationRateAlgorithms;
 import ar.edu.unrc.tdlearning.perceptron.learning.ELearningRateAdaptation;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import ar.edu.unrc.tdlearning.perceptron.ntuple.NTupleSystem;
+import ar.edu.unrc.tictactoegame.GameTicTacToe;
+import ar.edu.unrc.utils.StringAndFiles;
+import ar.edu.unrc.utils.StringIterator;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -33,7 +34,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import ar.edu.unrc.tictactoegame.GameTicTacToe;
 
 /**
  *
