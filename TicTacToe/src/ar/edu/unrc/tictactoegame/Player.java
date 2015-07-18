@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tictactoegame;
+package ar.edu.unrc.tictactoegame;
 
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
 

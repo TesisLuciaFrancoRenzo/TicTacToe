@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tictactoegame;
+package ar.edu.unrc.tictactoegame;
 
 import java.awt.Font;
 import java.awt.Graphics;

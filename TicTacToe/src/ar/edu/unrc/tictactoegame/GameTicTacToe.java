@@ -2,7 +2,7 @@
  * TicTacToe játék 1.0 For more information, please visit http://www.xyz.hu Thx
  * for downloading
  */
-package tictactoegame;
+package ar.edu.unrc.tictactoegame;
 
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IAction;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
@@ -42,12 +42,16 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
             @Override
             @SuppressWarnings( "ResultOfObjectAllocationIgnored" )
             public void run() {
-                new GameTicTacToe(true, null);
+                new GameTicTacToe(null, true, 0);
             }
         });
     }
     private String about;
     private GameBoard board;
+
+    public GameBoard getBoard() {
+        return board;
+    }
 
     private Container contentPanel;
     private int frameHeight;
@@ -68,23 +72,20 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     private Dimension screenSize;
     private final PerceptronConfigurationTicTacToe<NeuralNetworkClass> perceptronConfiguration;
 
-    private final boolean show;
-
-    private GameTicTacToe(boolean show, PerceptronConfigurationTicTacToe<NeuralNetworkClass> perceptronConfiguration) {
+    public GameTicTacToe(PerceptronConfigurationTicTacToe<NeuralNetworkClass> perceptronConfiguration, boolean show, int delayPerMove) {
         initComponents();
         createMenu();
         setTitle("TicTacToe");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBounds((screenSize.width - frameWidth) / 2, (screenSize.height - frameHeight) / 2, frameWidth, frameHeight);
         contentPanel.setLayout(new GridLayout(1, 2));
-        contentPanel.add(playPanel = new PlayPanel(getSize(), show));
+        contentPanel.add(playPanel = new PlayPanel(getSize(), show, delayPerMove));
         contentPanel.add(infoPanel);
         board = new GameBoard();
         playPanel.uploadPanelWithSquares(board);
         playPanel.setPlayer1(player1);
         playPanel.setPlayer2(player2);
         playPanel.setInfoPanel(infoPanel);
-        this.show = show;
         setVisible(show);
         this.perceptronConfiguration = perceptronConfiguration;
 
@@ -213,7 +214,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         frameWidth = (screenSize.width) / 2;
         frameHeight = (screenSize.height) / 2;
 
-        if ( arguments.length < 1 ) {
+        if ( arguments == null || arguments.length < 1 ) {
             player1 = new Player("Player 1", 0, 1);
             player2 = new Player("Player 2", 0, 0);
         } else {
@@ -311,4 +312,21 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     public double normalizeValueToPerceptronOutput(Object value) {
         return (Double) value;
     }
+
+    public boolean isTerminalState() {
+        return this.board.isTerminalState();
+    }
+
+    public void processInput(Action action) {
+        playPanel.mouseClickedOnSquare(board, action, playPanel.getClicks());
+    }
+
+    public String getWinner() {
+        return (this.playPanel.getWinner() != null) ? this.playPanel.getWinner().getName() : "Empate";
+    }
+
+    public int getLastTurn() {
+        return this.playPanel.getClicks();
+    }
+
 }

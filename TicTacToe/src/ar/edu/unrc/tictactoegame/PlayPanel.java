@@ -2,27 +2,30 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package tictactoegame;
+package ar.edu.unrc.tictactoegame;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import static java.lang.Thread.sleep;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
-import static tictactoegame.Action.S0;
-import static tictactoegame.Action.S1;
-import static tictactoegame.Action.S2;
-import static tictactoegame.Action.S3;
-import static tictactoegame.Action.S4;
-import static tictactoegame.Action.S5;
-import static tictactoegame.Action.S6;
-import static tictactoegame.Action.S7;
-import static tictactoegame.Action.S8;
+import static ar.edu.unrc.tictactoegame.Action.S0;
+import static ar.edu.unrc.tictactoegame.Action.S1;
+import static ar.edu.unrc.tictactoegame.Action.S2;
+import static ar.edu.unrc.tictactoegame.Action.S3;
+import static ar.edu.unrc.tictactoegame.Action.S4;
+import static ar.edu.unrc.tictactoegame.Action.S5;
+import static ar.edu.unrc.tictactoegame.Action.S6;
+import static ar.edu.unrc.tictactoegame.Action.S7;
+import static ar.edu.unrc.tictactoegame.Action.S8;
 
 /**
  *
@@ -36,18 +39,20 @@ class PlayPanel extends JPanel {
         return clicks;
     }
     private InfoPanel infoPanel;
-    private Dimension panelSize;
+    private final Dimension panelSize;
     private Player player1;
     private Player player2;
     private Player winner;
     private final boolean repaint;
+    private final int delayPerMove;
 
-    public PlayPanel(Dimension size, boolean repaint) {
+    public PlayPanel(Dimension size, boolean repaint, int delayPerMove) {
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.lightGray, Color.black));
         setLayout(new GridLayout(3, 3));
         this.panelSize = size;
         this.repaint = repaint;
-        winner = null;
+        this.winner = null;
+        this.delayPerMove = delayPerMove;
     }
 
     public Player getWinner() {
@@ -154,6 +159,15 @@ class PlayPanel extends JPanel {
             drawOnActualSquare(board, board.getSquares().indexOf(actualSquare), clicks);
             if ( repaint ) {
                 actualSquare.repaint();
+                if ( this.delayPerMove > 0 ) {
+                    try {
+                        sleep(this.delayPerMove);
+                    } catch ( InterruptedException ex ) {
+                        Logger.getLogger(GameTicTacToe.class.getName()).log(Level.SEVERE, null, ex);
+
+                    }
+
+                }
             }
             if ( !somePlayerWins(board) ) {
                 actualSquare.setClicked();
@@ -235,6 +249,18 @@ class PlayPanel extends JPanel {
     public void mouseClickedOnSquare(GameBoard board, Action action, int turn) {
         int actualSquareIndex = actionToSquareIndex(action);
         drawOnActualSquare(board, actualSquareIndex, turn);
+        if ( repaint ) {
+            board.getSquares().get(actualSquareIndex).repaint();
+            if ( this.delayPerMove > 0 ) {
+                try {
+                    sleep(this.delayPerMove);
+                } catch ( InterruptedException ex ) {
+                    Logger.getLogger(GameTicTacToe.class.getName()).log(Level.SEVERE, null, ex);
+
+                }
+
+            }
+        }
         board.getSquares().get(actualSquareIndex).setClicked();
 
     }
