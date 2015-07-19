@@ -18,6 +18,7 @@ import java.util.List;
 /**
  *
  * @author Renzo Bianchini
+ * @param <NeuralNetworkClass>
  */
 public abstract class INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> implements Cloneable {
 

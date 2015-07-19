@@ -38,6 +38,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 /**
  *
  * @author Renzo Bianchini
+ * @param <NeuralNetworkClass>
  */
 public abstract class LearningExperiment<NeuralNetworkClass> {
 

@@ -30,12 +30,19 @@ public class GameBoard implements IStatePerceptron {
         {2, 4, 6}
     };
 
+    /**
+     *
+     */
     public GameBoard() {
         this.squares = new ArrayList(9);
         OIndexList = new ArrayList(5);
         XIndexList = new ArrayList(5);
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<Integer> getAllPossibleMovements() {
         ArrayList libres = (ArrayList) this.squares.clone();
         libres.removeAll(OIndexList);
@@ -91,6 +98,10 @@ public class GameBoard implements IStatePerceptron {
         return 0d;
     }
 
+    /**
+     *
+     * @return
+     */
     public int[][] getWinIndexes() {
         return winIndexes;
     }

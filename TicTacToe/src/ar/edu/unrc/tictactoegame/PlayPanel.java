@@ -174,6 +174,86 @@ class PlayPanel extends JPanel {
 
     }
 
+//    /**
+//     * Calcula los posibles movimientos del contrincante. Si existen movimientos
+//     * ganadores por parte del contrincante, hay una posibilidad del 75% de que
+//     * ejecute alguno los movimientos ganadores
+//     * <p>
+//     * @param afterState <p>
+//     * @return
+//     */
+//    List<StateProbability> listAllPossibleNextTurnStateFromAfterstate(GameBoard afterState) {
+//        ArrayList<StateProbability> possiblesNextTurnState = new ArrayList<>();
+//        ArrayList indexNotClickedSquares = new ArrayList();
+//        ArrayList<Board> winnerBoards = new ArrayList();
+//        ArrayList<Board> nonWinnerBoards = new ArrayList();
+//        //Asigno las probabilidades de elegir un movimiento ganador sobre uno no ganador
+//        double probabilityToWinnerBoard = 0.75;
+//        double probabilityToNonWinnerBoard = 0.25;
+//        //Calculo la lista de lugares disponibles
+//        for ( int i = 0; i < afterState.getSquares().size(); i++ ) {
+//            if ( !afterState.getSquares().get(i).isClicked() ) {
+//                indexNotClickedSquares.add(i);
+//            }
+//        }
+//        //Calculo los posibles movimientos, discriminandolos por movimiento ganador o no ganador (desde el punto de vista del contrincante)
+//        indexNotClickedSquares.stream().map((indexNotClickedSquare) -> (Integer) indexNotClickedSquare).map((pos) -> {
+//            GameBoard possible = (GameBoard) afterState.getCopy();
+//            mouseClickedOnSquare(possible, squareIndexToAction((Integer) pos), clicks + 1);
+//            return possible;
+//        }).forEach((possible) -> {
+//            if ( win((GameBoard) possible, clicks + 1) ) {
+//                winnerBoards.add((GameBoard) possible);
+//            } else {
+//                nonWinnerBoards.add((GameBoard) possible);
+//            }
+//        });
+//        //Recalculo las probabilidades (todos los tableros ganadores tienen la misma probabilidad de ser elegidos,
+//        // y todos los tableros no ganadores tienen la misma probabilidad de ser elegidos.
+//        if ( winnerBoards.isEmpty() ) {
+//            probabilityToNonWinnerBoard = 1;
+//        } else {
+//            probabilityToWinnerBoard = probabilityToWinnerBoard / winnerBoards.size();
+//        }
+//        probabilityToNonWinnerBoard = probabilityToNonWinnerBoard / nonWinnerBoards.size();
+//        //Cargo la lista de tableros futuros posibles con su probabilidad de ocurrencia
+//        for ( GameBoard winnerBoard : winnerBoards ) {
+//            possiblesNextTurnState.add(new StateProbability(winnerBoard, probabilityToWinnerBoard));
+//        }
+//        for ( GameBoard nonWinnerBoard : nonWinnerBoards ) {
+//            possiblesNextTurnState.add(new StateProbability(nonWinnerBoard, probabilityToNonWinnerBoard));
+//        }
+//
+//        return possiblesNextTurnState;
+//    }
+    public void nextTurn() {
+        clicks++;
+    }
+
+    public boolean somePlayerWins(GameBoard board) {
+        ArrayList winList = new ArrayList();
+        ArrayList oList = board.getOIndexList();
+        ArrayList xList = board.getXIndexList();
+        for ( int[] winIndexe : board.getWinIndexes() ) {
+            winList.add(winIndexe[0]);
+            winList.add(winIndexe[1]);
+            winList.add(winIndexe[2]);
+            if ( oList.containsAll(winList) ) {
+                endGame(board, 0);
+                return true;
+            } else if ( xList.containsAll(winList) ) {
+                endGame(board, 1);
+                return true;
+            }
+            winList.clear();
+        }
+        if ( oList.size() == 5 && xList.size() == 4 ) {
+            endGame(board, 2);
+            return true;
+        }
+        return false;
+    }
+
     public void uploadPanelWithSquares(GameBoard board) {
         Square square;
         setSize(panelSize.width, panelSize.height);
@@ -191,9 +271,9 @@ class PlayPanel extends JPanel {
     }
 
     /*@Override
-     protected void paintComponent(Graphics g) {
-     super.paintComponent(g);
-     }*/
+    protected void paintComponent(Graphics g) {
+    super.paintComponent(g);
+    }*/
     /**
      *
      * @param board
@@ -262,31 +342,6 @@ class PlayPanel extends JPanel {
             }
         }
     }
-
-    public boolean somePlayerWins(GameBoard board) {
-        ArrayList winList = new ArrayList();
-        ArrayList oList = board.getOIndexList();
-        ArrayList xList = board.getXIndexList();
-        for ( int[] winIndexe : board.getWinIndexes() ) {
-            winList.add(winIndexe[0]);
-            winList.add(winIndexe[1]);
-            winList.add(winIndexe[2]);
-            if ( oList.containsAll(winList) ) {
-                endGame(board, 0);
-                return true;
-            } else if ( xList.containsAll(winList) ) {
-                endGame(board, 1);
-                return true;
-            }
-            winList.clear();
-        }
-        if ( oList.size() == 5 && xList.size() == 4 ) {
-            endGame(board, 2);
-            return true;
-        }
-        return false;
-    }
-
     private boolean win(GameBoard board, int turn) {
         ArrayList indexList;
         if ( turn % 2 > 0 ) {
@@ -307,62 +362,6 @@ class PlayPanel extends JPanel {
         } catch ( Exception e ) {
         }
         return false;
-    }
-
-//    /**
-//     * Calcula los posibles movimientos del contrincante. Si existen movimientos
-//     * ganadores por parte del contrincante, hay una posibilidad del 75% de que
-//     * ejecute alguno los movimientos ganadores
-//     * <p>
-//     * @param afterState <p>
-//     * @return
-//     */
-//    List<StateProbability> listAllPossibleNextTurnStateFromAfterstate(GameBoard afterState) {
-//        ArrayList<StateProbability> possiblesNextTurnState = new ArrayList<>();
-//        ArrayList indexNotClickedSquares = new ArrayList();
-//        ArrayList<Board> winnerBoards = new ArrayList();
-//        ArrayList<Board> nonWinnerBoards = new ArrayList();
-//        //Asigno las probabilidades de elegir un movimiento ganador sobre uno no ganador
-//        double probabilityToWinnerBoard = 0.75;
-//        double probabilityToNonWinnerBoard = 0.25;
-//        //Calculo la lista de lugares disponibles
-//        for ( int i = 0; i < afterState.getSquares().size(); i++ ) {
-//            if ( !afterState.getSquares().get(i).isClicked() ) {
-//                indexNotClickedSquares.add(i);
-//            }
-//        }
-//        //Calculo los posibles movimientos, discriminandolos por movimiento ganador o no ganador (desde el punto de vista del contrincante)
-//        indexNotClickedSquares.stream().map((indexNotClickedSquare) -> (Integer) indexNotClickedSquare).map((pos) -> {
-//            GameBoard possible = (GameBoard) afterState.getCopy();
-//            mouseClickedOnSquare(possible, squareIndexToAction((Integer) pos), clicks + 1);
-//            return possible;
-//        }).forEach((possible) -> {
-//            if ( win((GameBoard) possible, clicks + 1) ) {
-//                winnerBoards.add((GameBoard) possible);
-//            } else {
-//                nonWinnerBoards.add((GameBoard) possible);
-//            }
-//        });
-//        //Recalculo las probabilidades (todos los tableros ganadores tienen la misma probabilidad de ser elegidos,
-//        // y todos los tableros no ganadores tienen la misma probabilidad de ser elegidos.
-//        if ( winnerBoards.isEmpty() ) {
-//            probabilityToNonWinnerBoard = 1;
-//        } else {
-//            probabilityToWinnerBoard = probabilityToWinnerBoard / winnerBoards.size();
-//        }
-//        probabilityToNonWinnerBoard = probabilityToNonWinnerBoard / nonWinnerBoards.size();
-//        //Cargo la lista de tableros futuros posibles con su probabilidad de ocurrencia
-//        for ( GameBoard winnerBoard : winnerBoards ) {
-//            possiblesNextTurnState.add(new StateProbability(winnerBoard, probabilityToWinnerBoard));
-//        }
-//        for ( GameBoard nonWinnerBoard : nonWinnerBoards ) {
-//            possiblesNextTurnState.add(new StateProbability(nonWinnerBoard, probabilityToNonWinnerBoard));
-//        }
-//
-//        return possiblesNextTurnState;
-//    }
-    public void nextTurn() {
-        clicks++;
     }
 
 }

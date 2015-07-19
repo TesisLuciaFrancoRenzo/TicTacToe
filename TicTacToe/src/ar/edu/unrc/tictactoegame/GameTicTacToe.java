@@ -36,6 +36,10 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 
     private static String[] arguments;
 
+    /**
+     *
+     * @param args
+     */
     @SuppressWarnings( "ResultOfObjectAllocationIgnored" )
     public static void main(String[] args) {
         arguments = args;
@@ -65,6 +69,12 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     private Player player2;
     private Dimension screenSize;
 
+    /**
+     *
+     * @param perceptronConfiguration
+     * @param show
+     * @param delayPerMove
+     */
     public GameTicTacToe(PerceptronConfigurationTicTacToe<NeuralNetworkClass> perceptronConfiguration, boolean show, int delayPerMove) {
         initComponents();
         createMenu();
@@ -158,6 +168,10 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         //Si se hace esa modificación, hay que tener en cuenta modificar como busca los jugadores, axtualment elos busca por los clicks no le da bola al player
     }
 
+    /**
+     *
+     * @return
+     */
     public GameBoard getBoard() {
         return board;
     }
@@ -177,10 +191,18 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLastTurn() {
         return this.playPanel.getClicks();
     }
 
+    /**
+     *
+     * @return
+     */
     public String getWinner() {
         return (this.playPanel.getWinner() != null) ? this.playPanel.getWinner().getName() : "Empate";
     }
@@ -190,6 +212,10 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         return new GameBoard();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isTerminalState() {
         return this.board.isTerminalState();
     }
@@ -206,6 +232,10 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         return possibles;
     }
 
+    /**
+     *
+     * @param e
+     */
     public void newGameMenuItemActionPerformed(ActionEvent e) {
         dispose();
         String args[] = {player1.getName(), player2.getName(),
@@ -218,6 +248,10 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         return (Double) value;
     }
 
+    /**
+     *
+     * @param action
+     */
     public void processInput(Action action) {
         playPanel.mouseClickedOnSquare(board, action, playPanel.getClicks());
         playPanel.somePlayerWins(board);//TODO implementar que si esta en visual se muestre el cartel, sino no
