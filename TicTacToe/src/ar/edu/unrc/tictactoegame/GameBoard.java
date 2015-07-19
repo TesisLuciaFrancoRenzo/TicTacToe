@@ -110,7 +110,7 @@ public class GameBoard implements IStatePerceptron {
     }
 
     @Override
-    public boolean isTerminalState() {
+    public boolean isTerminalState() {//TODO: calcularlo solo una vez cuando haya cambois en el tablero y actualizar una variable de estado
         ArrayList winList = new ArrayList();
         for ( int i = 0; i < getWinIndexes().length; i++ ) {
             winList.add(winIndexes[i][0]);

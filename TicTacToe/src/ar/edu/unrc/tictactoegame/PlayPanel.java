@@ -60,7 +60,7 @@ class PlayPanel extends JPanel {
                 return 7;
             }
             case S8: {
-                return 0;
+                return 8;
             }
             default:
                 throw new IllegalArgumentException();
@@ -101,7 +101,7 @@ class PlayPanel extends JPanel {
         }
     }
 
-    private int clicks = 0;
+    private int clicks = 1;
     private final int delayPerMove;
     private InfoPanel infoPanel;
     private final Dimension panelSize;
@@ -165,13 +165,13 @@ class PlayPanel extends JPanel {
                     sleep(this.delayPerMove);
                 } catch ( InterruptedException ex ) {
                     Logger.getLogger(GameTicTacToe.class.getName()).log(Level.SEVERE, null, ex);
-                    
+
                 }
-                
+
             }
         }
         board.getSquares().get(actualSquareIndex).setClicked();
-        
+
     }
 
     public void uploadPanelWithSquares(GameBoard board) {
@@ -191,9 +191,9 @@ class PlayPanel extends JPanel {
     }
 
     /*@Override
-    protected void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    }*/
+     protected void paintComponent(Graphics g) {
+     super.paintComponent(g);
+     }*/
     /**
      *
      * @param board
@@ -207,10 +207,10 @@ class PlayPanel extends JPanel {
         Square actualSquare = (Square) board.getSquares().get(actualSquareIndex);
         if ( turn % 2 > 0 ) {
             actualSquare.setPaintType(player2.getToken());
-            board.getXIndexList().add(0, actualSquareIndex);
+            board.getOIndexList().add(0, actualSquareIndex);
         } else {
             actualSquare.setPaintType(player1.getToken());
-            board.getOIndexList().add(0, actualSquareIndex);
+            board.getXIndexList().add(0, actualSquareIndex);
         }
     }
 
@@ -263,7 +263,7 @@ class PlayPanel extends JPanel {
         }
     }
 
-    private boolean somePlayerWins(GameBoard board) {
+    public boolean somePlayerWins(GameBoard board) {
         ArrayList winList = new ArrayList();
         ArrayList oList = board.getOIndexList();
         ArrayList xList = board.getXIndexList();
@@ -361,7 +361,7 @@ class PlayPanel extends JPanel {
 //
 //        return possiblesNextTurnState;
 //    }
-    void nextTurn() {
+    public void nextTurn() {
         clicks++;
     }
 

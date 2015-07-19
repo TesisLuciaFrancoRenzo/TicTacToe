@@ -3,12 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ar.edu.unrc.tictactoegame.configurations;
+package ar.edu.unrc.tictactoegame.performanceandtraining.configurations;
 
 import ar.edu.unrc.tictactoegame.GameTicTacToe;
 import ar.edu.unrc.tictactoegame.PerceptronConfigurationTicTacToe;
 import java.io.File;
-import static java.lang.Thread.sleep;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -178,11 +177,15 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
      *
      * @param experimentPath
      * @param delayPerMove   <p>
-     * @throws Exception
+     * @throws Exception +
+     *                   this.learningExperiment.getNeuralNetworkInterfaceForTicTacToe().getLibName()
+     *                   + File.separator + experimentName + File.separator;
+     *                   File dirPathFile = new File(dirPath); if (
+     *                   !dirPathFile.exists() ) {
      */
     protected void run(String experimentPath, int delayPerMove) throws Exception {
         System.out.println("Starting " + this.getPerceptronName() + " Visual");
-        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(perceptronConfiguration, false, 0);
+        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(perceptronConfiguration, true, delayPerMove);
         if ( perceptronConfiguration != null ) {
             //cargamos la red neuronal entrenada
             String dirPath = experimentPath
@@ -203,7 +206,7 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
             this.learningExperiment.getNeuralNetworkInterfaceForTicTacToe().playATurn(game, learningExperiment.getLearningAlgorithm()).compute();
         }
         if ( !forceStop ) {
-            sleep(5_000);
+            //sleep(5_000);
         }
         game.dispose();
         System.out.println("Finished");

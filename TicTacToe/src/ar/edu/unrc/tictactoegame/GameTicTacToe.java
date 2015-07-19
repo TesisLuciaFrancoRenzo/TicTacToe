@@ -36,19 +36,15 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 
     private static String[] arguments;
 
+    @SuppressWarnings( "ResultOfObjectAllocationIgnored" )
     public static void main(String[] args) {
         arguments = args;
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            @SuppressWarnings( "ResultOfObjectAllocationIgnored" )
-            public void run() {
-                new GameTicTacToe(null, true, 0);
-            }
+        SwingUtilities.invokeLater(() -> {
+            new GameTicTacToe(null, true, 0);
         });
     }
     private String about;
     private GameBoard board;
-
 
     private Container contentPanel;
     private int frameHeight;
@@ -224,6 +220,8 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 
     public void processInput(Action action) {
         playPanel.mouseClickedOnSquare(board, action, playPanel.getClicks());
+        playPanel.somePlayerWins(board);//TODO implementar que si esta en visual se muestre el cartel, sino no
+        playPanel.nextTurn();
     }
 
     private void aboutMenuItemActionPerformed(ActionEvent e) {
@@ -313,10 +311,10 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 
         if ( arguments == null || arguments.length < 1 ) {
             player1 = new Player("Player 1", 0, 1);
-            player2 = new Player("Player 2", 0, 0);
+            player2 = new Player("Player 2", 0, 2);
         } else {
             player1 = new Player(arguments[0], Integer.parseInt(arguments[2]), 1);
-            player2 = new Player(arguments[1], Integer.parseInt(arguments[3]), 0);
+            player2 = new Player(arguments[1], Integer.parseInt(arguments[3]), 2);
         }
         infoPanel = new InfoPanel(player1, player2);
     }
@@ -330,4 +328,8 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         infoPanel.setP2name(player2.getName());
     }
 
+//    @Override
+//    public void dispose() {
+//        this.dispose();
+//    }
 }

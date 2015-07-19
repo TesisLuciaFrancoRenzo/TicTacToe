@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ar.edu.unrc.tictactoegame.configurations.learning.random;
+package ar.edu.unrc.tictactoegame.performanceandtraining.configurations.learning.random;
 
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import ar.edu.unrc.tdlearning.perceptron.ntuple.NTupleSystem;
-import ar.edu.unrc.tictactoegame.configurations.LearningExperiment;
-import ar.edu.unrc.tictactoegame.configurations.libraries.RandomExperimentInterface;
+import ar.edu.unrc.tictactoegame.performanceandtraining.configurations.LearningExperiment;
+import ar.edu.unrc.tictactoegame.performanceandtraining.configurations.libraries.RandomExperimentInterface;
 import java.io.File;
 import org.encog.neural.networks.BasicNetwork;
 

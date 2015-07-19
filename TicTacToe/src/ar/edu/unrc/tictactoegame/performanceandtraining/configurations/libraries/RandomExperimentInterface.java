@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ar.edu.unrc.tictactoegame.configurations.libraries;
+package ar.edu.unrc.tictactoegame.performanceandtraining.configurations.libraries;
 
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
@@ -11,7 +11,7 @@ import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import ar.edu.unrc.tictactoegame.Action;
 import ar.edu.unrc.tictactoegame.GameTicTacToe;
 import ar.edu.unrc.tictactoegame.PerceptronConfigurationTicTacToe;
-import ar.edu.unrc.tictactoegame.configurations.INeuralNetworkInterfaceForTicTacToe;
+import ar.edu.unrc.tictactoegame.performanceandtraining.configurations.INeuralNetworkInterfaceForTicTacToe;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -56,7 +56,7 @@ public class RandomExperimentInterface extends INeuralNetworkInterfaceForTicTacT
     public IsolatedComputation playATurn(GameTicTacToe game, TDLambdaLearning learningMethod) {
         return () -> {
             ArrayList<Action> possibleActions = game.listAllPossibleActions(game.getBoard());
-            int randomMove = TDLambdaLearning.randomBetween(0, possibleActions.size());
+            int randomMove = TDLambdaLearning.randomBetween(0, possibleActions.size() - 1);
             game.processInput(possibleActions.get(randomMove));
             return null;
         };

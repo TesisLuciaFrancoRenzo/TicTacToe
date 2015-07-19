@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ar.edu.unrc.tictactoegame.configurations;
+package ar.edu.unrc.tictactoegame.performanceandtraining.configurations;
 
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.learning.EExplorationRateAlgorithms;
