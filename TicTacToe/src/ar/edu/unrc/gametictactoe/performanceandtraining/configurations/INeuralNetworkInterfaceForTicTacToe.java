@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ar.edu.unrc.tictactoegame.performanceandtraining.configurations;
+package ar.edu.unrc.gametictactoe.performanceandtraining.configurations;
 
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IAction;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
-import ar.edu.unrc.tictactoegame.Action;
-import ar.edu.unrc.tictactoegame.GameTicTacToe;
-import ar.edu.unrc.tictactoegame.PerceptronConfigurationTicTacToe;
+import ar.edu.unrc.gametictactoe.Action;
+import ar.edu.unrc.gametictactoe.GameTicTacToe;
+import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import java.io.File;
 import java.util.List;
 

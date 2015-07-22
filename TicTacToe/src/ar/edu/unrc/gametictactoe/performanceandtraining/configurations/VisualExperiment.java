@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ar.edu.unrc.tictactoegame.performanceandtraining.configurations;
+package ar.edu.unrc.gametictactoe.performanceandtraining.configurations;
 
-import ar.edu.unrc.tictactoegame.GameTicTacToe;
-import ar.edu.unrc.tictactoegame.PerceptronConfigurationTicTacToe;
+import ar.edu.unrc.gametictactoe.GameTicTacToe;
+import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;

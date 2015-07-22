@@ -2,7 +2,7 @@
  * TicTacToe játék 1.0 For more information, please visit http://www.xyz.hu Thx
  * for downloading
  */
-package ar.edu.unrc.tictactoegame;
+package ar.edu.unrc.gametictactoe;
 
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IAction;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;

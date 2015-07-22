@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ar.edu.unrc.tictactoegame.performanceandtraining.configurations.visualPlay;
+package ar.edu.unrc.gametictactoe.performanceandtraining.configurations.visualPlay;
 
-import ar.edu.unrc.tictactoegame.performanceandtraining.configurations.LearningExperiment;
-import ar.edu.unrc.tictactoegame.performanceandtraining.configurations.VisualExperiment;
-import ar.edu.unrc.tictactoegame.performanceandtraining.configurations.learning.random.Experiment_01;
+import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.LearningExperiment;
+import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.VisualExperiment;
+import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.learning.random.Experiment_01;
 import java.io.File;
 
 /**

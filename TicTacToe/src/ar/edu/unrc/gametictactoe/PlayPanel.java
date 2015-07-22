@@ -2,17 +2,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ar.edu.unrc.tictactoegame;
+package ar.edu.unrc.gametictactoe;
 
-import static ar.edu.unrc.tictactoegame.Action.S0;
-import static ar.edu.unrc.tictactoegame.Action.S1;
-import static ar.edu.unrc.tictactoegame.Action.S2;
-import static ar.edu.unrc.tictactoegame.Action.S3;
-import static ar.edu.unrc.tictactoegame.Action.S4;
-import static ar.edu.unrc.tictactoegame.Action.S5;
-import static ar.edu.unrc.tictactoegame.Action.S6;
-import static ar.edu.unrc.tictactoegame.Action.S7;
-import static ar.edu.unrc.tictactoegame.Action.S8;
+import static ar.edu.unrc.gametictactoe.Action.S0;
+import static ar.edu.unrc.gametictactoe.Action.S1;
+import static ar.edu.unrc.gametictactoe.Action.S2;
+import static ar.edu.unrc.gametictactoe.Action.S3;
+import static ar.edu.unrc.gametictactoe.Action.S4;
+import static ar.edu.unrc.gametictactoe.Action.S5;
+import static ar.edu.unrc.gametictactoe.Action.S6;
+import static ar.edu.unrc.gametictactoe.Action.S7;
+import static ar.edu.unrc.gametictactoe.Action.S8;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
