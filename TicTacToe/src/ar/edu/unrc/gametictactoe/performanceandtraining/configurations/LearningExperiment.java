@@ -5,12 +5,12 @@
  */
 package ar.edu.unrc.gametictactoe.performanceandtraining.configurations;
 
+import ar.edu.unrc.gametictactoe.GameTicTacToe;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.learning.EExplorationRateAlgorithms;
 import ar.edu.unrc.tdlearning.perceptron.learning.ELearningRateAdaptation;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import ar.edu.unrc.tdlearning.perceptron.ntuple.NTupleSystem;
-import ar.edu.unrc.gametictactoe.GameTicTacToe;
 import ar.edu.unrc.utils.StringAndFiles;
 import ar.edu.unrc.utils.StringIterator;
 import java.io.File;
@@ -70,7 +70,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     private int saveEvery = 0;
     private int simulationsForStatistics;
     private boolean statisticsOnly = false;
-    private int tileToWin;
+    //private int tileToWin;
 
     /**
      *
@@ -261,7 +261,6 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
      * <li>private double lambda;</li>
      * <li>private int gamesToPlay;</li>
      * <li>private int saveBackupEvery;</li>
-     * <li>private int tileToWin;</li>
      * <li>private String experimentName;</li>
      * <li>private String perceptronName;</li>
      * <li>private PerceptronConfiguration2048 perceptronConfiguration; </li>
@@ -523,8 +522,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     }
 
     /**
-     * @param neuralNetworkInterfaceFor2048 the neuralNetworkInterfaceFor2048 to
-     *                                      set
+     * @param neuralNetworkInterfaceForTicTacToe
      */
     protected void setNeuralNetworkInterfaceForTicTacToe(INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> neuralNetworkInterfaceForTicTacToe) {
         this.neuralNetworkInterfaceForTicTacToe = neuralNetworkInterfaceForTicTacToe;
@@ -549,20 +547,6 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
      */
     protected StatisticExperiment getStatisticExperiment() {
         return statisticExperiment;
-    }
-
-    /**
-     * @return the tileToWin
-     */
-    protected int getTileToWin() {
-        return tileToWin;
-    }
-
-    /**
-     * @param tileToWin the tileToWin to set
-     */
-    public void setTileToWin(int tileToWin) {
-        this.tileToWin = tileToWin;
     }
 
     /**
@@ -624,16 +608,12 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         File randomPerceptronFile = new File(filePath + _RANDOM + ".ser");
 
         boolean backupRandomPerceptron = false;
-        if ( !perceptronFile.exists() ) {
+        if ( !perceptronFile.exists() ) {//ver por que existe el archivo
             if ( randomPerceptronFile.exists() ) {
                 randomPerceptronFile.delete();
             }
             backupRandomPerceptron = true;
         }
-
-        //creamos el juego
-        boolean show = (delayPerMove > 0);
-        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(neuralNetworkInterfaceForTicTacToe.getPerceptronConfiguration(), show, delayPerMove);
 
         // Si hay un perceptron ya entrenado, lo buscamos en el archivo.
         // En caso contrario creamos un perceptron vacio, inicializado al azar
@@ -652,6 +632,10 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         if ( learningAlgorithm == null && !this.statisticsOnly ) {
             throw new IllegalArgumentException("learningAlgorithm no puede ser null");
         }
+
+        //creamos el juego
+        boolean show = (delayPerMove > 0);
+        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(neuralNetworkInterfaceForTicTacToe.getPerceptronConfiguration(), learningAlgorithm, show, delayPerMove);
 
         statisticExperiment = new StatisticExperiment(this) {
             @Override

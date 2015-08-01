@@ -101,7 +101,7 @@ class PlayPanel extends JPanel {
         }
     }
 
-    private int clicks = 1;
+    private int clicks;
     private final int delayPerMove;
     private InfoPanel infoPanel;
     private final Dimension panelSize;
@@ -116,6 +116,7 @@ class PlayPanel extends JPanel {
         this.panelSize = size;
         this.repaint = repaint;
         this.winner = null;
+        this.clicks = 1;
         this.delayPerMove = delayPerMove;
     }
 
@@ -162,7 +163,7 @@ class PlayPanel extends JPanel {
             board.getSquares().get(actualSquareIndex).repaint();
             if ( this.delayPerMove > 0 ) {
                 try {
-                    sleep(this.delayPerMove);
+                    sleep(this.delayPerMove); //FIXME NO DEBERIA ESTAR CUANDO PIENSA, SOLO AL JUGAR
                 } catch ( InterruptedException ex ) {
                     Logger.getLogger(GameTicTacToe.class.getName()).log(Level.SEVERE, null, ex);
 
@@ -238,8 +239,8 @@ class PlayPanel extends JPanel {
             winList.add(winIndexe[0]);
             winList.add(winIndexe[1]);
             winList.add(winIndexe[2]);
-            if ( oList.containsAll(winList) ) {
-                endGame(board, 0);
+            if ( oList.containsAll(winList) ) {//TODO Refactorizar para usar el player y el token del player
+                endGame(board, -1);
                 return true;
             } else if ( xList.containsAll(winList) ) {
                 endGame(board, 1);
@@ -247,8 +248,8 @@ class PlayPanel extends JPanel {
             }
             winList.clear();
         }
-        if ( oList.size() == 5 && xList.size() == 4 ) {
-            endGame(board, 2);
+        if ( oList.size() + xList.size() == 9 ) {
+            endGame(board, 0);
             return true;
         }
         return false;
@@ -271,9 +272,9 @@ class PlayPanel extends JPanel {
     }
 
     /*@Override
-    protected void paintComponent(Graphics g) {
-    super.paintComponent(g);
-    }*/
+     protected void paintComponent(Graphics g) {
+     super.paintComponent(g);
+     }*/
     /**
      *
      * @param board
@@ -286,11 +287,27 @@ class PlayPanel extends JPanel {
     private void drawOnActualSquare(GameBoard board, int actualSquareIndex, int turn) {
         Square actualSquare = (Square) board.getSquares().get(actualSquareIndex);
         if ( turn % 2 > 0 ) {
-            actualSquare.setPaintType(player2.getToken());
+            actualSquare.setPaintType(player1.getToken());
             board.getOIndexList().add(0, actualSquareIndex);
         } else {
-            actualSquare.setPaintType(player1.getToken());
+            actualSquare.setPaintType(player2.getToken());
             board.getXIndexList().add(0, actualSquareIndex);
+        }
+    }
+
+    public Player getCurrentPlayer() {
+        if ( this.clicks % 2 > 0 ) {
+            return this.player1;
+        } else {
+            return this.player2;
+        }
+    }
+
+    public Player getEnemyPlayer() {
+        if ( this.clicks % 2 > 0 ) {
+            return this.player2;
+        } else {
+            return this.player1;
         }
     }
 
@@ -299,14 +316,14 @@ class PlayPanel extends JPanel {
             s.setClicked();
         });
         String winner = "";
-        if ( winnerCode == 0 ) {
+        if ( winnerCode == 1 ) {
             this.winner = this.player1;
             winner = player1.getName();
             player1.setScore(player1.getScore() + 1);
             infoPanel.setP1score(player1.getScore());
             player1.setWinner(true);
         }
-        if ( winnerCode == 1 ) {
+        if ( winnerCode == -1 ) {
             this.winner = this.player2;
             winner = player2.getName();
             player2.setScore(player2.getScore() + 1);
@@ -314,10 +331,12 @@ class PlayPanel extends JPanel {
             player2.setWinner(true);
 
         }
-        if ( winnerCode == 2 ) {
+        if ( winnerCode == 0 ) {
             winner = "Empate";
         }
-        JOptionPane.showMessageDialog(this, winner + " Ganó!");
+        if ( repaint ) {
+            JOptionPane.showMessageDialog(this, winner + " Ganó!");
+        }
     }
 
     private void mouseClickedOnSquare(GameBoard board, MouseEvent e) {
@@ -342,6 +361,7 @@ class PlayPanel extends JPanel {
             }
         }
     }
+
     private boolean win(GameBoard board, int turn) {
         ArrayList indexList;
         if ( turn % 2 > 0 ) {
@@ -362,6 +382,11 @@ class PlayPanel extends JPanel {
         } catch ( Exception e ) {
         }
         return false;
+    }
+
+    void reset() {
+        this.winner = null;
+        this.clicks = 1;
     }
 
 }

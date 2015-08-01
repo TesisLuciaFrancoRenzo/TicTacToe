@@ -5,11 +5,11 @@
  */
 package ar.edu.unrc.gametictactoe.performanceandtraining.configurations.learning.random;
 
+import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.LearningExperiment;
+import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.libraries.RandomExperimentInterface;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import ar.edu.unrc.tdlearning.perceptron.ntuple.NTupleSystem;
-import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.LearningExperiment;
-import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.libraries.RandomExperimentInterface;
 import java.io.File;
 import org.encog.neural.networks.BasicNetwork;
 
@@ -35,7 +35,6 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> {
         LearningExperiment experiment = new Experiment_01();
         experiment.setStatisticsOnly(true);
         experiment.createLogs(false);
-        experiment.setTileToWin(2_048);
         //para calcualr estadisticas
         experiment.setGamesToPlayPerThreadForStatistics(1_000);
         experiment.setSimulationsForStatistics(8);

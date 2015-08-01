@@ -10,6 +10,7 @@ import ar.edu.unrc.tdlearning.perceptron.interfaces.IProblem;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IState;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IStatePerceptron;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
+import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -44,7 +45,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     public static void main(String[] args) {
         arguments = args;
         SwingUtilities.invokeLater(() -> {
-            new GameTicTacToe(null, true, 0);
+            new GameTicTacToe(null, null, true, 0);
         });
     }
     private String about;
@@ -55,6 +56,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     private int frameWidth;
     private String howToPlay;
     private InfoPanel infoPanel;
+    private final TDLambdaLearning learningAlgorithm;
     private JMenu mFile;
     private JMenu mHelp;
     private JMenuBar mbMainMenu;
@@ -68,14 +70,16 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     private Player player1;
     private Player player2;
     private Dimension screenSize;
+    private boolean show;
 
     /**
      *
      * @param perceptronConfiguration
      * @param show
      * @param delayPerMove
+     * @param learningAlgorithm
      */
-    public GameTicTacToe(PerceptronConfigurationTicTacToe<NeuralNetworkClass> perceptronConfiguration, boolean show, int delayPerMove) {
+    public GameTicTacToe(PerceptronConfigurationTicTacToe<NeuralNetworkClass> perceptronConfiguration, TDLambdaLearning learningAlgorithm, boolean show, int delayPerMove) {
         initComponents();
         createMenu();
         setTitle("TicTacToe");
@@ -86,12 +90,14 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         contentPanel.add(infoPanel);
         board = new GameBoard();
         playPanel.uploadPanelWithSquares(board);
+        newGameMenuItemActionPerformed(null);
         playPanel.setPlayer1(player1);
         playPanel.setPlayer2(player2);
         playPanel.setInfoPanel(infoPanel);
         setVisible(show);
         this.perceptronConfiguration = perceptronConfiguration;
-
+        this.show = show;
+        this.learningAlgorithm = learningAlgorithm;
     }
 
     @Override
@@ -103,23 +109,12 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 
     @Override
     public IState computeNextTurnStateFromAfterstate(IState afterstate) {
-        GameBoard best = null;
-        double bestEvaluation = 999999999;
-        for ( int b : board.getAllPossibleMovements() ) {
-            GameBoard finalBoard = (GameBoard) afterstate.getCopy();
-            playPanel.mouseClickedOnSquare(finalBoard, PlayPanel.squareIndexToAction(b), playPanel.getClicks());
-            Object[] output = evaluateBoardWithPerceptron(finalBoard).compute();
-            double output0 = (double) output[0];
-            //el jugador 2 es el 0, luego los valores mas cerca del 0 es lo que va a elegir
-            if ( output0 < 0 ) {
-                output0 = output0 * -1; //para no tener que distinguir entre negativos y positivos
-            }
-            if ( output0 < bestEvaluation ) {
-                bestEvaluation = output0;
-                best = finalBoard;
-            }
-        }
-        return best;
+        ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(afterstate);
+        assert !possibleEnemyActions.isEmpty();
+        IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterstate, possibleEnemyActions, playPanel.getEnemyPlayer()).compute();
+        GameBoard finalBoard = (GameBoard) afterstate.getCopy();
+        playPanel.mouseClickedOnSquare(finalBoard, PlayPanel.squareIndexToAction(PlayPanel.actionToSquareIndex((Action) bestEnemyAction)), playPanel.getClicks() + 1);//TODO hacer que use el jugador actual
+        return finalBoard;
     }
 
     @Override
@@ -129,7 +124,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 //        } else {
         return () -> {
             assert output.length == 1;
-            return (Double) output[0];
+            return (Double) output[0] * ((Player) actor).getToken();
         };
         //}
     }
@@ -148,9 +143,9 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
                     double[] inputs = new double[perceptronConfiguration.neuronQuantityInLayer[0]];
                     for ( int i = 0; i < perceptronConfiguration.neuronQuantityInLayer[0]; i++ ) {
                         inputs[i] = ((IStatePerceptron) state).translateToPerceptronInput(i).compute();
-                    } //todo reeemplazar esot po algo ams elegante
+                    } //TODO reeemplazar esto por algo mas elegante
                     MLData inputData = new BasicMLData(inputs);
-                    MLData output = ((BasicNetwork) perceptronConfiguration.getNeuralNetwork()).compute(inputData);
+                    MLData output = ((BasicNetwork) perceptronConfiguration.getNeuralNetwork()).compute(inputData);//se rompe
                     Double[] out = new Double[output.getData().length];
                     for ( int i = 0; i < output.size(); i++ ) {
                         out[i] = output.getData()[i];
@@ -165,7 +160,8 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     @Override
     public IActor getActorToTrain() {
         return player1; //TODO: Implementar ramdom para que juegue tanto con1 como con 2 y recordar modificar initialize
-        //Si se hace esa modificación, hay que tener en cuenta modificar como busca los jugadores, axtualment elos busca por los clicks no le da bola al player
+        //Si se hace esa modificación, hay que tener en cuenta modificar como busca los jugadores, actualmente
+        //los busca por los clicks no le da bola al player. Modificar tambien la funcion getFinalReward
     }
 
     /**
@@ -180,6 +176,9 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     public void setCurrentState(IState nextTurnState) {
         board = (GameBoard) nextTurnState;
         playPanel.nextTurn();
+        playPanel.somePlayerWins(board);
+        playPanel.nextTurn();
+
     }
 
     @Override
@@ -188,6 +187,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
             return 0;
         } else {
             return playPanel.getWinner().getToken();
+            //TODO: revisar, Si gana el player 2 le va a dar un reward negativo (-1) y no se si eso esta bien o tiene que darle 0
         }
     }
 
@@ -209,7 +209,8 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 
     @Override
     public IState initialize(IActor actor) {
-        return new GameBoard();
+        newGameMenuItemActionPerformed(null);
+        return this.board.getCopy();
     }
 
     /**
@@ -229,6 +230,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
                 possibles.add(PlayPanel.squareIndexToAction(i));
             }
         }
+        System.out.println(possibles.toString());
         return possibles;
     }
 
@@ -236,11 +238,19 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
      *
      * @param e
      */
-    public void newGameMenuItemActionPerformed(ActionEvent e) {
-        dispose();
-        String args[] = {player1.getName(), player2.getName(),
-            Integer.toString(player1.getScore()), Integer.toString(player2.getScore())};
-        main(args);
+    private void newGameMenuItemActionPerformed(ActionEvent e) {
+        board.reset();
+        playPanel.reset();
+        if ( this.show ) {
+            this.repaint();
+        }
+        //        dispose();
+        //        String args[] = {player1.getName(), player2.getName(),
+        //            Integer.toString(player1.getScore()), Integer.toString(player2.getScore())};
+        //        main(args);
+        {
+
+        }
     }
 
     @Override
@@ -345,10 +355,10 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 
         if ( arguments == null || arguments.length < 1 ) {
             player1 = new Player("Player 1", 0, 1);
-            player2 = new Player("Player 2", 0, 2);
+            player2 = new Player("Player 2", 0, -1);
         } else {
             player1 = new Player(arguments[0], Integer.parseInt(arguments[2]), 1);
-            player2 = new Player(arguments[1], Integer.parseInt(arguments[3]), 2);
+            player2 = new Player(arguments[1], Integer.parseInt(arguments[3]), -1);
         }
         infoPanel = new InfoPanel(player1, player2);
     }

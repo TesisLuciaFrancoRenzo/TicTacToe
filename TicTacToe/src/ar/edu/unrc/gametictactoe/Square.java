@@ -14,7 +14,7 @@ import javax.swing.JComponent;
  *
  * @author Gyarmati János
  */
-class Square extends JComponent {
+public class Square extends JComponent {
 
     private boolean clicked;
     private int height;
@@ -25,7 +25,7 @@ class Square extends JComponent {
         this.width = width;
         this.height = height;
         this.clicked = false;
-        this.paintType = -1;
+        this.paintType = 0;
     }
 
     public Square(Square oldSquare) {
@@ -33,6 +33,11 @@ class Square extends JComponent {
         this.height = oldSquare.height;
         this.clicked = oldSquare.clicked;
         this.paintType = oldSquare.paintType;
+    }
+
+    public void reset() {
+        this.clicked = false;
+        this.paintType = 0;
     }
 
     public int getPaintType() {
@@ -78,7 +83,7 @@ class Square extends JComponent {
             case 1:
                 paintX(g);
                 break;
-            case 2:
+            case -1:
                 paintO(g);
                 break;
         }

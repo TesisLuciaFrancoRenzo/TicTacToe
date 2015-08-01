@@ -268,7 +268,6 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
         try {
             learningMethod = null;
             if ( learningExperiment != null ) {
-                this.tileToWin = learningExperiment.getTileToWin();
                 this.experimentName = learningExperiment.getExperimentName();
             }
             initializeStatistics();

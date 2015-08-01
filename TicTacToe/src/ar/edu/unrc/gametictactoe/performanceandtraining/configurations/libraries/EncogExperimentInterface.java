@@ -5,10 +5,10 @@
  */
 package ar.edu.unrc.gametictactoe.performanceandtraining.configurations.libraries;
 
-import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
-import ar.edu.unrc.tdlearning.perceptron.learning.FunctionUtils;
 import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.INeuralNetworkInterfaceForTicTacToe;
+import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
+import ar.edu.unrc.tdlearning.perceptron.learning.FunctionUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,6 +179,7 @@ public class EncogExperimentInterface extends INeuralNetworkInterfaceForTicTacTo
 
     @Override
     public void loadOrCreatePerceptron(File perceptronFile, boolean randomizedIfNotExist) throws Exception {
+        System.out.println(perceptronFile.getCanonicalPath());
         if ( !perceptronFile.exists() ) {
             //Si el archivo no existe, creamos un perceptron nuevo inicializado al azar
             getPerceptronConfiguration().setNeuralNetwork(initializeEncogPerceptron(randomizedIfNotExist));

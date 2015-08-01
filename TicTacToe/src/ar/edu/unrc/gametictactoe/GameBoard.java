@@ -39,17 +39,6 @@ public class GameBoard implements IStatePerceptron {
         XIndexList = new ArrayList(5);
     }
 
-    /**
-     *
-     * @return
-     */
-    public ArrayList<Integer> getAllPossibleMovements() {
-        ArrayList libres = (ArrayList) this.squares.clone();
-        libres.removeAll(OIndexList);
-        libres.removeAll(XIndexList);
-        return libres;
-    }
-
     @Override
     public IState getCopy() {
         GameBoard copy = new GameBoard();
@@ -134,7 +123,7 @@ public class GameBoard implements IStatePerceptron {
             }
             winList.clear();
         }
-        return OIndexList.size() == 5 && XIndexList.size() == 4;
+        return OIndexList.size() + XIndexList.size() == 9;
     }
 
     @Override
@@ -142,6 +131,14 @@ public class GameBoard implements IStatePerceptron {
         return () -> {
             return ((Square) this.squares.get(neuronIndex)).getPaintType() * 1d;
         };
+    }
+
+    void reset() {
+        this.OIndexList.clear();
+        this.XIndexList.clear();
+        this.squares.stream().forEach((s) -> {
+            s.reset();
+        });
     }
 
 }

@@ -10,26 +10,55 @@ import ar.edu.unrc.gametictactoe.GameTicTacToe;
 import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import java.util.List;
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationTANH;
 
 /**
  *
  * @author Renzo Bianchini
+ * @param <NeuralNetworkClass>
  */
 public class ConfigurationTicTacToe<NeuralNetworkClass> extends PerceptronConfigurationTicTacToe<NeuralNetworkClass> {
 
+    public ConfigurationTicTacToe() {
+
+        this.neuronQuantityInLayer = new int[3];
+        neuronQuantityInLayer[0] = 9;
+        neuronQuantityInLayer[1] = 9;
+        neuronQuantityInLayer[2] = 1;
+
+        this.activationFunctionForEncog = new ActivationFunction[2];
+
+        activationFunctionForEncog[0] = new ActivationTANH();
+        activationFunctionForEncog[1] = new ActivationTANH(); //cambiar por la sigmoidea
+
+        activationFunctionMax = 1;
+        activationFunctionMin = -1;
+
+    }
+
     @Override
     public IsolatedComputation calculateNormalizedPerceptronInput(GameBoard board, List<Double> normalizedPerceptronInput) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return () -> {
+            for ( int i = 0; i < 9; i++ ) {
+                normalizedPerceptronInput.set(i, (double) board.getSquares().get(i).getPaintType());
+            }
+            return null;
+        };
+//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public IsolatedComputation<Double> computeNumericRepresentationFor(GameTicTacToe game, Object[] output) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return () -> {
+            assert output.length == 1;
+            return (Double) output[0];
+        };
     }
 
     @Override
     public double denormalizeValueFromPerceptronOutput(Object value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (Double) value;
     }
 
     @Override
@@ -39,12 +68,12 @@ public class ConfigurationTicTacToe<NeuralNetworkClass> extends PerceptronConfig
 
     @Override
     public double getFinalReward(GameTicTacToe game, int outputNeuron) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return game.getFinalReward(outputNeuron);
     }
 
     @Override
     public double normalizeValueToPerceptronOutput(Object value) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (Double) value;
     }
 
 }

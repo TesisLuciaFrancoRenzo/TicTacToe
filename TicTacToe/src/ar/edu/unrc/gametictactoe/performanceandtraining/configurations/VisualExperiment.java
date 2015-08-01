@@ -63,7 +63,6 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
         try {
             if ( learningExperiment != null ) {
                 learningExperiment.initialize();
-                this.tileToWin = learningExperiment.getTileToWin();
                 this.experimentName = learningExperiment.getExperimentName();
                 this.perceptronConfiguration = learningExperiment.getNeuralNetworkInterfaceForTicTacToe().getPerceptronConfiguration();
             } else {
@@ -185,7 +184,7 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
      */
     protected void run(String experimentPath, int delayPerMove) throws Exception {
         System.out.println("Starting " + this.getPerceptronName() + " Visual");
-        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(perceptronConfiguration, true, delayPerMove);
+        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(perceptronConfiguration, learningExperiment.getLearningAlgorithm(), true, delayPerMove);
         if ( perceptronConfiguration != null ) {
             //cargamos la red neuronal entrenada
             String dirPath = experimentPath

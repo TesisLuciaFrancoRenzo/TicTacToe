@@ -8,6 +8,7 @@ package ar.edu.unrc.gametictactoe.performanceandtraining.configurations.learning
 import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.LearningExperiment;
 import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.libraries.EncogExperimentInterface;
+import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.perceptrons.ConfigurationTicTacToe;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearningAfterstate;
@@ -42,7 +43,7 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> {
         experiment.setLearningRateAdaptationToFixed();
         experiment.setLambda(0.7);
         experiment.setGamma(1);
-        experiment.setExplorationRateToFixed(0);
+        experiment.setExplorationRateToFixed(0.1);
         experiment.setResetEligibilitiTraces(true);
         experiment.setGamesToPlay(20_000);
         experiment.setSaveEvery(500);
@@ -70,12 +71,11 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> {
 
     @Override
     public void initialize() throws Exception {
-        this.setTileToWin(2_048);
         if ( this.getExperimentName() == null ) {
             this.setExperimentName("Experiment_01");
         }
         this.setPerceptronName(this.getExperimentName());
-        PerceptronConfigurationTicTacToe<BasicNetwork> config = new BoardMaxTileCustomNormalization<>();
+        PerceptronConfigurationTicTacToe<BasicNetwork> config = new ConfigurationTicTacToe<>();
         this.setNeuralNetworkInterfaceForTicTacToe(new EncogExperimentInterface(config));
     }
 
