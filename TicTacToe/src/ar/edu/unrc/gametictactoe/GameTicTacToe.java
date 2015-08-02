@@ -103,18 +103,22 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     @Override
     public IState computeAfterState(IState turnInitialState, IAction action) {
         GameBoard afterState = (GameBoard) turnInitialState.getCopy();
-        playPanel.mouseClickedOnSquare(afterState, (Action) action, playPanel.getClicks());
+        playPanel.mouseClickedOnSquare(afterState, (Action) action, playPanel.getCurrentPlayer());
         return afterState;
     }
 
     @Override
     public IState computeNextTurnStateFromAfterstate(IState afterstate) {
-        ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(afterstate);
-        assert !possibleEnemyActions.isEmpty();
-        IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterstate, possibleEnemyActions, playPanel.getEnemyPlayer()).compute();
-        GameBoard finalBoard = (GameBoard) afterstate.getCopy();
-        playPanel.mouseClickedOnSquare(finalBoard, PlayPanel.squareIndexToAction(PlayPanel.actionToSquareIndex((Action) bestEnemyAction)), playPanel.getClicks() + 1);//TODO hacer que use el jugador actual
-        return finalBoard;
+        if ( afterstate.isTerminalState() ) {
+            return afterstate;
+        } else {
+            ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(afterstate);
+            assert !possibleEnemyActions.isEmpty();
+            IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterstate, possibleEnemyActions, playPanel.getEnemyPlayer()).compute();
+            GameBoard finalBoard = (GameBoard) afterstate.getCopy();
+            playPanel.mouseClickedOnSquare(finalBoard, PlayPanel.squareIndexToAction(PlayPanel.actionToSquareIndex((Action) bestEnemyAction)), playPanel.getEnemyPlayer());
+            return finalBoard;
+        }
     }
 
     @Override
@@ -124,7 +128,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 //        } else {
         return () -> {
             assert output.length == 1;
-            return (Double) output[0] * ((Player) actor).getToken();
+            return (Double) output[0] * ((Player) actor).getToken().getRepresentation();
         };
         //}
     }
@@ -145,7 +149,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
                         inputs[i] = ((IStatePerceptron) state).translateToPerceptronInput(i).compute();
                     } //TODO reeemplazar esto por algo mas elegante
                     MLData inputData = new BasicMLData(inputs);
-                    MLData output = ((BasicNetwork) perceptronConfiguration.getNeuralNetwork()).compute(inputData);//se rompe
+                    MLData output = ((BasicNetwork) perceptronConfiguration.getNeuralNetwork()).compute(inputData);
                     Double[] out = new Double[output.getData().length];
                     for ( int i = 0; i < output.size(); i++ ) {
                         out[i] = output.getData()[i];
@@ -178,6 +182,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         playPanel.nextTurn();
         playPanel.somePlayerWins(board);
         playPanel.nextTurn();
+        assert playPanel.getClicks() <= 9;
 
     }
 
@@ -186,7 +191,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         if ( playPanel.getWinner() == null ) {
             return 0;
         } else {
-            return playPanel.getWinner().getToken();
+            return playPanel.getWinner().getToken().getRepresentation();
             //TODO: revisar, Si gana el player 2 le va a dar un reward negativo (-1) y no se si eso esta bien o tiene que darle 0
         }
     }
@@ -224,7 +229,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     @Override
     public ArrayList<IAction> listAllPossibleActions(IState turnInitialState) {
         GameBoard initialBoard = (GameBoard) turnInitialState;
-        ArrayList<IAction> possibles = new ArrayList<>(9);
+        ArrayList<IAction> possibles = new ArrayList<>(initialBoard.getSquares().size());
         for ( int i = 0; i < initialBoard.getSquares().size(); i++ ) {
             if ( !initialBoard.getSquares().get(i).isClicked() ) {
                 possibles.add(PlayPanel.squareIndexToAction(i));
@@ -263,7 +268,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
      * @param action
      */
     public void processInput(Action action) {
-        playPanel.mouseClickedOnSquare(board, action, playPanel.getClicks());
+        playPanel.mouseClickedOnSquare(board, action, playPanel.getCurrentPlayer());
         playPanel.somePlayerWins(board);//TODO implementar que si esta en visual se muestre el cartel, sino no
         playPanel.nextTurn();
     }
@@ -354,11 +359,11 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         frameHeight = (screenSize.height) / 2;
 
         if ( arguments == null || arguments.length < 1 ) {
-            player1 = new Player("Player 1", 0, 1);
-            player2 = new Player("Player 2", 0, -1);
+            player1 = new Player("Player 1", 0, Token.X);
+            player2 = new Player("Player 2", 0, Token.O);
         } else {
-            player1 = new Player(arguments[0], Integer.parseInt(arguments[2]), 1);
-            player2 = new Player(arguments[1], Integer.parseInt(arguments[3]), -1);
+            player1 = new Player(arguments[0], Integer.parseInt(arguments[2]), Token.X);
+            player2 = new Player(arguments[1], Integer.parseInt(arguments[3]), Token.O);
         }
         infoPanel = new InfoPanel(player1, player2);
     }

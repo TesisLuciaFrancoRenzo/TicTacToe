@@ -16,8 +16,8 @@ import java.util.ArrayList;
  */
 public class GameBoard implements IStatePerceptron {
 
-    private ArrayList OIndexList;
-    private ArrayList XIndexList;
+    private ArrayList player2IndexList;
+    private ArrayList player1IndexList;
     private ArrayList<Square> squares;
     private final int[][] winIndexes = {
         {0, 1, 2},
@@ -35,18 +35,18 @@ public class GameBoard implements IStatePerceptron {
      */
     public GameBoard() {
         this.squares = new ArrayList(9);
-        OIndexList = new ArrayList(5);
-        XIndexList = new ArrayList(5);
+        player2IndexList = new ArrayList(5);
+        player1IndexList = new ArrayList(5);
     }
 
     @Override
     public IState getCopy() {
         GameBoard copy = new GameBoard();
-        for ( int i = 0; i < OIndexList.size(); i++ ) {
-            copy.OIndexList.add(i, OIndexList.get(i));
+        for ( int i = 0; i < player2IndexList.size(); i++ ) {
+            copy.player2IndexList.add(i, player2IndexList.get(i));
         }
-        for ( int i = 0; i < XIndexList.size(); i++ ) {
-            copy.XIndexList.add(i, XIndexList.get(i));
+        for ( int i = 0; i < player1IndexList.size(); i++ ) {
+            copy.player1IndexList.add(i, player1IndexList.get(i));
         }
         for ( int i = 0; i < squares.size(); i++ ) {
             copy.squares.add(i, new Square(squares.get(i)));
@@ -55,17 +55,17 @@ public class GameBoard implements IStatePerceptron {
     }
 
     /**
-     * @return the OIndexList
+     * @return the player2IndexList
      */
-    public ArrayList getOIndexList() {
-        return OIndexList;
+    public ArrayList getPlayer2IndexList() {
+        return player2IndexList;
     }
 
     /**
-     * @param OIndexList the OIndexList to set
+     * @param Player2IndexList the player2IndexList to set
      */
-    public void setOIndexList(ArrayList OIndexList) {
-        this.OIndexList = OIndexList;
+    public void setPlayer2IndexList(ArrayList Player2IndexList) {
+        this.player2IndexList = Player2IndexList;
     }
 
     /**
@@ -96,17 +96,17 @@ public class GameBoard implements IStatePerceptron {
     }
 
     /**
-     * @return the XIndexList
+     * @return the player1IndexList
      */
-    public ArrayList getXIndexList() {
-        return XIndexList;
+    public ArrayList getPlayer1IndexList() {
+        return player1IndexList;
     }
 
     /**
-     * @param XIndexList the XIndexList to set
+     * @param player1IndexList the player1IndexList to set
      */
-    public void setXIndexList(ArrayList XIndexList) {
-        this.XIndexList = XIndexList;
+    public void setPlayer1IndexList(ArrayList player1IndexList) {
+        this.player1IndexList = player1IndexList;
     }
 
     @Override
@@ -116,26 +116,26 @@ public class GameBoard implements IStatePerceptron {
             winList.add(winIndexes[i][0]);
             winList.add(winIndexes[i][1]);
             winList.add(winIndexes[i][2]);
-            if ( OIndexList.containsAll(winList) ) {
+            if ( player2IndexList.containsAll(winList) ) {
                 return true;
-            } else if ( XIndexList.containsAll(winList) ) {
+            } else if ( player1IndexList.containsAll(winList) ) {
                 return true;
             }
             winList.clear();
         }
-        return OIndexList.size() + XIndexList.size() == 9;
+        return player2IndexList.size() + player1IndexList.size() == 9;
     }
 
     @Override
     public IsolatedComputation<Double> translateToPerceptronInput(int neuronIndex) {
         return () -> {
-            return ((Square) this.squares.get(neuronIndex)).getPaintType() * 1d;
+            return ((Square) this.squares.get(neuronIndex)).getPaintType().getRepresentation() * 1d;
         };
     }
 
     void reset() {
-        this.OIndexList.clear();
-        this.XIndexList.clear();
+        this.player2IndexList.clear();
+        this.player1IndexList.clear();
         this.squares.stream().forEach((s) -> {
             s.reset();
         });

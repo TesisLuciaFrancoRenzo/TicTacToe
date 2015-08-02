@@ -14,7 +14,7 @@ public class Player implements IActor {
 
     private String name;
     private int score;
-    private int token;
+    private Token token;
     private boolean winner;
 
     /**
@@ -23,7 +23,7 @@ public class Player implements IActor {
      * @param score
      * @param token
      */
-    public Player(String name, int score, int token) {
+    public Player(String name, int score, Token token) {
         this.name = name;
         this.score = score;
         this.token = token;
@@ -65,7 +65,7 @@ public class Player implements IActor {
      *
      * @return
      */
-    public int getToken() {
+    public Token getToken() {
         return token;
     }
 
@@ -73,7 +73,7 @@ public class Player implements IActor {
      *
      * @param token
      */
-    public void setToken(int token) {
+    public void setToken(Token token) {
         this.token = token;
     }
 

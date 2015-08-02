@@ -41,7 +41,7 @@ public class ConfigurationTicTacToe<NeuralNetworkClass> extends PerceptronConfig
     public IsolatedComputation calculateNormalizedPerceptronInput(GameBoard board, List<Double> normalizedPerceptronInput) {
         return () -> {
             for ( int i = 0; i < 9; i++ ) {
-                normalizedPerceptronInput.set(i, (double) board.getSquares().get(i).getPaintType());
+                normalizedPerceptronInput.set(i, (double) board.getSquares().get(i).getPaintType().getRepresentation());
             }
             return null;
         };

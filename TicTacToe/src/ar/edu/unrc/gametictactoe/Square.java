@@ -18,14 +18,14 @@ public class Square extends JComponent {
 
     private boolean clicked;
     private int height;
-    private int paintType;           //ez tárolja hogy x-et rajzol(0), vagy o-t (1)
+    private Token paintType;
     private int width;
 
     public Square(int width, int height) {
         this.width = width;
         this.height = height;
         this.clicked = false;
-        this.paintType = 0;
+        this.paintType = Token.EMPTY;
     }
 
     public Square(Square oldSquare) {
@@ -37,14 +37,14 @@ public class Square extends JComponent {
 
     public void reset() {
         this.clicked = false;
-        this.paintType = 0;
+        this.paintType = Token.EMPTY;
     }
 
-    public int getPaintType() {
+    public Token getPaintType() {
         return paintType;
     }
 
-    public void setPaintType(int paintType) {
+    public void setPaintType(Token paintType) {
         this.paintType = paintType;
     }
 
@@ -78,12 +78,12 @@ public class Square extends JComponent {
         super.paintComponent(g);
         g.drawRect(0, 0, width, height);
         switch ( getPaintType() ) {
-            case 0:
+            case EMPTY:
                 break;
-            case 1:
+            case X:
                 paintX(g);
                 break;
-            case -1:
+            case O:
                 paintO(g);
                 break;
         }
