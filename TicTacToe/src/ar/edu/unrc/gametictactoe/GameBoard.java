@@ -16,10 +16,29 @@ import java.util.ArrayList;
  */
 public class GameBoard implements IStatePerceptron {
 
+    private PlayPanel playPanel;
+    Action player1Action;
+    Action player2Action;
+
+    public Action getPlayer1Action() {
+        return player1Action;
+    }
+
+    public void setPlayer1Action(Action player1Action) {
+        this.player1Action = player1Action;
+    }
+
+    public Action getPlayer2Action() {
+        return player2Action;
+    }
+
+    public void setPlayer2Action(Action player2Action) {
+        this.player2Action = player2Action;
+    }
     private ArrayList player2IndexList;
     private ArrayList player1IndexList;
     private ArrayList<Square> squares;
-    private final int[][] winIndexes = {
+    private static final int[][] winIndexes = {
         {0, 1, 2},
         {3, 4, 5},
         {6, 7, 8},
@@ -29,19 +48,72 @@ public class GameBoard implements IStatePerceptron {
         {0, 4, 8},
         {2, 4, 6}
     };
+    private int turn;
+    private Player player1;
+    private Player player2;
+    private Player currentPlayer;
+
+    public int getTurn() {
+        return turn;
+    }
+
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    public Player getPlayer2() {
+        return player2;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public Player getEnemyPlayer() {
+        assert currentPlayer != null;
+        if ( currentPlayer.equals(player1) ) {
+            return player2;
+        } else {
+            return player1;
+        }
+    }
+
+    public void nextTurn() {
+        if ( isTerminalState() ) {
+            playPanel.endGame(this);
+        } else {
+            turn++;
+            assert currentPlayer != null;
+            if ( currentPlayer.equals(player1) ) {
+                this.currentPlayer = player2;
+            } else {
+                this.currentPlayer = player1;
+            }
+        }
+    }
 
     /**
      *
+     * @param player1
+     * @param player2
+     * @param playPanel
      */
-    public GameBoard() {
+    public GameBoard(Player player1, Player player2, PlayPanel playPanel) {
         this.squares = new ArrayList(9);
         player2IndexList = new ArrayList(5);
         player1IndexList = new ArrayList(5);
+        this.player1 = player1;
+        this.player2 = player2;
+        this.currentPlayer = player1;
+        this.turn = 1;
+        this.playPanel = playPanel;
+        this.player1Action = null;
+        this.player2Action = null;
     }
 
     @Override
     public IState getCopy() {
-        GameBoard copy = new GameBoard();
+        GameBoard copy = new GameBoard(player1, player2, playPanel);
         for ( int i = 0; i < player2IndexList.size(); i++ ) {
             copy.player2IndexList.add(i, player2IndexList.get(i));
         }
@@ -51,6 +123,10 @@ public class GameBoard implements IStatePerceptron {
         for ( int i = 0; i < squares.size(); i++ ) {
             copy.squares.add(i, new Square(squares.get(i)));
         }
+        copy.turn = this.turn;
+        copy.currentPlayer = this.currentPlayer;
+        copy.player1Action = this.player1Action;
+        copy.player2Action = this.player2Action;
         return copy;
     }
 
@@ -111,6 +187,7 @@ public class GameBoard implements IStatePerceptron {
 
     @Override
     public boolean isTerminalState() {//TODO: calcularlo solo una vez cuando haya cambois en el tablero y actualizar una variable de estado
+        //FIXME: hacer una funcion que devuelva quien ganon o si hubo empate o si deberia seguir jugando
         ArrayList winList = new ArrayList();
         for ( int i = 0; i < getWinIndexes().length; i++ ) {
             winList.add(winIndexes[i][0]);
@@ -133,12 +210,30 @@ public class GameBoard implements IStatePerceptron {
         };
     }
 
+    void printLastActions(Player playerToTrain) {
+        if ( playerToTrain.equals(player1) ) {
+            System.out.print("* ");
+        }
+        System.out.println(player1Action);
+
+        if ( player2Action != null ) {
+            if ( playerToTrain.equals(player2) ) {
+                System.out.print("* ");
+            }
+            System.out.println(player2Action);
+        }
+    }
+
     void reset() {
         this.player2IndexList.clear();
         this.player1IndexList.clear();
         this.squares.stream().forEach((s) -> {
             s.reset();
         });
+        this.turn = 1;
+        this.currentPlayer = player1;
+        this.player1Action = null;
+        this.player2Action = null;
     }
 
 }

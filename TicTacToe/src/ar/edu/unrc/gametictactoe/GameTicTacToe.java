@@ -16,7 +16,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -45,11 +44,10 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     public static void main(String[] args) {
         arguments = args;
         SwingUtilities.invokeLater(() -> {
-            new GameTicTacToe(null, null, true, 0);
+            new GameTicTacToe(null, null, true, 0, null);
         });
     }
     private String about;
-    private GameBoard board;
 
     private Container contentPanel;
     private int frameHeight;
@@ -71,6 +69,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     private Player player2;
     private Dimension screenSize;
     private boolean show;
+    private Player playerToTrain;
 
     /**
      *
@@ -78,45 +77,66 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
      * @param show
      * @param delayPerMove
      * @param learningAlgorithm
+     * @param playerToTrain
      */
-    public GameTicTacToe(PerceptronConfigurationTicTacToe<NeuralNetworkClass> perceptronConfiguration, TDLambdaLearning learningAlgorithm, boolean show, int delayPerMove) {
+    public GameTicTacToe(PerceptronConfigurationTicTacToe<NeuralNetworkClass> perceptronConfiguration, TDLambdaLearning learningAlgorithm, boolean show, int delayPerMove, Players playerToTrain) {
         initComponents();
         createMenu();
         setTitle("TicTacToe");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBounds((screenSize.width - frameWidth) / 2, (screenSize.height - frameHeight) / 2, frameWidth, frameHeight);
         contentPanel.setLayout(new GridLayout(1, 2));
-        contentPanel.add(playPanel = new PlayPanel(getSize(), show, delayPerMove));
+        contentPanel.add(playPanel = new PlayPanel(getSize(), show, delayPerMove, player1, player2));
         contentPanel.add(infoPanel);
-        board = new GameBoard();
-        playPanel.uploadPanelWithSquares(board);
         newGameMenuItemActionPerformed(null);
-        playPanel.setPlayer1(player1);
-        playPanel.setPlayer2(player2);
         playPanel.setInfoPanel(infoPanel);
         setVisible(show);
         this.perceptronConfiguration = perceptronConfiguration;
         this.show = show;
         this.learningAlgorithm = learningAlgorithm;
+        if ( playerToTrain == Players.PLAYER1 ) {
+            this.playerToTrain = player1;
+        } else if ( playerToTrain == Players.PLAYER2 ) {
+            this.playerToTrain = player2;
+        } else {
+            this.playerToTrain = null;
+        }
     }
 
     @Override
     public IState computeAfterState(IState turnInitialState, IAction action) {
+        assert action != null;
         GameBoard afterState = (GameBoard) turnInitialState.getCopy();
-        playPanel.mouseClickedOnSquare(afterState, (Action) action, playPanel.getCurrentPlayer());
+        playPanel.mouseClickedOnSquare(afterState, (Action) action);
+        afterState.nextTurn();
+        if ( playerToTrain.equals(player1) ) {
+            afterState.setPlayer1Action((Action) action);
+        } else {
+            afterState.setPlayer2Action((Action) action);
+        }
         return afterState;
     }
 
     @Override
-    public IState computeNextTurnStateFromAfterstate(IState afterstate) {
-        if ( afterstate.isTerminalState() ) {
-            return afterstate;
+    public IState computeNextTurnStateFromAfterstate(IState afterState) {
+        if ( afterState.isTerminalState() ) {
+            if ( playerToTrain.equals(player1) ) {
+                ((GameBoard) afterState).setPlayer2Action(null);
+            }
+            return afterState;
         } else {
-            ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(afterstate);
+            ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(afterState);
             assert !possibleEnemyActions.isEmpty();
-            IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterstate, possibleEnemyActions, playPanel.getEnemyPlayer()).compute();
-            GameBoard finalBoard = (GameBoard) afterstate.getCopy();
-            playPanel.mouseClickedOnSquare(finalBoard, PlayPanel.squareIndexToAction(PlayPanel.actionToSquareIndex((Action) bestEnemyAction)), playPanel.getEnemyPlayer());
+            IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterState, possibleEnemyActions, ((GameBoard) afterState).getEnemyPlayer()).compute();
+            assert bestEnemyAction != null;
+            GameBoard finalBoard = (GameBoard) afterState.getCopy();
+            playPanel.mouseClickedOnSquare(finalBoard, (Action) bestEnemyAction);
+            finalBoard.nextTurn();
+            if ( playerToTrain.equals(player1) ) {
+                finalBoard.setPlayer2Action((Action) bestEnemyAction);
+            } else {
+                finalBoard.setPlayer1Action((Action) bestEnemyAction);
+            }
             return finalBoard;
         }
     }
@@ -163,35 +183,29 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 
     @Override
     public IActor getActorToTrain() {
-        return player1; //TODO: Implementar ramdom para que juegue tanto con1 como con 2 y recordar modificar initialize
+        return playerToTrain; //TODO: Implementar ramdom para que juegue tanto con1 como con 2 y recordar modificar initialize
         //Si se hace esa modificación, hay que tener en cuenta modificar como busca los jugadores, actualmente
         //los busca por los clicks no le da bola al player. Modificar tambien la funcion getFinalReward
     }
 
-    /**
-     *
-     * @return
-     */
-    public GameBoard getBoard() {
-        return board;
+    public IState getBoard() {
+        return playPanel.getBoard();
     }
 
     @Override
     public void setCurrentState(IState nextTurnState) {
-        board = (GameBoard) nextTurnState;
-        playPanel.nextTurn();
-        playPanel.somePlayerWins(board);
-        playPanel.nextTurn();
-        assert playPanel.getClicks() <= 9;
+        playPanel.setBoard((GameBoard) nextTurnState);
+        ((GameBoard) nextTurnState).printLastActions(playerToTrain);
+        assert ((GameBoard) nextTurnState).getTurn() <= 9;
 
     }
 
     @Override
     public double getFinalReward(int outputNeuron) {
-        if ( playPanel.getWinner() == null ) {
+        if ( playPanel.getBoard().getCurrentPlayer() == null ) {
             return 0;
         } else {
-            return playPanel.getWinner().getToken().getRepresentation();
+            return playPanel.getBoard().getCurrentPlayer().getToken().getRepresentation();
             //TODO: revisar, Si gana el player 2 le va a dar un reward negativo (-1) y no se si eso esta bien o tiene que darle 0
         }
     }
@@ -201,7 +215,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
      * @return
      */
     public int getLastTurn() {
-        return this.playPanel.getClicks();
+        return this.playPanel.getBoard().getTurn();
     }
 
     /**
@@ -209,13 +223,13 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
      * @return
      */
     public String getWinner() {
-        return (this.playPanel.getWinner() != null) ? this.playPanel.getWinner().getName() : "Empate";
+        return (this.playPanel.getBoard().getCurrentPlayer() != null) ? this.playPanel.getBoard().getCurrentPlayer().getName() : "Empate";
     }
 
     @Override
     public IState initialize(IActor actor) {
         newGameMenuItemActionPerformed(null);
-        return this.board.getCopy();
+        return this.playPanel.getBoard().getCopy();
     }
 
     /**
@@ -223,7 +237,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
      * @return
      */
     public boolean isTerminalState() {
-        return this.board.isTerminalState();
+        return this.playPanel.getBoard().isTerminalState();
     }
 
     @Override
@@ -235,7 +249,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
                 possibles.add(PlayPanel.squareIndexToAction(i));
             }
         }
-        System.out.println(possibles.toString());
+//        System.out.println(possibles.toString());
         return possibles;
     }
 
@@ -244,7 +258,6 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
      * @param e
      */
     private void newGameMenuItemActionPerformed(ActionEvent e) {
-        board.reset();
         playPanel.reset();
         if ( this.show ) {
             this.repaint();
@@ -268,9 +281,8 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
      * @param action
      */
     public void processInput(Action action) {
-        playPanel.mouseClickedOnSquare(board, action, playPanel.getCurrentPlayer());
-        playPanel.somePlayerWins(board);//TODO implementar que si esta en visual se muestre el cartel, sino no
-        playPanel.nextTurn();
+        playPanel.mouseClickedOnSquare(action);
+        playPanel.getBoard().nextTurn();
     }
 
     private void aboutMenuItemActionPerformed(ActionEvent e) {
@@ -295,35 +307,20 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         miHowto.setText("How To Play");
         miAbout.setText("About");
 
-        miNewGame.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                newGameMenuItemActionPerformed(e);
-            }
+        miNewGame.addActionListener((ActionEvent e) -> {
+            newGameMenuItemActionPerformed(e);
         });
-        miOptions.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                optionsMenuItemActionPerformed(e);
-            }
+        miOptions.addActionListener((ActionEvent e) -> {
+            optionsMenuItemActionPerformed(e);
         });
-        miExit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                exitMenuItemActionPerformed(e);
-            }
+        miExit.addActionListener((ActionEvent e) -> {
+            exitMenuItemActionPerformed(e);
         });
-        miHowto.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                howToPlayMenuItemActionPerformed(e);
-            }
+        miHowto.addActionListener((ActionEvent e) -> {
+            howToPlayMenuItemActionPerformed(e);
         });
-        miAbout.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                aboutMenuItemActionPerformed(e);
-            }
+        miAbout.addActionListener((ActionEvent e) -> {
+            aboutMenuItemActionPerformed(e);
         });
     }
 

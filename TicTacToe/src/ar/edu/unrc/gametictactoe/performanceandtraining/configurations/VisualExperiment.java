@@ -184,7 +184,8 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
      */
     protected void run(String experimentPath, int delayPerMove) throws Exception {
         System.out.println("Starting " + this.getPerceptronName() + " Visual");
-        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(perceptronConfiguration, learningExperiment.getLearningAlgorithm(), true, delayPerMove);
+        //TODO: arreglar el player
+        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(perceptronConfiguration, learningExperiment.getLearningAlgorithm(), true, delayPerMove, null);
         if ( perceptronConfiguration != null ) {
             //cargamos la red neuronal entrenada
             String dirPath = experimentPath

@@ -19,7 +19,6 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import static java.lang.Thread.sleep;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -31,7 +30,7 @@ import javax.swing.border.BevelBorder;
  *
  * @author Gyarmati János
  */
-class PlayPanel extends JPanel {
+public class PlayPanel extends JPanel {
 
     public static int actionToSquareIndex(Action action) {
         switch ( action ) {
@@ -101,29 +100,25 @@ class PlayPanel extends JPanel {
         }
     }
 
-    private int clicks;
     private final int delayPerMove;
     private InfoPanel infoPanel;
     private final Dimension panelSize;
-    private Player player1;
-    private Player player2;
     private final boolean repaint;
-    private Player winner;
+    private GameBoard board;
 
-    public PlayPanel(Dimension size, boolean repaint, int delayPerMove) {
+    public PlayPanel(Dimension size, boolean repaint, int delayPerMove, Player player1, Player player2) {
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.lightGray, Color.black));
         setLayout(new GridLayout(3, 3));
         this.panelSize = size;
         this.repaint = repaint;
-        this.winner = null;
-        this.clicks = 1;
         this.delayPerMove = delayPerMove;
+        this.board = new GameBoard(player1, player2, this);
+        this.uploadPanelWithSquares(board);//TODO ver que hace
     }
 
-    public int getClicks() {
-        return clicks;
-    }
-
+//    public int getClicks() {
+//        return clicks;
+//    }
     public InfoPanel getInfoPanel() {
         return infoPanel;
     }
@@ -132,33 +127,9 @@ class PlayPanel extends JPanel {
         this.infoPanel = infoPanel;
     }
 
-    public Player getPlayer1() {
-        return player1;
-    }
-
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
-    }
-
-    public Player getPlayer2() {
-        return player2;
-    }
-
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
-    }
-
-    public Player getWinner() {
-        return winner;
-    }
-
-    public void setWinner(Player winner) {
-        this.winner = winner;
-    }
-
-    public void mouseClickedOnSquare(GameBoard board, Action action, Player player) {
+    public void mouseClickedOnSquare(GameBoard board, Action action) {
         int actualSquareIndex = actionToSquareIndex(action);
-        drawOnActualSquare(board, actualSquareIndex, player);
+        drawOnActualSquare(board, actualSquareIndex);
         if ( repaint ) {
             board.getSquares().get(actualSquareIndex).repaint();
             if ( this.delayPerMove > 0 ) {
@@ -227,35 +198,30 @@ class PlayPanel extends JPanel {
 //
 //        return possiblesNextTurnState;
 //    }
-    public void nextTurn() {
-        clicks++;
-    }
-
-    public boolean somePlayerWins(GameBoard board) {
-        ArrayList winList = new ArrayList();
-        ArrayList player2List = board.getPlayer2IndexList();
-        ArrayList player1List = board.getPlayer1IndexList();
-        for ( int[] winIndexe : board.getWinIndexes() ) {
-            winList.add(winIndexe[0]);
-            winList.add(winIndexe[1]);
-            winList.add(winIndexe[2]);
-            if ( player2List.containsAll(winList) ) {//TODO Refactorizar para usar el player y el token del player
-                endGame(board, player2);
-                return true;
-            } else if ( player1List.containsAll(winList) ) {
-                endGame(board, player1);
-                return true;
-            }
-            winList.clear();
-        }
-        if ( player2List.size() + player1List.size() == 9 ) {
-            endGame(board, null);
-            return true;
-        }
-        return false;
-    }
-
-    public void uploadPanelWithSquares(GameBoard board) {
+//    public boolean somePlayerWins(GameBoard board) {
+//        ArrayList winList = new ArrayList();
+//        ArrayList player2List = board.getPlayer2IndexList();
+//        ArrayList player1List = board.getPlayer1IndexList();
+//        for ( int[] winIndexe : board.getWinIndexes() ) {
+//            winList.add(winIndexe[0]);
+//            winList.add(winIndexe[1]);
+//            winList.add(winIndexe[2]);
+//            if ( player2List.containsAll(winList) ) {//TODO Refactorizar para usar el player y el token del player
+//                endGame(board);
+//                return true;
+//            } else if ( player1List.containsAll(winList) ) {
+//                endGame(board);
+//                return true;
+//            }
+//            winList.clear();
+//        }
+//        if ( player2List.size() + player1List.size() == 9 ) {
+//            endGame(board);
+//            return true;
+//        }
+//        return false;
+//    }
+    private void uploadPanelWithSquares(GameBoard board) {
         Square square;
         setSize(panelSize.width, panelSize.height);
         for ( int i = 0; i < 9; i++ ) {
@@ -271,6 +237,18 @@ class PlayPanel extends JPanel {
         }
     }
 
+    /**
+     *
+     * @return
+     */
+    public GameBoard getBoard() {
+        return board;
+    }
+
+    public void setBoard(GameBoard gameBoard) {
+        this.board = gameBoard;
+    }
+
     /*@Override
      protected void paintComponent(Graphics g) {
      super.paintComponent(g);
@@ -284,52 +262,40 @@ class PlayPanel extends JPanel {
      *                          variable global, la tengo que modificar y rompo
      *                          el juego.
      */
-    private void drawOnActualSquare(GameBoard board, int actualSquareIndex, Player actualPlayer) {
+    private void drawOnActualSquare(GameBoard board, int actualSquareIndex) {
         Square actualSquare = (Square) board.getSquares().get(actualSquareIndex);
-        actualSquare.setPaintType(actualPlayer.getToken());
-        if ( actualPlayer.getToken() == Token.O ) {
+        actualSquare.setPaintType(board.getCurrentPlayer().getToken());
+        if ( board.getCurrentPlayer().getToken() == Token.O ) {
             board.getPlayer2IndexList().add(0, actualSquareIndex);
         } else {
             board.getPlayer1IndexList().add(0, actualSquareIndex);
         }
     }
 
-    public Player getCurrentPlayer() {
-        if ( this.clicks % 2 > 0 ) {
-            return this.player1;
-        } else {
-            return this.player2;
-        }
-    }
-
-    public Player getEnemyPlayer() {
-        if ( this.clicks % 2 > 0 ) {
-            return this.player2;
-        } else {
-            return this.player1;
-        }
-    }
-
-    private void endGame(GameBoard board, Player winner) {
-        board.getSquares().stream().forEach((s) -> {
-            s.setClicked();
-        });
+    public void endGame(GameBoard board) {
+//        if ( !(board.getTurn() <= 9 && board.getTurn() >= 5) ) {
+//            System.out.println("mal");
+//        }
+        assert (board.getTurn() <= 9 && board.getTurn() >= 5);
+        Player winner = board.getCurrentPlayer();
         if ( winner == null ) {
             if ( repaint ) {
                 JOptionPane.showMessageDialog(this, " Empate");
             }
         } else {
-            String message;
-            this.winner = winner;
-            message = winner.getName();
             winner.setScore(winner.getScore() + 1);
             winner.setWinner(true);
-            if ( winner.equals(player1) ) {
-                infoPanel.setP1score(player1.getScore());
-            } else {
-                infoPanel.setP2score(player2.getScore());
-            }
             if ( repaint ) {
+                board.getSquares().stream().forEach((s) -> {
+                    s.setClicked();
+                });
+                String message;
+                message = winner.getName();
+                if ( winner.equals(board.getPlayer1()) ) {
+                    infoPanel.setP1score(board.getPlayer1().getScore());
+                } else {
+                    infoPanel.setP2score(board.getPlayer2().getScore());
+                }
                 JOptionPane.showMessageDialog(this, message + " Ganó!");
             }
         }
@@ -338,7 +304,7 @@ class PlayPanel extends JPanel {
     private void mouseClickedOnSquare(GameBoard board, MouseEvent e) {
         Square actualSquare = (Square) e.getSource();
         if ( !actualSquare.isClicked() ) {
-            drawOnActualSquare(board, board.getSquares().indexOf(actualSquare), getCurrentPlayer());
+            drawOnActualSquare(board, board.getSquares().indexOf(actualSquare));
             if ( repaint ) {
                 actualSquare.repaint();
                 if ( this.delayPerMove > 0 ) {
@@ -351,38 +317,39 @@ class PlayPanel extends JPanel {
 
                 }
             }
-            if ( !somePlayerWins(board) ) {
-                actualSquare.setClicked();
-                nextTurn();
-            }
+            actualSquare.setClicked();
+            board.nextTurn();
+
         }
     }
 
-    private boolean win(GameBoard board, int turn) {
-        ArrayList indexList;
-        if ( turn % 2 > 0 ) {
-            indexList = board.getPlayer1IndexList();
-        } else {
-            indexList = board.getPlayer2IndexList();
-        }
-        ArrayList winList = new ArrayList();
-        try {
-            for ( int[] winIndexe : board.getWinIndexes() ) {
-                winList.add(winIndexe[0]);
-                winList.add(winIndexe[1]);
-                winList.add(winIndexe[2]);
-                if ( indexList.containsAll(winList) ) {
-                    return true;
-                }
-            }
-        } catch ( Exception e ) {
-        }
-        return false;
+//    private boolean win(GameBoard board, int turn) {
+//        ArrayList indexList;
+//        if ( turn % 2 > 0 ) {
+//            indexList = board.getPlayer1IndexList();
+//        } else {
+//            indexList = board.getPlayer2IndexList();
+//        }
+//        ArrayList winList = new ArrayList();
+//        try {
+//            for ( int[] winIndexe : board.getWinIndexes() ) {
+//                winList.add(winIndexe[0]);
+//                winList.add(winIndexe[1]);
+//                winList.add(winIndexe[2]);
+//                if ( indexList.containsAll(winList) ) {
+//                    return true;
+//                }
+//            }
+//        } catch ( Exception e ) {
+//        }
+//        return false;
+//    }
+    void mouseClickedOnSquare(Action action) {
+        mouseClickedOnSquare(this.board, action);
     }
 
     void reset() {
-        this.winner = null;
-        this.clicks = 1;
+        this.getBoard().reset();
     }
 
 }

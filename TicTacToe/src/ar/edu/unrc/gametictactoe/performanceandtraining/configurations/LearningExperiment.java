@@ -6,6 +6,7 @@
 package ar.edu.unrc.gametictactoe.performanceandtraining.configurations;
 
 import ar.edu.unrc.gametictactoe.GameTicTacToe;
+import ar.edu.unrc.gametictactoe.Players;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.learning.EExplorationRateAlgorithms;
 import ar.edu.unrc.tdlearning.perceptron.learning.ELearningRateAdaptation;
@@ -469,6 +470,8 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
             if ( writeConfig ) {
                 StringAndFiles.stringToFile(configFile, Integer.toString(i) + "\n" + Integer.toString(backupNumber) + "\n" + Long.toString(elapsedTime), StringAndFiles.UTF_8);
             }
+
+            //TODO: game.switchPlayerToTrain();
         }
     }
 
@@ -635,7 +638,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
 
         //creamos el juego
         boolean show = (delayPerMove > 0);
-        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(neuralNetworkInterfaceForTicTacToe.getPerceptronConfiguration(), learningAlgorithm, show, delayPerMove);
+        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(neuralNetworkInterfaceForTicTacToe.getPerceptronConfiguration(), learningAlgorithm, show, delayPerMove, Players.PLAYER1);
 
         statisticExperiment = new StatisticExperiment(this) {
             @Override
