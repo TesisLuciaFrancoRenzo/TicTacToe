@@ -185,22 +185,44 @@ public class GameBoard implements IStatePerceptron {
         this.player1IndexList = player1IndexList;
     }
 
+//    @Override
+//    public boolean isTerminalState() {//TODO: calcularlo solo una vez cuando haya cambois en el tablero y actualizar una variable de estado
+//        //FIXME: hacer una funcion que devuelva quien ganon o si hubo empate o si deberia seguir jugando
+//        ArrayList winList = new ArrayList();
+//        for ( int i = 0; i < getWinIndexes().length; i++ ) {
+//            winList.add(winIndexes[i][0]);
+//            winList.add(winIndexes[i][1]);
+//            winList.add(winIndexes[i][2]);
+//            if ( player2IndexList.containsAll(winList) ) {
+//                return true;
+//            } else if ( player1IndexList.containsAll(winList) ) {
+//                return true;
+//            }
+//            winList.clear();
+//        }
+//        return player2IndexList.size() + player1IndexList.size() == 9;
+//    }
     @Override
-    public boolean isTerminalState() {//TODO: calcularlo solo una vez cuando haya cambois en el tablero y actualizar una variable de estado
-        //FIXME: hacer una funcion que devuelva quien ganon o si hubo empate o si deberia seguir jugando
+    public boolean isTerminalState() {
         ArrayList winList = new ArrayList();
         for ( int i = 0; i < getWinIndexes().length; i++ ) {
             winList.add(winIndexes[i][0]);
             winList.add(winIndexes[i][1]);
             winList.add(winIndexes[i][2]);
             if ( player2IndexList.containsAll(winList) ) {
+                assert this.currentPlayer.equals(player2);
                 return true;
             } else if ( player1IndexList.containsAll(winList) ) {
+                assert this.currentPlayer.equals(player1);
                 return true;
             }
             winList.clear();
         }
-        return player2IndexList.size() + player1IndexList.size() == 9;
+        if ( player2IndexList.size() + player1IndexList.size() == 9 ) {
+            this.currentPlayer = null;
+            return true;
+        }
+        return false;
     }
 
     @Override

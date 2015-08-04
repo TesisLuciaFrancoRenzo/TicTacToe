@@ -11,5 +11,12 @@ package ar.edu.unrc.gametictactoe;
  */
 public enum Players {
 
-    PLAYER1, PLAYER2
+    /**
+     *
+     */
+    PLAYER1,
+    /**
+     *
+     */
+    PLAYER2
 }
