@@ -108,19 +108,19 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         assert action != null;
         GameBoard afterState = (GameBoard) turnInitialState.getCopy();
         playPanel.mouseClickedOnSquare(afterState, (Action) action);
-        afterState.nextTurn();
-        if ( playerToTrain.equals(player1) ) {
+        if ( afterState.getCurrentPlayer().equals(player1) ) {
             afterState.setPlayer1Action((Action) action);
         } else {
             afterState.setPlayer2Action((Action) action);
         }
+        afterState.nextTurn();
         return afterState;
     }
 
     @Override
     public IState computeNextTurnStateFromAfterstate(IState afterState) {
         if ( afterState.isTerminalState() ) {
-            if ( playerToTrain.equals(player1) ) {
+            if ( ((GameBoard) afterState).getCurrentPlayer().equals(player1) ) {
                 ((GameBoard) afterState).setPlayer2Action(null);
             }
             return afterState;
@@ -131,12 +131,12 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
             assert bestEnemyAction != null;
             GameBoard finalBoard = (GameBoard) afterState.getCopy();
             playPanel.mouseClickedOnSquare(finalBoard, (Action) bestEnemyAction);
-            finalBoard.nextTurn();
-            if ( playerToTrain.equals(player1) ) {
-                finalBoard.setPlayer2Action((Action) bestEnemyAction);
-            } else {
+            if ( finalBoard.getCurrentPlayer().equals(player1) ) {
                 finalBoard.setPlayer1Action((Action) bestEnemyAction);
+            } else {
+                finalBoard.setPlayer2Action((Action) bestEnemyAction);
             }
+            finalBoard.nextTurn();
             return finalBoard;
         }
     }
@@ -229,7 +229,14 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     @Override
     public IState initialize(IActor actor) {
         newGameMenuItemActionPerformed(null);
-        return this.playPanel.getBoard().getCopy();
+        GameBoard board = (GameBoard) this.playPanel.getBoard();
+        if ( ((Player) actor).equals(this.player2) ) {
+            ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(board);
+            IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, board, possibleEnemyActions, ((GameBoard) board).getCurrentPlayer()).compute();
+            playPanel.setBoard((GameBoard) board);
+            return computeAfterState(board, bestEnemyAction);
+        }
+        return board.getCopy();
     }
 
     /**

@@ -638,7 +638,8 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
 
         //creamos el juego
         boolean show = (delayPerMove > 0);
-        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(neuralNetworkInterfaceForTicTacToe.getPerceptronConfiguration(), learningAlgorithm, show, delayPerMove, Players.PLAYER1);
+        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(neuralNetworkInterfaceForTicTacToe.getPerceptronConfiguration(),
+                learningAlgorithm, show, delayPerMove, Players.PLAYER2);
 
         statisticExperiment = new StatisticExperiment(this) {
             @Override

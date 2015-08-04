@@ -301,6 +301,7 @@ public class PlayPanel extends JPanel {
         }
     }
 
+    //TODO: separar grafica de logica
     private void mouseClickedOnSquare(GameBoard board, MouseEvent e) {
         Square actualSquare = (Square) e.getSource();
         if ( !actualSquare.isClicked() ) {
