@@ -91,7 +91,6 @@ public abstract class INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> im
             // accion basada en las predicciones del problema
             List<IAction> possibleActions = game.listAllPossibleActions(game.getBoard());
             Action bestAction = (Action) learningMethod.computeBestPossibleAction(game, game.getBoard(), possibleActions, null).compute();
-
             game.processInput(bestAction);
 
             return null;

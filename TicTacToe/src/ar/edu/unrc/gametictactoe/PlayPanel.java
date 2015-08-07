@@ -113,114 +113,23 @@ public class PlayPanel extends JPanel {
         this.repaint = repaint;
         this.delayPerMove = delayPerMove;
         this.board = new GameBoard(player1, player2, this);
-        this.uploadPanelWithSquares(board);//TODO ver que hace
-    }
-
-//    public int getClicks() {
-//        return clicks;
-//    }
-    public InfoPanel getInfoPanel() {
-        return infoPanel;
+        this.uploadPanelWithSquares(board);
     }
 
     public void setInfoPanel(InfoPanel infoPanel) {
         this.infoPanel = infoPanel;
     }
 
-    public void mouseClickedOnSquare(GameBoard board, Action action) {
+    public void mouseClickedOnSquare(GameBoard board, Action action, boolean show) {
         int actualSquareIndex = actionToSquareIndex(action);
-        drawOnActualSquare(board, actualSquareIndex);
-        if ( repaint ) {
-            board.getSquares().get(actualSquareIndex).repaint();
-            if ( this.delayPerMove > 0 ) {
-                try {
-                    sleep(this.delayPerMove); //FIXME NO DEBERIA ESTAR CUANDO PIENSA, SOLO AL JUGAR
-                } catch ( InterruptedException ex ) {
-                    Logger.getLogger(GameTicTacToe.class.getName()).log(Level.SEVERE, null, ex);
-
-                }
-
-            }
+        pickSquare(board, actualSquareIndex);
+        if ( show ) {
+            Square actualSquare = board.getSquares().get(actualSquareIndex);
+            show(actualSquare);
         }
-        board.getSquares().get(actualSquareIndex).setClicked();
 
     }
 
-//    /**
-//     * Calcula los posibles movimientos del contrincante. Si existen movimientos
-//     * ganadores por parte del contrincante, hay una posibilidad del 75% de que
-//     * ejecute alguno los movimientos ganadores
-//     * <p>
-//     * @param afterState <p>
-//     * @return
-//     */
-//    List<StateProbability> listAllPossibleNextTurnStateFromAfterstate(GameBoard afterState) {
-//        ArrayList<StateProbability> possiblesNextTurnState = new ArrayList<>();
-//        ArrayList indexNotClickedSquares = new ArrayList();
-//        ArrayList<Board> winnerBoards = new ArrayList();
-//        ArrayList<Board> nonWinnerBoards = new ArrayList();
-//        //Asigno las probabilidades de elegir un movimiento ganador sobre uno no ganador
-//        double probabilityToWinnerBoard = 0.75;
-//        double probabilityToNonWinnerBoard = 0.25;
-//        //Calculo la lista de lugares disponibles
-//        for ( int i = 0; i < afterState.getSquares().size(); i++ ) {
-//            if ( !afterState.getSquares().get(i).isClicked() ) {
-//                indexNotClickedSquares.add(i);
-//            }
-//        }
-//        //Calculo los posibles movimientos, discriminandolos por movimiento ganador o no ganador (desde el punto de vista del contrincante)
-//        indexNotClickedSquares.stream().map((indexNotClickedSquare) -> (Integer) indexNotClickedSquare).map((pos) -> {
-//            GameBoard possible = (GameBoard) afterState.getCopy();
-//            mouseClickedOnSquare(possible, squareIndexToAction((Integer) pos), clicks + 1);
-//            return possible;
-//        }).forEach((possible) -> {
-//            if ( win((GameBoard) possible, clicks + 1) ) {
-//                winnerBoards.add((GameBoard) possible);
-//            } else {
-//                nonWinnerBoards.add((GameBoard) possible);
-//            }
-//        });
-//        //Recalculo las probabilidades (todos los tableros ganadores tienen la misma probabilidad de ser elegidos,
-//        // y todos los tableros no ganadores tienen la misma probabilidad de ser elegidos.
-//        if ( winnerBoards.isEmpty() ) {
-//            probabilityToNonWinnerBoard = 1;
-//        } else {
-//            probabilityToWinnerBoard = probabilityToWinnerBoard / winnerBoards.size();
-//        }
-//        probabilityToNonWinnerBoard = probabilityToNonWinnerBoard / nonWinnerBoards.size();
-//        //Cargo la lista de tableros futuros posibles con su probabilidad de ocurrencia
-//        for ( GameBoard winnerBoard : winnerBoards ) {
-//            possiblesNextTurnState.add(new StateProbability(winnerBoard, probabilityToWinnerBoard));
-//        }
-//        for ( GameBoard nonWinnerBoard : nonWinnerBoards ) {
-//            possiblesNextTurnState.add(new StateProbability(nonWinnerBoard, probabilityToNonWinnerBoard));
-//        }
-//
-//        return possiblesNextTurnState;
-//    }
-//    public boolean somePlayerWins(GameBoard board) {
-//        ArrayList winList = new ArrayList();
-//        ArrayList player2List = board.getPlayer2IndexList();
-//        ArrayList player1List = board.getPlayer1IndexList();
-//        for ( int[] winIndexe : board.getWinIndexes() ) {
-//            winList.add(winIndexe[0]);
-//            winList.add(winIndexe[1]);
-//            winList.add(winIndexe[2]);
-//            if ( player2List.containsAll(winList) ) {//TODO Refactorizar para usar el player y el token del player
-//                endGame(board);
-//                return true;
-//            } else if ( player1List.containsAll(winList) ) {
-//                endGame(board);
-//                return true;
-//            }
-//            winList.clear();
-//        }
-//        if ( player2List.size() + player1List.size() == 9 ) {
-//            endGame(board);
-//            return true;
-//        }
-//        return false;
-//    }
     private void uploadPanelWithSquares(GameBoard board) {
         Square square;
         setSize(panelSize.width, panelSize.height);
@@ -249,104 +158,93 @@ public class PlayPanel extends JPanel {
         this.board = gameBoard;
     }
 
-    /*@Override
-     protected void paintComponent(Graphics g) {
-     super.paintComponent(g);
-     }*/
     /**
      *
      * @param board
      * @param actualSquareIndex
-     * @param turn              para calcular los siguientes states posibles
-     *                          necesito saber a que jugador le toca. si uso la
-     *                          variable global, la tengo que modificar y rompo
-     *                          el juego.
      */
-    private void drawOnActualSquare(GameBoard board, int actualSquareIndex) {
-        Square actualSquare = (Square) board.getSquares().get(actualSquareIndex);
+    public void pickSquare(GameBoard board, int actualSquareIndex) {
+        Square actualSquare = board.getSquares().get(actualSquareIndex);
+        assert !actualSquare.isClicked();
         actualSquare.setPaintType(board.getCurrentPlayer().getToken());
         if ( board.getCurrentPlayer().getToken() == Token.O ) {
             board.getPlayer2IndexList().add(0, actualSquareIndex);
         } else {
             board.getPlayer1IndexList().add(0, actualSquareIndex);
         }
+        actualSquare.setClicked();
+
     }
 
-    public void endGame(GameBoard board) {
+    public void endGame(GameBoard board, Players winner) {
 //        if ( !(board.getTurn() <= 9 && board.getTurn() >= 5) ) {
 //            System.out.println("mal");
 //        }
         assert (board.getTurn() <= 9 && board.getTurn() >= 5);
-        Player winner = board.getCurrentPlayer();
-        if ( winner == null ) {
-            if ( repaint ) {
-                JOptionPane.showMessageDialog(this, " Empate");
-            }
-        } else {
-            winner.setScore(winner.getScore() + 1);
-            winner.setWinner(true);
-            if ( repaint ) {
-                board.getSquares().stream().forEach((s) -> {
-                    s.setClicked();
-                });
-                String message;
-                message = winner.getName();
-                if ( winner.equals(board.getPlayer1()) ) {
-                    infoPanel.setP1score(board.getPlayer1().getScore());
-                } else {
-                    infoPanel.setP2score(board.getPlayer2().getScore());
+        switch ( winner ) {
+            case DRAW: {
+                if ( repaint ) {
+                    JOptionPane.showMessageDialog(this, " Empate");
                 }
-                JOptionPane.showMessageDialog(this, message + " Ganó!");
+                break;
+            }
+            case PLAYER1: {
+                winnerSetup(board.getPlayer1(), repaint);
+                break;
+            }
+            case PLAYER2: {
+                winnerSetup(board.getPlayer2(), repaint);
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("El parametro winner = " + winner + " no es válido en este contexto");
+        }
+        System.out.println(board.getPlayer1IndexList());
+        System.out.println(board.getPlayer2IndexList());
+    }
+
+    private void winnerSetup(Player winner, boolean repaint) {
+        winner.setScore(winner.getScore() + 1);
+        winner.setWinner(true);
+        if ( repaint ) {
+            board.getSquares().stream().forEach((s) -> {
+                s.setClicked();
+            });
+            String message;
+            message = winner.getName();
+            if ( winner.equals(board.getPlayer1()) ) {
+                infoPanel.setP1score(board.getPlayer1().getScore());
+            } else {
+                infoPanel.setP2score(board.getPlayer2().getScore());
+            }
+            JOptionPane.showMessageDialog(this, message + " Ganó!");
+        }
+    }
+
+    private void show(Square actualSquare) {
+        if ( repaint ) {
+            actualSquare.repaint();
+            if ( this.delayPerMove > 0 ) {
+                try {
+                    sleep(this.delayPerMove);
+                } catch ( InterruptedException ex ) {
+                    Logger.getLogger(GameTicTacToe.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
 
-    //TODO: separar grafica de logica
     private void mouseClickedOnSquare(GameBoard board, MouseEvent e) {
         Square actualSquare = (Square) e.getSource();
         if ( !actualSquare.isClicked() ) {
-            drawOnActualSquare(board, board.getSquares().indexOf(actualSquare));
-            if ( repaint ) {
-                actualSquare.repaint();
-                if ( this.delayPerMove > 0 ) {
-                    try {
-                        sleep(this.delayPerMove);
-                    } catch ( InterruptedException ex ) {
-                        Logger.getLogger(GameTicTacToe.class.getName()).log(Level.SEVERE, null, ex);
-
-                    }
-
-                }
-            }
-            actualSquare.setClicked();
-            board.nextTurn();
-
+            pickSquare(board, board.getSquares().indexOf(actualSquare));
+            show(actualSquare);
+            board.nextTurn(false);
         }
     }
 
-//    private boolean win(GameBoard board, int turn) {
-//        ArrayList indexList;
-//        if ( turn % 2 > 0 ) {
-//            indexList = board.getPlayer1IndexList();
-//        } else {
-//            indexList = board.getPlayer2IndexList();
-//        }
-//        ArrayList winList = new ArrayList();
-//        try {
-//            for ( int[] winIndexe : board.getWinIndexes() ) {
-//                winList.add(winIndexe[0]);
-//                winList.add(winIndexe[1]);
-//                winList.add(winIndexe[2]);
-//                if ( indexList.containsAll(winList) ) {
-//                    return true;
-//                }
-//            }
-//        } catch ( Exception e ) {
-//        }
-//        return false;
-//    }
     void mouseClickedOnSquare(Action action) {
-        mouseClickedOnSquare(this.board, action);
+        mouseClickedOnSquare(this.board, action, true);
     }
 
     void reset() {

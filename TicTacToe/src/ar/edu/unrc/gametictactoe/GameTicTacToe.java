@@ -4,6 +4,7 @@
  */
 package ar.edu.unrc.gametictactoe;
 
+import static ar.edu.unrc.gametictactoe.PlayPanel.actionToSquareIndex;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IAction;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IProblem;
@@ -64,11 +65,11 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     private JMenuItem miNewGame;
     private JMenuItem miOptions;
     private final PerceptronConfigurationTicTacToe<NeuralNetworkClass> perceptronConfiguration;
-    private PlayPanel playPanel;
+    private final PlayPanel playPanel;
     private Player player1;
     private Player player2;
     private Dimension screenSize;
-    private boolean show;
+    private final boolean show;
     private Player playerToTrain;
 
     /**
@@ -107,13 +108,14 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     public IState computeAfterState(IState turnInitialState, IAction action) {
         assert action != null;
         GameBoard afterState = (GameBoard) turnInitialState.getCopy();
-        playPanel.mouseClickedOnSquare(afterState, (Action) action);
+        int actualSquareIndex = actionToSquareIndex((Action) action);
+        playPanel.pickSquare(afterState, actualSquareIndex);
         if ( afterState.getCurrentPlayer().equals(player1) ) {
             afterState.setPlayer1Action((Action) action);
         } else {
             afterState.setPlayer2Action((Action) action);
         }
-        afterState.nextTurn();
+        afterState.nextTurn(true);
         return afterState;
     }
 
@@ -130,13 +132,14 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
             IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterState, possibleEnemyActions, ((GameBoard) afterState).getEnemyPlayer()).compute();
             assert bestEnemyAction != null;
             GameBoard finalBoard = (GameBoard) afterState.getCopy();
-            playPanel.mouseClickedOnSquare(finalBoard, (Action) bestEnemyAction);
+            int actualSquareIndex = actionToSquareIndex((Action) bestEnemyAction);
+            playPanel.pickSquare(finalBoard, actualSquareIndex);
             if ( finalBoard.getCurrentPlayer().equals(player1) ) {
                 finalBoard.setPlayer1Action((Action) bestEnemyAction);
             } else {
                 finalBoard.setPlayer2Action((Action) bestEnemyAction);
             }
-            finalBoard.nextTurn();
+            finalBoard.nextTurn(true);
             return finalBoard;
         }
     }
@@ -194,10 +197,14 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 
     @Override
     public void setCurrentState(IState nextTurnState) {
-        playPanel.setBoard((GameBoard) nextTurnState);
-        ((GameBoard) nextTurnState).printLastActions(playerToTrain);
-        assert ((GameBoard) nextTurnState).getTurn() <= 9;
-
+        GameBoard board = ((GameBoard) nextTurnState);
+        playPanel.setBoard(board);
+        board.printLastActions(playerToTrain);
+        Players winner = board.whoWin();
+        if ( winner != Players.NONE ) {
+            playPanel.endGame(board, winner);
+        }
+        assert board.getTurn() <= 9;
     }
 
     @Override
@@ -226,15 +233,15 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         return (this.playPanel.getBoard().getCurrentPlayer() != null) ? this.playPanel.getBoard().getCurrentPlayer().getName() : "Empate";
     }
 
-    @Override
+    @Override//FIXME: que imprima el turno 1 y arreglar que el player 1 tiene los turnos corridos (imprimnir al revez si entrena con el 2)
     public IState initialize(IActor actor) {
         newGameMenuItemActionPerformed(null);
         GameBoard board = (GameBoard) this.playPanel.getBoard();
         if ( ((Player) actor).equals(this.player2) ) {
             ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(board);
             IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, board, possibleEnemyActions, ((GameBoard) board).getCurrentPlayer()).compute();
-            playPanel.setBoard((GameBoard) board);
-            return computeAfterState(board, bestEnemyAction);
+            playPanel.setBoard((GameBoard) computeAfterState(board, bestEnemyAction));
+            return playPanel.getBoard();
         }
         return board.getCopy();
     }
@@ -289,7 +296,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
      */
     public void processInput(Action action) {
         playPanel.mouseClickedOnSquare(action);
-        playPanel.getBoard().nextTurn();
+        playPanel.getBoard().nextTurn(false);
     }
 
     private void aboutMenuItemActionPerformed(ActionEvent e) {

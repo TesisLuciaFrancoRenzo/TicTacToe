@@ -18,5 +18,10 @@ public enum Players {
     /**
      *
      */
-    PLAYER2
+    PLAYER2,
+    DRAW,
+    /**
+     *
+     */
+    NONE
 }

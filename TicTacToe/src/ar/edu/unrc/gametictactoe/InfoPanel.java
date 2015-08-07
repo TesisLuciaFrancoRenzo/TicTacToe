@@ -14,13 +14,14 @@ import javax.swing.JPanel;
  *
  * @author Gyarmati János
  */
-class InfoPanel extends JPanel {
+public class InfoPanel extends JPanel {
+
     private final Font font = new Font("Arial", Font.BOLD, 30);
 
-    private JLabel lbP1name;
-    private JLabel lbP1score;
-    private JLabel lbP2name;
-    private JLabel lbP2score;
+    private final JLabel lbP1name;
+    private final JLabel lbP1score;
+    private final JLabel lbP2name;
+    private final JLabel lbP2score;
     private String p1name;
     private int p1score;
     private String p2name;
@@ -31,7 +32,7 @@ class InfoPanel extends JPanel {
         p2name = player2.getName();
         p1score = player1.getScore();
         p2score = player2.getScore();
-        
+
         setLayout(new GridLayout(2, 1));
         JPanel pn1 = new JPanel(new GridLayout(2, 1));
         pn1.add(lbP1name = new JLabel(p1name + " Score:", JLabel.CENTER));
@@ -39,7 +40,7 @@ class InfoPanel extends JPanel {
         pn1.add(lbP1score = new JLabel(Integer.toString(p1score), JLabel.CENTER));
         lbP1score.setFont(font);
         add(pn1);
-        
+
         JPanel pn2 = new JPanel(new GridLayout(2, 1));
         pn2.add(lbP2name = new JLabel(p2name + " Score:", JLabel.CENTER));
         lbP2name.setFont(font);
