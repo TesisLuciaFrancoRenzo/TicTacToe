@@ -241,6 +241,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
             ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(board);
             IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, board, possibleEnemyActions, ((GameBoard) board).getCurrentPlayer()).compute();
             playPanel.setBoard((GameBoard) computeAfterState(board, bestEnemyAction));
+            playPanel.getBoard().printLastActions(playerToTrain);
             return playPanel.getBoard();
         }
         return board.getCopy();

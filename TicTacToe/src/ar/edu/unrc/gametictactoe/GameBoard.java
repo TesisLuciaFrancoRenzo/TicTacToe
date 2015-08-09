@@ -220,18 +220,40 @@ public class GameBoard implements IStatePerceptron {
         };
     }
 
+//    void printLastActions(Player playerToTrain) {
+//        if ( playerToTrain.equals(player1) ) {
+//            System.out.print("* ");
+//        }
+//        System.out.println(player1Action);
+//
+//        if ( player2Action != null ) {
+//            if ( playerToTrain.equals(player2) ) {
+//                System.out.print("* ");
+//            }
+//            System.out.println(player2Action);
+//        }
+//    }
     void printLastActions(Player playerToTrain) {
+
         if ( playerToTrain.equals(player1) ) {
             System.out.print("* ");
-        }
-        System.out.println(player1Action);
-
-        if ( player2Action != null ) {
-            if ( playerToTrain.equals(player2) ) {
-                System.out.print("* ");
+            System.out.println(player1Action);
+            if ( player2Action != null ) {
+                System.out.println(player2Action);
             }
-            System.out.println(player2Action);
         }
+        if ( playerToTrain.equals(player2) ) {
+            if ( player2Action != null ) {
+                System.out.print("* ");
+                System.out.println(player2Action);
+            }
+            if ( player1Action != null ) {
+                System.out.println(player1Action);
+            }
+        }
+        player1Action = null;
+        player2Action = null;
+
     }
 
     void reset() {
