@@ -448,7 +448,8 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
             int percent = (int) (((i * 1d) / (gamesToPlay * 1d)) * 100d);
             System.out.println("Juego número " + i + " (" + percent + "%)    ganador = " + game.getWinner()
                     + "      turno alcanzado = " + game.getLastTurn()
-                    + "      current alpha = " + Arrays.toString(learningAlgorithm.getCurrentAlpha()));
+                    + "      current alpha = " + Arrays.toString(learningAlgorithm.getCurrentAlpha())
+                    + "      jugador entrenado = " + game.getActorToTrain().toString());
             if ( printStream != null ) {
                 printStream.println(game.getWinner() + "\t" + game.getLastTurn());
 //                printStream.println(game.getScore() + "\t" + game.getMaxNumber());
@@ -470,8 +471,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
             if ( writeConfig ) {
                 StringAndFiles.stringToFile(configFile, Integer.toString(i) + "\n" + Integer.toString(backupNumber) + "\n" + Long.toString(elapsedTime), StringAndFiles.UTF_8);
             }
-
-            //TODO: game.switchPlayerToTrain();
+            game.switchPlayerToTrain();
         }
     }
 
@@ -639,7 +639,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         //creamos el juego
         boolean show = (delayPerMove > 0);
         GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(neuralNetworkInterfaceForTicTacToe.getPerceptronConfiguration(),
-                learningAlgorithm, show, delayPerMove, Players.PLAYER2);
+                learningAlgorithm, show, delayPerMove, Players.PLAYER1);
 
         statisticExperiment = new StatisticExperiment(this) {
             @Override

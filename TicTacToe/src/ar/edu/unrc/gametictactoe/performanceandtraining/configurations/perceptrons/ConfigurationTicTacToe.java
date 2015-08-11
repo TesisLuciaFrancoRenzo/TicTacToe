@@ -66,11 +66,10 @@ public class ConfigurationTicTacToe<NeuralNetworkClass> extends PerceptronConfig
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public double getFinalReward(GameTicTacToe game, int outputNeuron) {
-        return game.getFinalReward(outputNeuron);
-    }
-
+//    @Override
+//    public double getFinalReward(GameTicTacToe game, int outputNeuron) {
+//        return game.getFinalReward(outputNeuron);
+//    }
     @Override
     public double normalizeValueToPerceptronOutput(Object value) {
         return (Double) value;

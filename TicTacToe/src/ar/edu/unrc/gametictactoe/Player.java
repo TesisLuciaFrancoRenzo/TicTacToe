@@ -92,4 +92,10 @@ public class Player implements IActor {
     public void setWinner(boolean winner) {
         this.winner = winner;
     }
+
+    @Override
+    public String toString() {
+        return name + ", score=" + score + ", ficha=" + token;
+    }
+
 }

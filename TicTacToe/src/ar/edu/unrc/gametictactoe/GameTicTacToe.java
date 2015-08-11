@@ -122,9 +122,9 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     @Override
     public IState computeNextTurnStateFromAfterstate(IState afterState) {
         if ( afterState.isTerminalState() ) {
-            if ( ((GameBoard) afterState).getCurrentPlayer().equals(player1) ) {
-                ((GameBoard) afterState).setPlayer2Action(null);
-            }
+//            if ( ((GameBoard) afterState).getCurrentPlayer().equals(player1) ) {
+//                ((GameBoard) afterState).setPlayer2Action(null);
+//            }
             return afterState;
         } else {
             ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(afterState);
@@ -186,9 +186,8 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
 
     @Override
     public IActor getActorToTrain() {
-        return playerToTrain; //TODO: Implementar ramdom para que juegue tanto con1 como con 2 y recordar modificar initialize
-        //Si se hace esa modificación, hay que tener en cuenta modificar como busca los jugadores, actualmente
-        //los busca por los clicks no le da bola al player. Modificar tambien la funcion getFinalReward
+        return playerToTrain;
+        // Modificar tambien la funcion getFinalReward
     }
 
     public IState getBoard() {
@@ -208,12 +207,20 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     }
 
     @Override
-    public double getFinalReward(int outputNeuron) {
-        if ( playPanel.getBoard().getCurrentPlayer() == null ) {
-            return 0;
-        } else {
-            return playPanel.getBoard().getCurrentPlayer().getToken().getRepresentation();
-            //TODO: revisar, Si gana el player 2 le va a dar un reward negativo (-1) y no se si eso esta bien o tiene que darle 0
+    public double getFinalReward(IState finalState, int outputNeuron) {
+        GameBoard board = (GameBoard) finalState;
+        Players winner = board.whoWin();
+        switch ( winner ) {
+            case DRAW:
+                return 0;
+            case PLAYER1:
+                return board.getCurrentPlayer().getToken().getRepresentation();
+            case PLAYER2:
+                System.out.println(winner);
+                return board.getCurrentPlayer().getToken().getRepresentation();
+            default:
+                System.err.println("");
+                throw new IllegalStateException("El estado deberia ser un estado final, y el resultado fue: " + winner);
         }
     }
 
@@ -233,7 +240,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         return (this.playPanel.getBoard().getCurrentPlayer() != null) ? this.playPanel.getBoard().getCurrentPlayer().getName() : "Empate";
     }
 
-    @Override//FIXME: que imprima el turno 1 y arreglar que el player 1 tiene los turnos corridos (imprimnir al revez si entrena con el 2)
+    @Override
     public IState initialize(IActor actor) {
         newGameMenuItemActionPerformed(null);
         GameBoard board = (GameBoard) this.playPanel.getBoard();
@@ -266,6 +273,14 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         }
 //        System.out.println(possibles.toString());
         return possibles;
+    }
+
+    public void switchPlayerToTrain() {
+        if ( playerToTrain.equals(player1) ) {
+            playerToTrain = player2;
+        } else {
+            playerToTrain = player1;
+        }
     }
 
     /**

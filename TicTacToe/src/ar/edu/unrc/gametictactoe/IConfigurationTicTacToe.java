@@ -32,8 +32,7 @@ public interface IConfigurationTicTacToe {
      * @param outputNeuron <p>
      * @return
      */
-    public abstract double getFinalReward(GameTicTacToe game, int outputNeuron);
-
+//    public abstract double getFinalReward(GameTicTacToe game, int outputNeuron);
     /**
      *
      * @param value <p>
