@@ -33,7 +33,7 @@ import org.encog.neural.networks.BasicNetwork;
  * @author Gyarmati János
  * @param <NeuralNetworkClass>
  */
-public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProblem {
+public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProblem {
 
     private static String[] arguments;
 
@@ -68,9 +68,9 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     private final PlayPanel playPanel;
     private Player player1;
     private Player player2;
+    private Player playerToTrain;
     private Dimension screenSize;
     private final boolean show;
-    private Player playerToTrain;
 
     /**
      *
@@ -89,7 +89,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         contentPanel.setLayout(new GridLayout(1, 2));
         contentPanel.add(playPanel = new PlayPanel(getSize(), show, delayPerMove, player1, player2));
         contentPanel.add(infoPanel);
-        newGameMenuItemActionPerformed(null);
+        newGameMenuItemActionPerformed();
         playPanel.setInfoPanel(infoPanel);
         setVisible(show);
         this.perceptronConfiguration = perceptronConfiguration;
@@ -190,6 +190,10 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         // Modificar tambien la funcion getFinalReward
     }
 
+    /**
+     *
+     * @return
+     */
     public IState getBoard() {
         return playPanel.getBoard();
     }
@@ -236,13 +240,16 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
      *
      * @return
      */
-    public String getWinner() {
-        return (this.playPanel.getBoard().getCurrentPlayer() != null) ? this.playPanel.getBoard().getCurrentPlayer().getName() : "Empate";
+//    public String getWinner() {
+//        return (this.playPanel.getBoard().whoWin().name());
+//    }
+    public Players getWinner() {
+        return (this.playPanel.getBoard().whoWin());
     }
 
     @Override
     public IState initialize(IActor actor) {
-        newGameMenuItemActionPerformed(null);
+        newGameMenuItemActionPerformed();
         GameBoard board = (GameBoard) this.playPanel.getBoard();
         if ( ((Player) actor).equals(this.player2) ) {
             ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(board);
@@ -275,19 +282,10 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         return possibles;
     }
 
-    public void switchPlayerToTrain() {
-        if ( playerToTrain.equals(player1) ) {
-            playerToTrain = player2;
-        } else {
-            playerToTrain = player1;
-        }
-    }
-
     /**
      *
-     * @param e
      */
-    private void newGameMenuItemActionPerformed(ActionEvent e) {
+    public void newGameMenuItemActionPerformed() {
         playPanel.reset();
         if ( this.show ) {
             this.repaint();
@@ -298,7 +296,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         //        main(args);
         {
 
-        }
+    }
     }
 
     @Override
@@ -313,6 +311,17 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
     public void processInput(Action action) {
         playPanel.mouseClickedOnSquare(action);
         playPanel.getBoard().nextTurn(false);
+    }
+
+    /**
+     *
+     */
+    public void switchPlayerToTrain() {
+        if ( playerToTrain.equals(player1) ) {
+            playerToTrain = player2;
+        } else {
+            playerToTrain = player1;
+        }
     }
 
     private void aboutMenuItemActionPerformed(ActionEvent e) {
@@ -338,7 +347,7 @@ public class GameTicTacToe<NeuralNetworkClass> extends JFrame implements IProble
         miAbout.setText("About");
 
         miNewGame.addActionListener((ActionEvent e) -> {
-            newGameMenuItemActionPerformed(e);
+            newGameMenuItemActionPerformed();
         });
         miOptions.addActionListener((ActionEvent e) -> {
             optionsMenuItemActionPerformed(e);

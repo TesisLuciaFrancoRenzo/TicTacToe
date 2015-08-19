@@ -20,6 +20,9 @@ import org.encog.engine.network.activation.ActivationTANH;
  */
 public class ConfigurationTicTacToe<NeuralNetworkClass> extends PerceptronConfigurationTicTacToe<NeuralNetworkClass> {
 
+    /**
+     *
+     */
     public ConfigurationTicTacToe() {
 
         this.neuronQuantityInLayer = new int[3];

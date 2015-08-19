@@ -27,6 +27,11 @@ public class InfoPanel extends JPanel {
     private String p2name;
     private int p2score;
 
+    /**
+     *
+     * @param player1
+     * @param player2
+     */
     public InfoPanel(Player player1, Player player2) {
         p1name = player1.getName();
         p2name = player2.getName();
@@ -49,37 +54,69 @@ public class InfoPanel extends JPanel {
         add(pn2);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getP1name() {
         return p1name;
     }
 
+    /**
+     *
+     * @param p1name
+     */
     public void setP1name(String p1name) {
         this.p1name = p1name;
         lbP1name.setText(this.p1name + " Score:");
     }
 
+    /**
+     *
+     * @return
+     */
     public int getP1score() {
         return p1score;
     }
 
+    /**
+     *
+     * @param p1score
+     */
     public void setP1score(int p1score) {
         this.p1score = p1score;
         lbP1score.setText(Integer.toString(p1score));
     }
 
+    /**
+     *
+     * @return
+     */
     public String getP2name() {
         return p2name;
     }
 
+    /**
+     *
+     * @param p2name
+     */
     public void setP2name(String p2name) {
         this.p2name = p2name;
         lbP2name.setText(this.p2name + " Score:");
     }
 
+    /**
+     *
+     * @return
+     */
     public int getP2score() {
         return p2score;
     }
 
+    /**
+     *
+     * @param p2score
+     */
     public void setP2score(int p2score) {
         this.p2score = p2score;
         lbP2score.setText(Integer.toString(p2score));

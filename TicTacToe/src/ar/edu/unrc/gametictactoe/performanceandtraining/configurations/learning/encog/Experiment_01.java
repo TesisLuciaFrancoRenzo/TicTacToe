@@ -19,7 +19,7 @@ import org.encog.neural.networks.BasicNetwork;
 /**
  * @author lucia bressan, franco pellegrini, renzo bianchini
  */
-public class Experiment_01 extends LearningExperiment<BasicNetwork> {
+public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Revisar si se usa el parametro en bonetes o no
 
     /**
      *

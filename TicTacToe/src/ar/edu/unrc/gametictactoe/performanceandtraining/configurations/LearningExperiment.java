@@ -446,12 +446,12 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
 
             //TODO contar empates y cuantas veces ganan los jugadores
             int percent = (int) (((i * 1d) / (gamesToPlay * 1d)) * 100d);
-            System.out.println("Juego número " + i + " (" + percent + "%)    ganador = " + game.getWinner()
+            System.out.println("Juego número " + i + " (" + percent + "%)    ganador = " + game.getWinner().name()
                     + "      turno alcanzado = " + game.getLastTurn()
                     + "      current alpha = " + Arrays.toString(learningAlgorithm.getCurrentAlpha())
                     + "      jugador entrenado = " + game.getActorToTrain().toString());
             if ( printStream != null ) {
-                printStream.println(game.getWinner() + "\t" + game.getLastTurn());
+                printStream.println(game.getWinner().name() + "\t" + game.getLastTurn());
 //                printStream.println(game.getScore() + "\t" + game.getMaxNumber());
             }
             boolean writeConfig = false;

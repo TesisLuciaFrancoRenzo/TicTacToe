@@ -21,6 +21,11 @@ public class Square extends JComponent {
     private Token paintType;
     private int width;
 
+    /**
+     *
+     * @param width
+     * @param height
+     */
     public Square(int width, int height) {
         this.width = width;
         this.height = height;
@@ -28,6 +33,10 @@ public class Square extends JComponent {
         this.paintType = Token.EMPTY;
     }
 
+    /**
+     *
+     * @param oldSquare
+     */
     public Square(Square oldSquare) {
         this.width = oldSquare.width;
         this.height = oldSquare.height;
@@ -35,23 +44,34 @@ public class Square extends JComponent {
         this.paintType = oldSquare.paintType;
     }
 
-    public void reset() {
-        this.clicked = false;
-        this.paintType = Token.EMPTY;
-    }
-
+    /**
+     *
+     * @return
+     */
     public Token getPaintType() {
         return paintType;
     }
 
+    /**
+     *
+     * @param paintType
+     */
     public void setPaintType(Token paintType) {
         this.paintType = paintType;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isClicked() {
         return clicked;
     }
 
+    /**
+     *
+     * @param gr
+     */
     public void paintO(Graphics gr) {
         Graphics2D g = (Graphics2D) gr;
         g.setColor(Color.red);
@@ -60,6 +80,10 @@ public class Square extends JComponent {
         g.dispose();
     }
 
+    /**
+     *
+     * @param gr
+     */
     public void paintX(Graphics gr) {
         Graphics2D g = (Graphics2D) gr;
         g.setColor(Color.blue);
@@ -69,6 +93,17 @@ public class Square extends JComponent {
         g.dispose();
     }
 
+    /**
+     *
+     */
+    public void reset() {
+        this.clicked = false;
+        this.paintType = Token.EMPTY;
+    }
+
+    /**
+     *
+     */
     public void setClicked() {
         clicked = true;
     }

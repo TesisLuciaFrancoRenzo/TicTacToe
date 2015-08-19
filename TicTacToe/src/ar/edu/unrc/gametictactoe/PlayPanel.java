@@ -32,6 +32,11 @@ import javax.swing.border.BevelBorder;
  */
 public class PlayPanel extends JPanel {
 
+    /**
+     *
+     * @param action
+     * @return
+     */
     public static int actionToSquareIndex(Action action) {
         switch ( action ) {
             case S0: {
@@ -66,6 +71,11 @@ public class PlayPanel extends JPanel {
         }
     }
 
+    /**
+     *
+     * @param squareIndex
+     * @return
+     */
     public static Action squareIndexToAction(int squareIndex) {
         switch ( squareIndex ) {
             case 0: {
@@ -99,13 +109,21 @@ public class PlayPanel extends JPanel {
                 throw new IllegalArgumentException();
         }
     }
+    private GameBoard board;
 
     private final int delayPerMove;
     private InfoPanel infoPanel;
     private final Dimension panelSize;
     private final boolean repaint;
-    private GameBoard board;
 
+    /**
+     *
+     * @param size
+     * @param repaint
+     * @param delayPerMove
+     * @param player1
+     * @param player2
+     */
     public PlayPanel(Dimension size, boolean repaint, int delayPerMove, Player player1, Player player2) {
         setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED, Color.lightGray, Color.black));
         setLayout(new GridLayout(3, 3));
@@ -116,66 +134,11 @@ public class PlayPanel extends JPanel {
         this.uploadPanelWithSquares(board);
     }
 
-    public void setInfoPanel(InfoPanel infoPanel) {
-        this.infoPanel = infoPanel;
-    }
-
-    public void mouseClickedOnSquare(GameBoard board, Action action, boolean show) {
-        int actualSquareIndex = actionToSquareIndex(action);
-        pickSquare(board, actualSquareIndex);
-        if ( show ) {
-            Square actualSquare = board.getSquares().get(actualSquareIndex);
-            show(actualSquare);
-        }
-
-    }
-
-    private void uploadPanelWithSquares(GameBoard board) {
-        Square square;
-        setSize(panelSize.width, panelSize.height);
-        for ( int i = 0; i < 9; i++ ) {
-            add(square = new Square(panelSize.width, panelSize.height));
-            board.getSquares().add(square);
-            square.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                    mouseClickedOnSquare(board, e);
-                }
-            });
-        }
-    }
-
-    /**
-     *
-     * @return
-     */
-    public GameBoard getBoard() {
-        return board;
-    }
-
-    public void setBoard(GameBoard gameBoard) {
-        this.board = gameBoard;
-    }
-
     /**
      *
      * @param board
-     * @param actualSquareIndex
+     * @param winner
      */
-    public void pickSquare(GameBoard board, int actualSquareIndex) {
-        Square actualSquare = board.getSquares().get(actualSquareIndex);
-        assert !actualSquare.isClicked();
-        actualSquare.setPaintType(board.getCurrentPlayer().getToken());
-        if ( board.getCurrentPlayer().getToken() == Token.O ) {
-            board.getPlayer2IndexList().add(0, actualSquareIndex);
-        } else {
-            board.getPlayer1IndexList().add(0, actualSquareIndex);
-        }
-        actualSquare.setClicked();
-
-    }
-
     public void endGame(GameBoard board, Players winner) {
 //        if ( !(board.getTurn() <= 9 && board.getTurn() >= 5) ) {
 //            System.out.println("mal");
@@ -203,21 +166,70 @@ public class PlayPanel extends JPanel {
         System.out.println(board.getPlayer2IndexList());
     }
 
-    private void winnerSetup(Player winner, boolean repaint) {
-        winner.setScore(winner.getScore() + 1);
-        winner.setWinner(true);
-        if ( repaint ) {
-            board.getSquares().stream().forEach((s) -> {
-                s.setClicked();
-            });
-            String message;
-            message = winner.getName();
-            if ( winner.equals(board.getPlayer1()) ) {
-                infoPanel.setP1score(board.getPlayer1().getScore());
-            } else {
-                infoPanel.setP2score(board.getPlayer2().getScore());
-            }
-            JOptionPane.showMessageDialog(this, message + " Ganó!");
+    /**
+     *
+     * @return
+     */
+    public GameBoard getBoard() {
+        return board;
+    }
+
+    /**
+     *
+     * @param gameBoard
+     */
+    public void setBoard(GameBoard gameBoard) {
+        this.board = gameBoard;
+    }
+
+    /**
+     *
+     * @param infoPanel
+     */
+    public void setInfoPanel(InfoPanel infoPanel) {
+        this.infoPanel = infoPanel;
+    }
+
+    /**
+     *
+     * @param board
+     * @param action
+     * @param show
+     */
+    public void mouseClickedOnSquare(GameBoard board, Action action, boolean show) {
+        int actualSquareIndex = actionToSquareIndex(action);
+        pickSquare(board, actualSquareIndex);
+        if ( show ) {
+            Square actualSquare = board.getSquares().get(actualSquareIndex);
+            show(actualSquare);
+        }
+        
+    }
+
+    /**
+     *
+     * @param board
+     * @param actualSquareIndex
+     */
+    public void pickSquare(GameBoard board, int actualSquareIndex) {
+        Square actualSquare = board.getSquares().get(actualSquareIndex);
+        assert !actualSquare.isClicked();
+        actualSquare.setPaintType(board.getCurrentPlayer().getToken());
+        if ( board.getCurrentPlayer().getToken() == Token.O ) {
+            board.getPlayer2IndexList().add(0, actualSquareIndex);
+        } else {
+            board.getPlayer1IndexList().add(0, actualSquareIndex);
+        }
+        actualSquare.setClicked();
+
+    }
+
+    private void mouseClickedOnSquare(GameBoard board, MouseEvent e) {
+        Square actualSquare = (Square) e.getSource();
+        if ( !actualSquare.isClicked() ) {
+            pickSquare(board, board.getSquares().indexOf(actualSquare));
+            show(actualSquare);
+            board.nextTurn(false);
         }
     }
 
@@ -234,12 +246,37 @@ public class PlayPanel extends JPanel {
         }
     }
 
-    private void mouseClickedOnSquare(GameBoard board, MouseEvent e) {
-        Square actualSquare = (Square) e.getSource();
-        if ( !actualSquare.isClicked() ) {
-            pickSquare(board, board.getSquares().indexOf(actualSquare));
-            show(actualSquare);
-            board.nextTurn(false);
+    private void uploadPanelWithSquares(GameBoard board) {
+        Square square;
+        setSize(panelSize.width, panelSize.height);
+        for ( int i = 0; i < 9; i++ ) {
+            add(square = new Square(panelSize.width, panelSize.height));
+            board.getSquares().add(square);
+            square.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    mouseClickedOnSquare(board, e);
+                }
+            });
+        }
+    }
+
+    private void winnerSetup(Player winner, boolean repaint) {
+        winner.setScore(winner.getScore() + 1);
+        winner.setWinner(true);
+        if ( repaint ) {
+            board.getSquares().stream().forEach((s) -> {
+                s.setClicked();
+            });
+            String message;
+            message = winner.getName();
+            if ( winner.equals(board.getPlayer1()) ) {
+                infoPanel.setP1score(board.getPlayer1().getScore());
+            } else {
+                infoPanel.setP2score(board.getPlayer2().getScore());
+            }
+            JOptionPane.showMessageDialog(this, message + " Ganó!");
         }
     }
 

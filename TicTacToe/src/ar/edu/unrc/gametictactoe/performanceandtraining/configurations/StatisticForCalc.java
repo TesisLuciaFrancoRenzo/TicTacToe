@@ -5,35 +5,33 @@
  */
 package ar.edu.unrc.gametictactoe.performanceandtraining.configurations;
 
-import java.util.List;
-
 /**
  *
  * @author Renzo Bianchini
  */
 public class StatisticForCalc {
+    private double drawRate;
+    private double lossRate;
 
-    private double maxScore;
     private double maxTurn;
-    private double meanScore;
     private double meanTurn;
-    private double minScore;
     private double minTurn;
-    private List<Double> tileStatistics;
     private double winRate;
 
-    /**
-     * @return the maxScore
-     */
-    public double getMaxScore() {
-        return maxScore;
+    public double getDrawRate() {
+        return drawRate;
     }
 
-    /**
-     * @param maxScore the maxScore to set
-     */
-    public void setMaxScore(double maxScore) {
-        this.maxScore = maxScore;
+    public void setDrawRate(double drawRate) {
+        this.drawRate = drawRate;
+    }
+
+    public double getLossRate() {
+        return lossRate;
+    }
+
+    public void setLossRate(double lossRate) {
+        this.lossRate = lossRate;
     }
 
     /**
@@ -51,20 +49,6 @@ public class StatisticForCalc {
     }
 
     /**
-     * @return the meanScore
-     */
-    public double getMeanScore() {
-        return meanScore;
-    }
-
-    /**
-     * @param meanScore the meanScore to set
-     */
-    public void setMeanScore(double meanScore) {
-        this.meanScore = meanScore;
-    }
-
-    /**
      * @return the meanTurn
      */
     public double getMeanTurn() {
@@ -79,20 +63,6 @@ public class StatisticForCalc {
     }
 
     /**
-     * @return the minScore
-     */
-    public double getMinScore() {
-        return minScore;
-    }
-
-    /**
-     * @param minScore the minScore to set
-     */
-    public void setMinScore(double minScore) {
-        this.minScore = minScore;
-    }
-
-    /**
      * @return the minTurn
      */
     public double getMinTurn() {
@@ -104,20 +74,6 @@ public class StatisticForCalc {
      */
     public void setMinTurn(double minTurn) {
         this.minTurn = minTurn;
-    }
-
-    /**
-     * @return the tileStatistics
-     */
-    public List<Double> getTileStatistics() {
-        return tileStatistics;
-    }
-
-    /**
-     * @param tileStatistics the tileStatistics to set
-     */
-    public void setTileStatistics(List<Double> tileStatistics) {
-        this.tileStatistics = tileStatistics;
     }
 
     /**

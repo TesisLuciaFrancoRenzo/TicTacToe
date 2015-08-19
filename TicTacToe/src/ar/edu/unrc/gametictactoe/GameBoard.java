@@ -15,29 +15,6 @@ import java.util.ArrayList;
  * @author Renzo Bianchini
  */
 public class GameBoard implements IStatePerceptron {
-
-    private PlayPanel playPanel;
-    Action player1Action;
-    Action player2Action;
-
-    public Action getPlayer1Action() {
-        return player1Action;
-    }
-
-    public void setPlayer1Action(Action player1Action) {
-        this.player1Action = player1Action;
-    }
-
-    public Action getPlayer2Action() {
-        return player2Action;
-    }
-
-    public void setPlayer2Action(Action player2Action) {
-        this.player2Action = player2Action;
-    }
-    private ArrayList player2IndexList;
-    private ArrayList player1IndexList;
-    private ArrayList<Square> squares;
     private static final int[][] winIndexes = {
         {0, 1, 2},
         {3, 4, 5},
@@ -48,51 +25,17 @@ public class GameBoard implements IStatePerceptron {
         {0, 4, 8},
         {2, 4, 6}
     };
-    private int turn;
-    private Player player1;
-    private Player player2;
     private Player currentPlayer;
 
-    public int getTurn() {
-        return turn;
-    }
-
-    public Player getPlayer1() {
-        return player1;
-    }
-
-    public Player getPlayer2() {
-        return player2;
-    }
-
-    public Player getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public Player getEnemyPlayer() {
-        assert currentPlayer != null;
-        if ( currentPlayer.equals(player1) ) {
-            return player2;
-        } else {
-            return player1;
-        }
-    }
-
-    public void nextTurn(boolean isThinking) {
-        Players winner = whoWin();
-        if ( winner != Players.NONE ) {
-            if ( !isThinking ) {
-                playPanel.endGame(this, winner);
-            }
-        } else {
-            turn++;
-            if ( currentPlayer.equals(player1) ) {
-                this.currentPlayer = player2;
-            } else {
-                this.currentPlayer = player1;
-            }
-        }
-    }
+    private final PlayPanel playPanel;
+    private Player player1;
+    private ArrayList player1IndexList;
+    private Player player2;
+    private ArrayList player2IndexList;
+    private ArrayList<Square> squares;
+    private int turn;
+    Action player1Action;
+    Action player2Action;
 
     /**
      *
@@ -133,6 +76,89 @@ public class GameBoard implements IStatePerceptron {
     }
 
     /**
+     *
+     * @return
+     */
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Player getEnemyPlayer() {
+        assert currentPlayer != null;
+        if ( currentPlayer.equals(player1) ) {
+            return player2;
+        } else {
+            return player1;
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Player getPlayer1() {
+        return player1;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Action getPlayer1Action() {
+        return player1Action;
+    }
+
+    /**
+     *
+     * @param player1Action
+     */
+    public void setPlayer1Action(Action player1Action) {
+        this.player1Action = player1Action;
+    }
+
+    /**
+     * @return the player1IndexList
+     */
+    public ArrayList getPlayer1IndexList() {
+        return player1IndexList;
+    }
+
+    /**
+     * @param player1IndexList the player1IndexList to set
+     */
+    public void setPlayer1IndexList(ArrayList player1IndexList) {
+        this.player1IndexList = player1IndexList;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Player getPlayer2() {
+        return player2;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Action getPlayer2Action() {
+        return player2Action;
+    }
+
+    /**
+     *
+     * @param player2Action
+     */
+    public void setPlayer2Action(Action player2Action) {
+        this.player2Action = player2Action;
+    }
+
+    /**
      * @return the player2IndexList
      */
     public ArrayList getPlayer2IndexList() {
@@ -169,29 +195,53 @@ public class GameBoard implements IStatePerceptron {
      *
      * @return
      */
+    public int getTurn() {
+        return turn;
+    }
+
+    /**
+     *
+     * @return
+     */
     public int[][] getWinIndexes() {
         return winIndexes;
     }
-
-    /**
-     * @return the player1IndexList
-     */
-    public ArrayList getPlayer1IndexList() {
-        return player1IndexList;
-    }
-
-    /**
-     * @param player1IndexList the player1IndexList to set
-     */
-    public void setPlayer1IndexList(ArrayList player1IndexList) {
-        this.player1IndexList = player1IndexList;
-    }
-
     @Override
     public boolean isTerminalState() {
         return whoWin() != Players.NONE;
     }
 
+    /**
+     *
+     * @param isThinking
+     */
+    public void nextTurn(boolean isThinking) {
+        Players winner = whoWin();
+        if ( winner != Players.NONE ) {
+            if ( !isThinking ) {
+                playPanel.endGame(this, winner);
+            }
+        } else {
+            turn++;
+            if ( currentPlayer.equals(player1) ) {
+                this.currentPlayer = player2;
+            } else {
+                this.currentPlayer = player1;
+            }
+        }
+    }
+
+    @Override
+    public IsolatedComputation<Double> translateToPerceptronInput(int neuronIndex) {
+        return () -> {
+            return ((Square) this.squares.get(neuronIndex)).getPaintType().getRepresentation() * 1d;
+        };
+    }
+
+    /**
+     *
+     * @return
+     */
     public Players whoWin() {
         ArrayList winList = new ArrayList();
         for ( int i = 0; i < getWinIndexes().length; i++ ) {
@@ -213,13 +263,6 @@ public class GameBoard implements IStatePerceptron {
         return Players.NONE;
     }
 
-    @Override
-    public IsolatedComputation<Double> translateToPerceptronInput(int neuronIndex) {
-        return () -> {
-            return ((Square) this.squares.get(neuronIndex)).getPaintType().getRepresentation() * 1d;
-        };
-    }
-
 //    void printLastActions(Player playerToTrain) {
 //        if ( playerToTrain.equals(player1) ) {
 //            System.out.print("* ");
@@ -234,7 +277,6 @@ public class GameBoard implements IStatePerceptron {
 //        }
 //    }
     void printLastActions(Player playerToTrain) {
-
         if ( playerToTrain.equals(player1) ) {
             System.out.print("* ");
             System.out.println(player1Action);
@@ -253,7 +295,6 @@ public class GameBoard implements IStatePerceptron {
         }
         player1Action = null;
         player2Action = null;
-
     }
 
     void reset() {

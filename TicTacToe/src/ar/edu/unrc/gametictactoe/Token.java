@@ -11,7 +11,20 @@ package ar.edu.unrc.gametictactoe;
  */
 public enum Token {
 
-    X(1), O(-1), EMPTY(0);
+    /**
+     *
+     */
+    X(1), 
+
+    /**
+     *
+     */
+    O(-1), 
+
+    /**
+     *
+     */
+    EMPTY(0);
 
     private final int representation;
 
@@ -19,6 +32,10 @@ public enum Token {
         this.representation = representation;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getRepresentation() {
         return this.representation;
     }
