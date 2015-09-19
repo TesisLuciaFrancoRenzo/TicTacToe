@@ -17,7 +17,6 @@ import ar.edu.unrc.utils.StringIterator;
 import java.io.File;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,6 +45,8 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     private double[] alpha;
     private int annealingT;
     private int backupNumber;
+    private long countDraws;
+    private long countPlayer2Wins;
     private long elapsedTime = 0;
     private String experimentName;
     private EExplorationRateAlgorithms explorationRate;
@@ -64,6 +65,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     private boolean logsActivated = false;
     private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> neuralNetworkInterfaceForTicTacToe;
     private String perceptronName;
+    private long countPlayer1Wins;
     private boolean resetEligibilitiTraces = false;
     private boolean runStatisticForRandom = false;
     private boolean runStatisticsForBackups = false;
@@ -443,13 +445,32 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
             long start = System.nanoTime();
             learningAlgorithm.solveAndTrainOnce(game, i);
             elapsedTime += System.nanoTime() - start;
-
+            switch ( game.getWinner() ) {
+                case PLAYER1: {
+                    countPlayer1Wins++;
+                    break;
+                }
+                case PLAYER2: {
+                    countPlayer2Wins++;
+                    break;
+                }
+                case DRAW: {
+                    countDraws++;
+                    break;
+                }
+            }
             //TODO contar empates y cuantas veces ganan los jugadores
             int percent = (int) (((i * 1d) / (gamesToPlay * 1d)) * 100d);
+            int percentPlayer1 = (int) (((countPlayer1Wins * 1d) / (i * 1d)) * 100d);
+            int percentPlayer2 = (int) (((countPlayer2Wins * 1d) / (i * 1d)) * 100d);
+            int percentDraw = (int) (((countDraws * 1d) / (i * 1d)) * 100d);
             System.out.println("Juego número " + i + " (" + percent + "%)    ganador = " + game.getWinner().name()
-                    + "      turno alcanzado = " + game.getLastTurn()
-                    + "      current alpha = " + Arrays.toString(learningAlgorithm.getCurrentAlpha())
-                    + "      jugador entrenado = " + game.getActorToTrain().toString());
+                    //+ "      turno alcanzado = " + game.getLastTurn()
+                    //+ "      current alpha = " + Arrays.toString(learningAlgorithm.getCurrentAlpha())
+                    + "      jugador entrenado = " + game.getActorToTrain().toString()
+                    + "      Porcentaje Jugador 1 = " + percentPlayer1
+                    + "      Porcentaje Jugador 2 = " + percentPlayer2
+                    + "      Porcentaje Empates = " + percentDraw);
             if ( printStream != null ) {
                 printStream.println(game.getWinner().name() + "\t" + game.getLastTurn());
 //                printStream.println(game.getScore() + "\t" + game.getMaxNumber());
@@ -469,7 +490,8 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
                 writeConfig = true;
             }
             if ( writeConfig ) {
-                StringAndFiles.stringToFile(configFile, Integer.toString(i) + "\n" + Integer.toString(backupNumber) + "\n" + Long.toString(elapsedTime), StringAndFiles.UTF_8);
+                StringAndFiles.stringToFile(configFile, Integer.toString(i) + "\n" + Integer.toString(backupNumber) + "\n" + Long.toString(elapsedTime)
+                        + "\n" + Long.toString(countPlayer1Wins) + "\n" + Long.toString(countPlayer2Wins) + "\n" + Long.toString(countDraws), StringAndFiles.UTF_8);
             }
             game.switchPlayerToTrain();
         }
@@ -583,6 +605,10 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         backupNumber = 0;
         lastSavedGamePlayedNumber = 0;
         elapsedTime = 0;
+        countPlayer1Wins = 0;
+        countPlayer2Wins = 0;
+        countDraws = 0;
+
         if ( configFile.exists() ) {
             String configs = StringAndFiles.fileToString(configFile, StringAndFiles.UTF_8);
             StringIterator iterator = new StringIterator(configs, null, "\n");
@@ -601,6 +627,21 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
                 throw new IllegalArgumentException("el archivo de configuracion no tiene un formato válido");
             }
             this.elapsedTime = Long.parseLong(line);
+            line = iterator.readLine();
+            if ( line == null ) {
+                throw new IllegalArgumentException("el archivo de configuracion no tiene un formato válido");
+            }
+            this.countPlayer1Wins = Long.parseLong(line);
+            line = iterator.readLine();
+            if ( line == null ) {
+                throw new IllegalArgumentException("el archivo de configuracion no tiene un formato válido");
+            }
+            this.countPlayer2Wins = Long.parseLong(line);
+            line = iterator.readLine();
+            if ( line == null ) {
+                throw new IllegalArgumentException("el archivo de configuracion no tiene un formato válido");
+            }
+            this.countDraws = Long.parseLong(line);
         }
 
         int zeroNumbers = 1;
