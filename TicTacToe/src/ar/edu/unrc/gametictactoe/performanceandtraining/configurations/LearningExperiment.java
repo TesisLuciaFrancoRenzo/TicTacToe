@@ -46,6 +46,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     private int annealingT;
     private int backupNumber;
     private long countDraws;
+    private long countPlayer1Wins;
     private long countPlayer2Wins;
     private long elapsedTime = 0;
     private String experimentName;
@@ -65,7 +66,6 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     private boolean logsActivated = false;
     private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> neuralNetworkInterfaceForTicTacToe;
     private String perceptronName;
-    private long countPlayer1Wins;
     private boolean resetEligibilitiTraces = false;
     private boolean runStatisticForRandom = false;
     private boolean runStatisticsForBackups = false;
