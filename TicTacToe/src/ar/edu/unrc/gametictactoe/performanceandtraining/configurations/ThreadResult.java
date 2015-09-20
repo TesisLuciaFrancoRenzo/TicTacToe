@@ -12,6 +12,7 @@ import ar.edu.unrc.gametictactoe.Players;
  * @author lucia bressan, franco pellegrini, renzo bianchini
  */
 public class ThreadResult {
+
     private int draws;
 
     private int player1wins;
@@ -107,13 +108,6 @@ public class ThreadResult {
         this.procesedGames = procesedGames;
     }
 
-    /**
-     *
-     * @param value
-     */
-//    public void setProcesedGames(int value) {
-//        procesedGames = value;
-//    }
     /**
      * @return the winGamesPlayer1
      */

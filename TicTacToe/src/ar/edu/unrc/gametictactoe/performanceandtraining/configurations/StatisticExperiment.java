@@ -52,7 +52,6 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
 
     private int gamesToPlay;
     private TDLambdaLearning learningMethod;
-    private double lossRate;
     private int saveBackupEvery;
     private int simulations;
     private double winRatePlayer1;
@@ -90,9 +89,9 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
             Sheet sheet = wb.getSheetAt(0);
             //Estilo par los titulos de las tablas
             int rowStartTitle = 0;
-            int colStartTitle = 3;
+            int colStartTitle = 2;
             int rowStart = 1;
-            int colStart = 2;
+            int colStart = 3;
             Row rowPlayer1;
             Row rowPlayer2;
             Row rowDraw;
@@ -126,14 +125,14 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
             /* Add dotted bottom border */
             cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
             //estilo celdas finalizado
-            loadTitle(rowStartTitle, colStartTitle, sheet, backupFiles.size(), CellStyleTitle);
-            rowPlayer1 = sheet.getRow(rowStart - 1);
-            rowPlayer2 = sheet.getRow(rowStart);
-            rowDraw = sheet.getRow(rowStart + 1);
+            //loadTitle(rowStartTitle, colStartTitle, sheet, backupFiles.size(), CellStyleTitle);
+            rowPlayer1 = sheet.getRow(rowStart);
+            rowPlayer2 = sheet.getRow(rowStart + 1);
+            rowDraw = sheet.getRow(rowStart + 2);
             for ( int file = 0; file < backupFiles.size(); file++ ) {
                 Cell cellPlayer1 = rowPlayer1.createCell(file + colStart, Cell.CELL_TYPE_NUMERIC);
-                Cell cellPlayer2 = rowPlayer1.createCell(file + colStart, Cell.CELL_TYPE_NUMERIC);
-                Cell cellDraw = rowPlayer1.createCell(file + colStart, Cell.CELL_TYPE_NUMERIC);
+                Cell cellPlayer2 = rowPlayer2.createCell(file + colStart, Cell.CELL_TYPE_NUMERIC);
+                Cell cellDraw = rowDraw.createCell(file + colStart, Cell.CELL_TYPE_NUMERIC);
                 cellPlayer1.setCellStyle(cellStyle);
                 cellPlayer2.setCellStyle(cellStyle);
                 cellDraw.setCellStyle(cellStyle);
@@ -143,26 +142,27 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
                 assert cellValuePlayer1 <= 100 && cellValuePlayer1 >= 0;
                 assert cellValuePlayer2 <= 100 && cellValuePlayer2 >= 0;
                 assert cellValueDraw <= 100 && cellValueDraw >= 0;
-                assert cellValueDraw + cellValuePlayer1 + cellValuePlayer2 == 100;
-                cellDraw.setCellValue(cellValuePlayer1);
-                cellPlayer1.setCellValue(cellValuePlayer2);
-                cellPlayer2.setCellValue(cellValueDraw);
+                //assert cellValueDraw + cellValuePlayer1 + cellValuePlayer2 == 100;
+                cellDraw.setCellValue(cellValueDraw);
+                cellPlayer1.setCellValue(cellValuePlayer1);
+                cellPlayer2.setCellValue(cellValuePlayer2);
             }
             if ( !resultsRandom.isEmpty() ) {
-                int file = 0;
+                int file = 0;//hay que ir a buscar el randomfile
                 Cell cellDraw = rowDraw.createCell(file + colStart - 1, Cell.CELL_TYPE_NUMERIC);
-                Cell cellPlayer1 = rowPlayer1.createCell(file + colStart, Cell.CELL_TYPE_NUMERIC);
-                Cell cellPlayer2 = rowPlayer2.createCell(file + colStart + 1, Cell.CELL_TYPE_NUMERIC);
+                Cell cellPlayer1 = rowPlayer1.createCell(file + colStart - 1, Cell.CELL_TYPE_NUMERIC);
+                Cell cellPlayer2 = rowPlayer2.createCell(file + colStart - 1, Cell.CELL_TYPE_NUMERIC);
                 cellDraw.setCellStyle(cellStyle);
                 cellPlayer1.setCellStyle(cellStyle);
                 cellPlayer2.setCellStyle(cellStyle);
-                Double cellValuePlayer1 = resultsPerFile.get(backupFiles.get(file)).getWinRatePlayer1();
-                Double cellValuePlayer2 = resultsPerFile.get(backupFiles.get(file)).getWinRatePlayer2();
-                Double cellValueDraw = resultsPerFile.get(backupFiles.get(file)).getDrawRate();
-                assert cellValueDraw + cellValuePlayer1 + cellValuePlayer2 == 100;
-                cellDraw.setCellValue(cellValuePlayer1);
-                cellPlayer1.setCellValue(cellValuePlayer2);
-                cellPlayer2.setCellValue(cellValueDraw);
+                Double cellValuePlayer1 = resultsPerFile.get(randomPerceptronFile).getWinRatePlayer1();
+                Double cellValuePlayer2 = resultsPerFile.get(randomPerceptronFile).getWinRatePlayer2();
+                Double cellValueDraw = resultsPerFile.get(randomPerceptronFile).getDrawRate();
+                //assert cellValueDraw + cellValuePlayer1 + cellValuePlayer2 == 100;
+
+                cellPlayer1.setCellValue(cellValuePlayer1);
+                cellPlayer2.setCellValue(cellValuePlayer2);
+                cellDraw.setCellValue(cellValueDraw);
             }
             wb.write(outputXLSX);
         }
@@ -301,6 +301,8 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
 
             try ( PrintStream printStream = new PrintStream(logFile, "UTF-8") ) {
                 printStream.print("Gano: " + round(winRatePlayer1) + "% - Total de partidas: " + gamesToPlay + " (promedios obtenidos con " + simulations + " simulaciones)");
+                printStream.print("Gano: " + round(winRatePlayer2) + "% - Total de partidas: " + gamesToPlay + " (promedios obtenidos con " + simulations + " simulaciones)");
+                printStream.print("Gano: " + round(drawRate) + "% - Total de partidas: " + gamesToPlay + " (promedios obtenidos con " + simulations + " simulaciones)");
                 printStream.println("\nValores alcanzados:");
 
                 printStream.println("\nPuntajes alcanzados (valor/veces):");
