@@ -7,6 +7,9 @@ package ar.edu.unrc.gametictactoe.performanceandtraining.configurations;
 
 import ar.edu.unrc.gametictactoe.GameTicTacToe;
 import ar.edu.unrc.gametictactoe.Players;
+import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.libraries.EncogExperimentInterface;
+import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.libraries.RandomExperimentInterface;
+import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.perceptrons.ConfigurationTicTacToe;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.learning.EExplorationRateAlgorithms;
 import ar.edu.unrc.tdlearning.perceptron.learning.ELearningRateAdaptation;
@@ -64,7 +67,12 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     private TDLambdaLearning learningAlgorithm;
     private ELearningRateAdaptation learningRateAdaptation;
     private boolean logsActivated = false;
-    private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> neuralNetworkInterfaceForTicTacToe;
+    private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aINeuralNetwork;
+    private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aIRandom;
+
+    public INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> getaIRandom() {
+        return aIRandom;
+    }
     private String perceptronName;
     private boolean resetEligibilitiTraces = false;
     private boolean runStatisticForRandom = false;
@@ -73,7 +81,8 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     private int saveEvery = 0;
     private int simulationsForStatistics;
     private boolean statisticsOnly = false;
-    //private int tileToWin;
+    private boolean player1Random;
+    private boolean player2Random;
 
     /**
      *
@@ -91,11 +100,12 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     /**
      *
      * @param experimentPath <p>
+     * @param libName
      * @return
      */
-    public String createPathToDir(String experimentPath) {
+    public String createPathToDir(String experimentPath, String libName) {
         String dirPath = experimentPath
-                + neuralNetworkInterfaceForTicTacToe.getLibName() + File.separator
+                + libName + File.separator
                 + experimentName + File.separator;
         return dirPath;
     }
@@ -382,9 +392,10 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     /**
      *
      * @param experimentPath
+     * @param libName
      * @param delayPerMove
      */
-    public void start(String experimentPath, int delayPerMove) {
+    public void start(String experimentPath, String libName, int delayPerMove) {
         File experimentPathFile = new File(experimentPath);
         if ( experimentPathFile.exists() && !experimentPathFile.isDirectory() ) {
             throw new IllegalArgumentException("experimentPath must be a directory");
@@ -394,7 +405,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         }
         try {
             initialize();
-            runExperiment(experimentPath, delayPerMove);
+            runExperiment(experimentPath, libName,delayPerMove);
         } catch ( Exception ex ) {
             Logger.getLogger(LearningExperiment.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -477,7 +488,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
             }
             boolean writeConfig = false;
             if ( i % saveEvery == 0 || i % saveBackupEvery == 0 ) {
-                neuralNetworkInterfaceForTicTacToe.savePerceptron(perceptronFile);
+                aINeuralNetwork.savePerceptron(perceptronFile);
                 System.out.println("============ Perceptron Exportado Exitosamente (SAVE) ============");
                 writeConfig = true;
             }
@@ -485,7 +496,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
                 backupNumber++;
                 perceptronFileBackup = new File(filePath + _TRAINED + "_" + dateFormater.format(now) + "_BackupN-" + String.format("%0" + zeroNumbers + "d", backupNumber)
                         + ".ser");
-                neuralNetworkInterfaceForTicTacToe.savePerceptron(perceptronFileBackup);
+                aINeuralNetwork.savePerceptron(perceptronFileBackup);
                 System.out.println("============ Perceptron Exportado Exitosamente (BACKUP " + backupNumber + ") ============");
                 writeConfig = true;
             }
@@ -542,15 +553,15 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     /**
      * @return the neuralNetworkInterfaceFor2048
      */
-    protected INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> getNeuralNetworkInterfaceForTicTacToe() {
-        return neuralNetworkInterfaceForTicTacToe;
+    protected INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> getaINeuralNetwork() {
+        return aINeuralNetwork;
     }
 
     /**
-     * @param neuralNetworkInterfaceForTicTacToe
+     * @param aINeuralNetwork
      */
-    protected void setNeuralNetworkInterfaceForTicTacToe(INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> neuralNetworkInterfaceForTicTacToe) {
-        this.neuralNetworkInterfaceForTicTacToe = neuralNetworkInterfaceForTicTacToe;
+    protected void setaINeuralNetwork(INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aINeuralNetwork) {
+        this.aINeuralNetwork = aINeuralNetwork;
     }
 
     /**
@@ -577,11 +588,12 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     /**
      *
      * @param experimentPath
+     * @param libName
      * @param delayPerMove   <p>
      * @throws Exception
      */
     @SuppressWarnings( "static-access" )
-    protected void runExperiment(String experimentPath, int delayPerMove) throws Exception {
+    protected void runExperiment(String experimentPath, String libName, int delayPerMove) throws Exception {
         if ( saveEvery == 0 ) {
             throw new IllegalArgumentException("se debe configurar cada cuanto guardar el perceptron mediante la variable saveEvery");
         }
@@ -593,7 +605,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
 
         System.out.println("Starting " + this.getPerceptronName() + " Trainer");
 
-        String dirPath = createPathToDir(experimentPath);
+        String dirPath = createPathToDir(experimentPath, libName);
         File dirPathFile = new File(dirPath);
         if ( !dirPathFile.exists() ) {
             dirPathFile.mkdirs();
@@ -661,16 +673,17 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
 
         // Si hay un perceptron ya entrenado, lo buscamos en el archivo.
         // En caso contrario creamos un perceptron vacio, inicializado al azar
-        neuralNetworkInterfaceForTicTacToe.loadOrCreatePerceptron(perceptronFile, this.initializePerceptronRandomized);
-
+        aINeuralNetwork = (INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass>) new EncogExperimentInterface(new ConfigurationTicTacToe<>());
+        aINeuralNetwork.loadOrCreatePerceptron(perceptronFile, this.initializePerceptronRandomized);
+        aIRandom = new RandomExperimentInterface(null);
         //creamos una interfaz de comunicacion entre la red neuronal de encog y el algoritmo de entrenamiento
         if ( backupRandomPerceptron ) {
             //guardamos el perceptron inicial para ahcer estadisticas
-            neuralNetworkInterfaceForTicTacToe.savePerceptron(randomPerceptronFile);
+            aINeuralNetwork.savePerceptron(randomPerceptronFile);
         }
 
-        if ( this.getNeuralNetworkInterfaceForTicTacToe().getPerceptronInterface() != null ) {
-            this.setLearningAlgorithm(instanceOfTdLearninrgImplementation(this.getNeuralNetworkInterfaceForTicTacToe().getPerceptronInterface()));
+        if ( this.getaINeuralNetwork().getPerceptronInterface() != null ) {
+            this.setLearningAlgorithm(instanceOfTdLearninrgImplementation(this.getaINeuralNetwork().getPerceptronInterface()));
         }
 
         if ( learningAlgorithm == null && !this.statisticsOnly ) {
@@ -679,7 +692,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
 
         //creamos el juego
         boolean show = (delayPerMove > 0);
-        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(neuralNetworkInterfaceForTicTacToe.getPerceptronConfiguration(),
+        GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(aINeuralNetwork.getPerceptronConfiguration(),
                 learningAlgorithm, show, delayPerMove, Players.PLAYER1);
 
         statisticExperiment = new StatisticExperiment(this) {
@@ -698,18 +711,20 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         File logFile = new File(filePath + "_" + dateFormater.format(now) + "_LOG" + ".txt");
 
         if ( !this.statisticsOnly ) {
-            //comenzamos a entrenar y guardar estadisticas en el archivo de log
-            if ( logsActivated ) {
-                try ( PrintStream printStream = new PrintStream(logFile, "UTF-8") ) {
-                    training(game, printStream, randomPerceptronFile, perceptronFile, configFile, filePath, dateFormater, now, zeroNumbers);
+                //comenzamos a entrenar y guardar estadisticas en el archivo de log
+                if ( logsActivated ) {
+                    try ( PrintStream printStream = new PrintStream(logFile, "UTF-8") ) {
+                        training(game, printStream, randomPerceptronFile, perceptronFile, configFile, filePath, dateFormater, now, zeroNumbers);
+                    }
+                } else {
+                    training(game, null, randomPerceptronFile, perceptronFile, configFile, filePath, dateFormater, now, zeroNumbers);
                 }
-            } else {
-                training(game, null, randomPerceptronFile, perceptronFile, configFile, filePath, dateFormater, now, zeroNumbers);
-            }
 
-            //guardamos los progresos en un archivo
-            neuralNetworkInterfaceForTicTacToe.savePerceptron(perceptronFile);
-            //  neuralNetworkInterfaceForTicTacToe.compareNeuralNetworks(randomPerceptronFile, perceptronFile);
+                //guardamos los progresos en un archivo
+                aINeuralNetwork.savePerceptron(perceptronFile);
+                //  aINeuralNetwork.compareNeuralNetworks(randomPerceptronFile, perceptronFile);
+            
+            
         }
         //cerramos el juego
         game.dispose();
@@ -732,5 +747,33 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
             statisticExperiment.setFileName(this.getExperimentName());
             statisticExperiment.start(experimentPath, delayPerMove);
         }
+    }
+
+    /**
+     * @return the player1Random
+     */
+    public boolean isPlayer1Random() {
+        return player1Random;
+    }
+
+    /**
+     * @param player1Random the player1Random to set
+     */
+    public void setPlayer1Random(boolean player1Random) {
+        this.player1Random = player1Random;
+    }
+
+    /**
+     * @return the player2Random
+     */
+    public boolean isPlayer2Random() {
+        return player2Random;
+    }
+
+    /**
+     * @param player2Random the player2Random to set
+     */
+    public void setPlayer2Random(boolean player2Random) {
+        this.player2Random = player2Random;
     }
 }

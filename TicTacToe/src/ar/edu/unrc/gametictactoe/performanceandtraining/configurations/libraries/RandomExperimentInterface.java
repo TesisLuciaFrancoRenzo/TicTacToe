@@ -40,8 +40,9 @@ public class RandomExperimentInterface extends INeuralNetworkInterfaceForTicTacT
 
     @Override
     public String getLibName() {
-        return "Random";
+        return RANDOM;
     }
+    public static final String RANDOM = "Random";
 
     @Override
     public IPerceptronInterface getPerceptronInterface() {

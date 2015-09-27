@@ -64,7 +64,7 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
             if ( learningExperiment != null ) {
                 learningExperiment.initialize();
                 this.experimentName = learningExperiment.getExperimentName();
-                this.perceptronConfiguration = learningExperiment.getNeuralNetworkInterfaceForTicTacToe().getPerceptronConfiguration();
+                this.perceptronConfiguration = learningExperiment.getaINeuralNetwork().getPerceptronConfiguration();
             } else {
                 this.perceptronConfiguration = null;
             }
@@ -189,7 +189,7 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
         if ( perceptronConfiguration != null ) {
             //cargamos la red neuronal entrenada
             String dirPath = experimentPath
-                    + this.learningExperiment.getNeuralNetworkInterfaceForTicTacToe().getLibName() + File.separator
+                    + this.learningExperiment.getaINeuralNetwork().getLibName() + File.separator
                     + experimentName + File.separator;
             File dirPathFile = new File(dirPath);
             if ( !dirPathFile.exists() ) {
@@ -200,10 +200,10 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
             if ( !perceptronFile.exists() ) {
                 throw new IllegalArgumentException("perceptron file must exists");
             }
-            this.learningExperiment.getNeuralNetworkInterfaceForTicTacToe().loadOrCreatePerceptron(perceptronFile, true);
+            this.learningExperiment.getaINeuralNetwork().loadOrCreatePerceptron(perceptronFile, true);
         }
         while ( !game.isTerminalState() && !forceStop ) {
-            this.learningExperiment.getNeuralNetworkInterfaceForTicTacToe().playATurn(game, learningExperiment.getLearningAlgorithm()).compute();
+            this.learningExperiment.getaINeuralNetwork().playATurn(game, learningExperiment.getLearningAlgorithm()).compute();
         }
         if ( !forceStop ) {
             //sleep(5_000);

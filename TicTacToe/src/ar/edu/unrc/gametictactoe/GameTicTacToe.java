@@ -202,7 +202,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
     public void setCurrentState(IState nextTurnState) {
         GameBoard board = ((GameBoard) nextTurnState);
         playPanel.setBoard(board);
-        board.printLastActions(playerToTrain);
+        //board.printLastActions(playerToTrain);
         Players winner = board.whoWin();
         if ( winner != Players.NONE ) {
             playPanel.endGame(board, winner);
@@ -255,7 +255,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
             ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(board);
             IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, board, possibleEnemyActions, ((GameBoard) board).getCurrentPlayer()).compute();
             playPanel.setBoard((GameBoard) computeAfterState(board, bestEnemyAction));
-            playPanel.getBoard().printLastActions(playerToTrain);
+            //playPanel.getBoard().printLastActions(playerToTrain);
             return playPanel.getBoard();
         }
         return board.getCopy();
@@ -370,6 +370,10 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
     private void howToPlayMenuItemActionPerformed(ActionEvent e) {
         JOptionPane.showMessageDialog(this, howToPlay, "How To Play", JOptionPane.INFORMATION_MESSAGE);
     }
+    
+    public Players getActualPlayer(){
+        return playPanel.getBoard().getCurrentPlayer().getType();
+    }
 
     private void initComponents() {
         contentPanel = getContentPane();
@@ -395,11 +399,11 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         frameHeight = (screenSize.height) / 2;
 
         if ( arguments == null || arguments.length < 1 ) {
-            player1 = new Player("Player 1", 0, Token.X);
-            player2 = new Player("Player 2", 0, Token.O);
+            player1 = new Player("Player 1", 0, Token.X, Players.PLAYER1);
+            player2 = new Player("Player 2", 0, Token.O, Players.PLAYER2);
         } else {
-            player1 = new Player(arguments[0], Integer.parseInt(arguments[2]), Token.X);
-            player2 = new Player(arguments[1], Integer.parseInt(arguments[3]), Token.O);
+            player1 = new Player(arguments[0], Integer.parseInt(arguments[2]), Token.X, Players.PLAYER1);
+            player2 = new Player(arguments[1], Integer.parseInt(arguments[3]), Token.O, Players.PLAYER2);
         }
         infoPanel = new InfoPanel(player1, player2);
     }

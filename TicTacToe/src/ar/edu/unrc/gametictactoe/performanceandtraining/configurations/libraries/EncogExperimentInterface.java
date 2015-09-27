@@ -75,8 +75,9 @@ public class EncogExperimentInterface extends INeuralNetworkInterfaceForTicTacTo
 
     @Override
     public String getLibName() {
-        return "Encog";
+        return ENCOG;
     }
+    public static final String ENCOG = "Encog";
 
     @Override
     public IPerceptronInterface getPerceptronInterface() {

@@ -16,17 +16,24 @@ public class Player implements IActor {
     private int score;
     private Token token;
     private boolean winner;
+    private Players type;
+
+    public Players getType() {
+        return type;
+    }
 
     /**
      *
      * @param name
      * @param score
      * @param token
+     * @param type
      */
-    public Player(String name, int score, Token token) {
+    public Player(String name, int score, Token token, Players type) {
         this.name = name;
         this.score = score;
         this.token = token;
+        this.type = type;
     }
 
     /**

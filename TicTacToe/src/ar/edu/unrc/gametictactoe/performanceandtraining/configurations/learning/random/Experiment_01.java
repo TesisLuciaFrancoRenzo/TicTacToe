@@ -42,14 +42,16 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> {
         experiment.setRunStatisticsForBackups(false);
         experiment.setSaveEvery(10_000);
         experiment.setSaveBackupEvery(100_000);
-        experiment.start(filePath, 0);
+        experiment.start(filePath, RandomExperimentInterface.RANDOM, 0);
     }
 
     @Override
     public void initialize() throws Exception {
         this.setExperimentName("Experiment_01");
         this.setPerceptronName(this.getExperimentName());
-        this.setNeuralNetworkInterfaceForTicTacToe(new RandomExperimentInterface(null));
+    
+        this.setPlayer1Random(false);
+        this.setPlayer2Random(false);
     }
 
     /**

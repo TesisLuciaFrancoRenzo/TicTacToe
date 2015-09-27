@@ -45,9 +45,9 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Rev
         experiment.setGamma(1);
         experiment.setExplorationRateToFixed(0.1);
         experiment.setResetEligibilitiTraces(true);
-        experiment.setGamesToPlay(2_000);//(2_000_000);
-        experiment.setSaveEvery(1_000);//(25_000);
-        experiment.setSaveBackupEvery(1_000);//(25_000);
+        experiment.setGamesToPlay(2_000_000);
+        experiment.setSaveEvery(25_000);
+        experiment.setSaveBackupEvery(25_000);
         experiment.setInitializePerceptronRandomized(true);
 
         experiment.createLogs(false);
@@ -56,6 +56,8 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Rev
             experiment.setStatisticsOnly(true);
             experiment.setRunStatisticForRandom(true);
             experiment.setRunStatisticsForBackups(true);
+//            experiment.setGamesToPlayPerThreadForStatistics(10);
+//            experiment.setSimulationsForStatistics(1);
             experiment.setGamesToPlayPerThreadForStatistics(1_000);
             experiment.setSimulationsForStatistics(8);
         } else {
@@ -66,7 +68,7 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Rev
             experiment.setSimulationsForStatistics(0);
         }
 
-        experiment.start(filePath, 0);
+        experiment.start(filePath, EncogExperimentInterface.ENCOG, 0);
     }
 
     @Override
@@ -75,8 +77,8 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Rev
             this.setExperimentName("Experiment_01");
         }
         this.setPerceptronName(this.getExperimentName());
-        PerceptronConfigurationTicTacToe<BasicNetwork> config = new ConfigurationTicTacToe<>();
-        this.setNeuralNetworkInterfaceForTicTacToe(new EncogExperimentInterface(config));
+        this.setPlayer1Random(true);
+        this.setPlayer2Random(false);
     }
 
     /**
