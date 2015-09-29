@@ -35,6 +35,7 @@ public class PlayPanel extends JPanel {
     /**
      *
      * @param action
+     * <p>
      * @return
      */
     public static int actionToSquareIndex(Action action) {
@@ -74,6 +75,7 @@ public class PlayPanel extends JPanel {
     /**
      *
      * @param squareIndex
+     * <p>
      * @return
      */
     public static Action squareIndexToAction(int squareIndex) {
@@ -162,8 +164,8 @@ public class PlayPanel extends JPanel {
             default:
                 throw new IllegalArgumentException("El parametro winner = " + winner + " no es válido en este contexto");
         }
-        System.out.println(board.getPlayer1IndexList());
-        System.out.println(board.getPlayer2IndexList());
+        //System.out.println(board.getPlayer1IndexList());
+        //System.out.println(board.getPlayer2IndexList());
     }
 
     /**
@@ -203,7 +205,7 @@ public class PlayPanel extends JPanel {
             Square actualSquare = board.getSquares().get(actualSquareIndex);
             show(actualSquare);
         }
-        
+
     }
 
     /**

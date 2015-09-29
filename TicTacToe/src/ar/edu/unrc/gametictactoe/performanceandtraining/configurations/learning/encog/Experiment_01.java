@@ -5,10 +5,9 @@
  */
 package ar.edu.unrc.gametictactoe.performanceandtraining.configurations.learning.encog;
 
-import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
+import ar.edu.unrc.gametictactoe.Players;
 import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.LearningExperiment;
 import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.libraries.EncogExperimentInterface;
-import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.perceptrons.ConfigurationTicTacToe;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearningAfterstate;
@@ -45,9 +44,12 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Rev
         experiment.setGamma(1);
         experiment.setExplorationRateToFixed(0.1);
         experiment.setResetEligibilitiTraces(true);
-        experiment.setGamesToPlay(2_000_000);
-        experiment.setSaveEvery(25_000);
-        experiment.setSaveBackupEvery(25_000);
+//        experiment.setGamesToPlay(10_000_000);
+//        experiment.setSaveEvery(2_000_000);//para continuar el entrenamiento
+//        experiment.setSaveBackupEvery(125_000);//para estadisticas
+        experiment.setGamesToPlay(2_000);
+        experiment.setSaveEvery(2_000_000);//para continuar el entrenamiento
+        experiment.setSaveBackupEvery(25);//para estadisticas
         experiment.setInitializePerceptronRandomized(true);
 
         experiment.createLogs(false);
@@ -79,6 +81,7 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Rev
         this.setPerceptronName(this.getExperimentName());
         this.setPlayer1Random(true);
         this.setPlayer2Random(false);
+        this.setPlayerForStatistics(Players.PLAYER2);
     }
 
     /**

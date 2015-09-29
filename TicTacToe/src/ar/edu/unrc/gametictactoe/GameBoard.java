@@ -15,6 +15,7 @@ import java.util.ArrayList;
  * @author Renzo Bianchini
  */
 public class GameBoard implements IStatePerceptron {
+
     private static final int[][] winIndexes = {
         {0, 1, 2},
         {3, 4, 5},
@@ -28,9 +29,9 @@ public class GameBoard implements IStatePerceptron {
     private Player currentPlayer;
 
     private final PlayPanel playPanel;
-    private Player player1;
+    private final Player player1;
     private ArrayList player1IndexList;
-    private Player player2;
+    private final Player player2;
     private ArrayList player2IndexList;
     private ArrayList<Square> squares;
     private int turn;
@@ -206,6 +207,7 @@ public class GameBoard implements IStatePerceptron {
     public int[][] getWinIndexes() {
         return winIndexes;
     }
+
     @Override
     public boolean isTerminalState() {
         return whoWin() != Players.NONE;

@@ -220,10 +220,10 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
             case PLAYER1:
                 return board.getCurrentPlayer().getToken().getRepresentation();
             case PLAYER2:
-                System.out.println(winner);
+                //System.out.println(winner);
                 return board.getCurrentPlayer().getToken().getRepresentation();
             default:
-                System.err.println("");
+                //System.err.println("");
                 throw new IllegalStateException("El estado deberia ser un estado final, y el resultado fue: " + winner);
         }
     }
@@ -296,7 +296,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         //        main(args);
         {
 
-    }
+        }
     }
 
     @Override
@@ -370,9 +370,13 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
     private void howToPlayMenuItemActionPerformed(ActionEvent e) {
         JOptionPane.showMessageDialog(this, howToPlay, "How To Play", JOptionPane.INFORMATION_MESSAGE);
     }
-    
-    public Players getActualPlayer(){
+
+    public Players getCurrentlPlayer() {
         return playPanel.getBoard().getCurrentPlayer().getType();
+    }
+
+    public Player getCurrentActor() {
+        return playPanel.getBoard().getCurrentPlayer();
     }
 
     private void initComponents() {

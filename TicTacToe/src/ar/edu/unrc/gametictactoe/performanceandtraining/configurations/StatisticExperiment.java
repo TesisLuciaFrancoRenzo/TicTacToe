@@ -219,6 +219,9 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
      * @throws Exception
      */
     public void processFile(String fileToProcess, int delayPerMove) throws Exception {
+        if ( learningExperiment.getPlayerForStatistics() == null || (learningExperiment.getPlayerForStatistics() != Players.PLAYER1 && learningExperiment.getPlayerForStatistics() != Players.PLAYER2) ) {
+            throw new IllegalStateException("La variable playerForStatistics debe ser Players.PLAYER1 o Players.PLAYER2");
+        }
 
         //preparamos los destinos de las simulaciones para posterior sumatoria final
         List<ThreadResult> results = new ArrayList(simulations);
@@ -227,28 +230,33 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
         List<TDLambdaLearning> tdLambdaLearning = new ArrayList(simulations);
 
         for ( int i = 0; i < simulations; i++ ) {
-            INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> neuralNetworkInterfaceClone;
             PerceptronConfigurationTicTacToe<NeuralNetworkClass> tempPerceptronConfiguration = null;
-            neuralNetworkInterfaceClone = (INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass>) learningExperiment.getaINeuralNetwork().clone();
-
+            INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> neuralNetworkInterfaceClone = null;
             IPerceptronInterface tempPerceptronInterface = null;
+            if ( !this.learningExperiment.isPlayer1Random() || !this.learningExperiment.isPlayer2Random() ) {
+                tempPerceptronConfiguration = null;
+                neuralNetworkInterfaceClone = (INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass>) learningExperiment.getaINeuralNetwork().clone();
 
-            if ( learningExperiment.getaINeuralNetwork().getPerceptronConfiguration() != null ) {
-                tempPerceptronConfiguration = (PerceptronConfigurationTicTacToe<NeuralNetworkClass>) learningExperiment.getaINeuralNetwork().getPerceptronConfiguration().clone();
-                neuralNetworkInterfaceClone.setPerceptronConfiguration(tempPerceptronConfiguration);
-                tempPerceptronInterface = neuralNetworkInterfaceClone.getPerceptronInterface(); //TODO revisar esto
-            }
+                tempPerceptronInterface = null;
 
-            if ( tempPerceptronConfiguration != null ) {
-                //cargamos la red neuronal entrenada
-                File perceptronFile = new File(fileToProcess + ".ser");
-                if ( !perceptronFile.exists() ) {
-                    throw new IllegalArgumentException("perceptron file must exists: " + perceptronFile.getCanonicalPath());
+                if ( learningExperiment.getaINeuralNetwork().getPerceptronConfiguration() != null ) {
+                    tempPerceptronConfiguration = (PerceptronConfigurationTicTacToe<NeuralNetworkClass>) learningExperiment.getaINeuralNetwork().getPerceptronConfiguration().clone();
+                    neuralNetworkInterfaceClone.setPerceptronConfiguration(tempPerceptronConfiguration);
+                    tempPerceptronInterface = neuralNetworkInterfaceClone.getPerceptronInterface(); //TODO revisar esto
                 }
-                neuralNetworkInterfaceClone.loadOrCreatePerceptron(perceptronFile, true);
+
+                if ( tempPerceptronConfiguration != null ) {
+                    //cargamos la red neuronal entrenada
+                    File perceptronFile = new File(fileToProcess + ".ser");
+                    if ( !perceptronFile.exists() ) {
+                        throw new IllegalArgumentException("perceptron file must exists: " + perceptronFile.getCanonicalPath());
+                    }
+                    neuralNetworkInterfaceClone.loadOrCreatePerceptron(perceptronFile, true);
+                }
             }
             boolean show = (delayPerMove > 0);
-            GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(tempPerceptronConfiguration, learningExperiment.getLearningAlgorithm(), show, delayPerMove, Players.PLAYER1);
+
+            GameTicTacToe<NeuralNetworkClass> game = new GameTicTacToe<>(tempPerceptronConfiguration, learningExperiment.getLearningAlgorithm(), show, delayPerMove, null);//learningExperiment.getPlayerForStatistics());
 
             neuralNetworkInterfaces.add(neuralNetworkInterfaceClone);
             if ( tempPerceptronConfiguration != null ) {
@@ -267,28 +275,27 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
                     for ( results.get(i).setProcesedGames(i); results.get(i).getProcesedGames() < gamesToPlay; results.get(i).addProcesedGames() ) {
                         games.get(i).newGameMenuItemActionPerformed(); //reset
                         while ( !games.get(i).isTerminalState() ) {
-                            switch (games.get(i).getActualPlayer()){
+                            switch ( games.get(i).getCurrentlPlayer() ) {
                                 case PLAYER1: {
-                                    if (this.learningExperiment.isPlayer1Random()){
+                                    if ( this.learningExperiment.isPlayer1Random() ) {
                                         this.learningExperiment.getaIRandom().playATurn(games.get(i), tdLambdaLearning.get(i)).compute();
-                                    }
-                                    else{
+                                    } else {
                                         neuralNetworkInterfaces.get(i).playATurn(games.get(i), tdLambdaLearning.get(i)).compute();
                                     }
                                     break;
                                 }
                                 case PLAYER2: {
-                                    if (this.learningExperiment.isPlayer2Random()){
+                                    if ( this.learningExperiment.isPlayer2Random() ) {
                                         this.learningExperiment.getaIRandom().playATurn(games.get(i), tdLambdaLearning.get(i)).compute();
-                                    }
-                                    else{
+                                    } else {
                                         neuralNetworkInterfaces.get(i).playATurn(games.get(i), tdLambdaLearning.get(i)).compute();
                                     }
                                     break;
                                 }
-                                default: throw new IllegalStateException("No se reconoce el jugador actual");
+                                default:
+                                    throw new IllegalStateException("No se reconoce el jugador actual");
                             }
-                            
+
                         }
                         //calculamos estadisticas
                         results.get(i).addWinner(games.get(i).getWinner());

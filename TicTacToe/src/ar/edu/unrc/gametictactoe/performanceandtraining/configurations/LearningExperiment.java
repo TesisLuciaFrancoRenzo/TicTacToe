@@ -83,6 +83,15 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     private boolean statisticsOnly = false;
     private boolean player1Random;
     private boolean player2Random;
+    private Players playerForStatistics;
+
+    public Players getPlayerForStatistics() {
+        return playerForStatistics;
+    }
+
+    public void setPlayerForStatistics(Players playerForStatistics) {
+        this.playerForStatistics = playerForStatistics;
+    }
 
     /**
      *
@@ -101,6 +110,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
      *
      * @param experimentPath <p>
      * @param libName
+     * <p>
      * @return
      */
     public String createPathToDir(String experimentPath, String libName) {
@@ -405,7 +415,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         }
         try {
             initialize();
-            runExperiment(experimentPath, libName,delayPerMove);
+            runExperiment(experimentPath, libName, delayPerMove);
         } catch ( Exception ex ) {
             Logger.getLogger(LearningExperiment.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -711,20 +721,19 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         File logFile = new File(filePath + "_" + dateFormater.format(now) + "_LOG" + ".txt");
 
         if ( !this.statisticsOnly ) {
-                //comenzamos a entrenar y guardar estadisticas en el archivo de log
-                if ( logsActivated ) {
-                    try ( PrintStream printStream = new PrintStream(logFile, "UTF-8") ) {
-                        training(game, printStream, randomPerceptronFile, perceptronFile, configFile, filePath, dateFormater, now, zeroNumbers);
-                    }
-                } else {
-                    training(game, null, randomPerceptronFile, perceptronFile, configFile, filePath, dateFormater, now, zeroNumbers);
+            //comenzamos a entrenar y guardar estadisticas en el archivo de log
+            if ( logsActivated ) {
+                try ( PrintStream printStream = new PrintStream(logFile, "UTF-8") ) {
+                    training(game, printStream, randomPerceptronFile, perceptronFile, configFile, filePath, dateFormater, now, zeroNumbers);
                 }
+            } else {
+                training(game, null, randomPerceptronFile, perceptronFile, configFile, filePath, dateFormater, now, zeroNumbers);
+            }
 
-                //guardamos los progresos en un archivo
-                aINeuralNetwork.savePerceptron(perceptronFile);
+            //guardamos los progresos en un archivo
+            aINeuralNetwork.savePerceptron(perceptronFile);
                 //  aINeuralNetwork.compareNeuralNetworks(randomPerceptronFile, perceptronFile);
-            
-            
+
         }
         //cerramos el juego
         game.dispose();
