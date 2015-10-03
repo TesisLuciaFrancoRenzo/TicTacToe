@@ -45,6 +45,8 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
      *
      */
     public static final String _TRAINED = "_trained";
+    private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aINeuralNetwork;
+    private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aIRandom;
     private double[] alpha;
     private int annealingT;
     private int backupNumber;
@@ -67,13 +69,10 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     private TDLambdaLearning learningAlgorithm;
     private ELearningRateAdaptation learningRateAdaptation;
     private boolean logsActivated = false;
-    private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aINeuralNetwork;
-    private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aIRandom;
-
-    public INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> getaIRandom() {
-        return aIRandom;
-    }
     private String perceptronName;
+    private boolean player1Random;
+    private boolean player2Random;
+    private Players playerForStatistics;
     private boolean resetEligibilitiTraces = false;
     private boolean runStatisticForRandom = false;
     private boolean runStatisticsForBackups = false;
@@ -81,17 +80,6 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     private int saveEvery = 0;
     private int simulationsForStatistics;
     private boolean statisticsOnly = false;
-    private boolean player1Random;
-    private boolean player2Random;
-    private Players playerForStatistics;
-
-    public Players getPlayerForStatistics() {
-        return playerForStatistics;
-    }
-
-    public void setPlayerForStatistics(Players playerForStatistics) {
-        this.playerForStatistics = playerForStatistics;
-    }
 
     /**
      *
@@ -249,6 +237,14 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         this.perceptronName = perceptronName;
     }
 
+    public Players getPlayerForStatistics() {
+        return playerForStatistics;
+    }
+
+    public void setPlayerForStatistics(Players playerForStatistics) {
+        this.playerForStatistics = playerForStatistics;
+    }
+
     /**
      * @return the saveBackupEvery
      */
@@ -275,6 +271,10 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
      */
     public void setSaveEvery(int saveEvery) {
         this.saveEvery = saveEvery;
+    }
+
+    public INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> getaIRandom() {
+        return aIRandom;
     }
 
     /**
@@ -314,6 +314,34 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
      * @return
      */
     public abstract TDLambdaLearning instanceOfTdLearninrgImplementation(NTupleSystem nTupleSystem);
+
+    /**
+     * @return the player1Random
+     */
+    public boolean isPlayer1Random() {
+        return player1Random;
+    }
+
+    /**
+     * @param player1Random the player1Random to set
+     */
+    public void setPlayer1Random(boolean player1Random) {
+        this.player1Random = player1Random;
+    }
+
+    /**
+     * @return the player2Random
+     */
+    public boolean isPlayer2Random() {
+        return player2Random;
+    }
+
+    /**
+     * @param player2Random the player2Random to set
+     */
+    public void setPlayer2Random(boolean player2Random) {
+        this.player2Random = player2Random;
+    }
 
     /**
      * @return the resetEligibilitiTraces
@@ -561,20 +589,6 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     }
 
     /**
-     * @return the neuralNetworkInterfaceFor2048
-     */
-    protected INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> getaINeuralNetwork() {
-        return aINeuralNetwork;
-    }
-
-    /**
-     * @param aINeuralNetwork
-     */
-    protected void setaINeuralNetwork(INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aINeuralNetwork) {
-        this.aINeuralNetwork = aINeuralNetwork;
-    }
-
-    /**
      * @return the simulationsForStatistics
      */
     protected int getSimulationsForStatistics() {
@@ -596,13 +610,27 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     }
 
     /**
+     * @return the neuralNetworkInterfaceFor2048
+     */
+    protected INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> getaINeuralNetwork() {
+        return aINeuralNetwork;
+    }
+
+    /**
+     * @param aINeuralNetwork
+     */
+    protected void setaINeuralNetwork(INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aINeuralNetwork) {
+        this.aINeuralNetwork = aINeuralNetwork;
+    }
+
+    /**
      *
      * @param experimentPath
      * @param libName
      * @param delayPerMove   <p>
      * @throws Exception
      */
-    @SuppressWarnings( "static-access" )
+    @SuppressWarnings( value = "static-access" )
     protected void runExperiment(String experimentPath, String libName, int delayPerMove) throws Exception {
         if ( saveEvery == 0 ) {
             throw new IllegalArgumentException("se debe configurar cada cuanto guardar el perceptron mediante la variable saveEvery");
@@ -732,7 +760,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
 
             //guardamos los progresos en un archivo
             aINeuralNetwork.savePerceptron(perceptronFile);
-                //  aINeuralNetwork.compareNeuralNetworks(randomPerceptronFile, perceptronFile);
+            //  aINeuralNetwork.compareNeuralNetworks(randomPerceptronFile, perceptronFile);
 
         }
         //cerramos el juego
@@ -756,33 +784,5 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
             statisticExperiment.setFileName(this.getExperimentName());
             statisticExperiment.start(experimentPath, delayPerMove);
         }
-    }
-
-    /**
-     * @return the player1Random
-     */
-    public boolean isPlayer1Random() {
-        return player1Random;
-    }
-
-    /**
-     * @param player1Random the player1Random to set
-     */
-    public void setPlayer1Random(boolean player1Random) {
-        this.player1Random = player1Random;
-    }
-
-    /**
-     * @return the player2Random
-     */
-    public boolean isPlayer2Random() {
-        return player2Random;
-    }
-
-    /**
-     * @param player2Random the player2Random to set
-     */
-    public void setPlayer2Random(boolean player2Random) {
-        this.player2Random = player2Random;
     }
 }

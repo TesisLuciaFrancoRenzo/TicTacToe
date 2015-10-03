@@ -15,12 +15,8 @@ public class Player implements IActor {
     private String name;
     private int score;
     private Token token;
-    private boolean winner;
     private Players type;
-
-    public Players getType() {
-        return type;
-    }
+    private boolean winner;
 
     /**
      *
@@ -82,6 +78,10 @@ public class Player implements IActor {
      */
     public void setToken(Token token) {
         this.token = token;
+    }
+
+    public Players getType() {
+        return type;
     }
 
     /**

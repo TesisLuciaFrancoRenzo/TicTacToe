@@ -59,26 +59,50 @@ public class ThreadResult {
         procesedGames++;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDraws() {
         return draws;
     }
 
+    /**
+     *
+     * @param draws
+     */
     public void setDraws(int draws) {
         this.draws = draws;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPlayer1wins() {
         return player1wins;
     }
 
+    /**
+     *
+     * @param player1wins
+     */
     public void setPlayer1wins(int player1wins) {
         this.player1wins = player1wins;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPlayer2wins() {
         return player2wins;
     }
 
+    /**
+     *
+     * @param player2wins
+     */
     public void setPlayer2wins(int player2wins) {
         this.player2wins = player2wins;
     }

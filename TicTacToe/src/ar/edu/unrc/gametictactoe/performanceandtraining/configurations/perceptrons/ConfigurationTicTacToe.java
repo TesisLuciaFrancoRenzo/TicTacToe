@@ -6,8 +6,9 @@
 package ar.edu.unrc.gametictactoe.performanceandtraining.configurations.perceptrons;
 
 import ar.edu.unrc.gametictactoe.GameBoard;
-import ar.edu.unrc.gametictactoe.GameTicTacToe;
 import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
+import ar.edu.unrc.gametictactoe.Player;
+import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import java.util.List;
 import org.encog.engine.network.activation.ActivationFunction;
@@ -52,10 +53,10 @@ public class ConfigurationTicTacToe<NeuralNetworkClass> extends PerceptronConfig
     }
 
     @Override
-    public IsolatedComputation<Double> computeNumericRepresentationFor(GameTicTacToe game, Object[] output) {
+    public IsolatedComputation<Double> computeNumericRepresentationFor(Object[] output, IActor actor) {
         return () -> {
             assert output.length == 1;
-            return (Double) output[0];
+            return (Double) output[0] * ((Player) actor).getToken().getRepresentation();
         };
     }
 

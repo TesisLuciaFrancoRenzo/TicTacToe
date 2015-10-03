@@ -119,6 +119,12 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         return afterState;
     }
 
+    /**
+     * jugamos como el enemigo
+     * <p>
+     * @param afterState Estado después de haber jugado el actor que se esta
+     *                   entrenando
+     */
     @Override
     public IState computeNextTurnStateFromAfterstate(IState afterState) {
         if ( afterState.isTerminalState() ) {
@@ -129,7 +135,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         } else {
             ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(afterState);
             assert !possibleEnemyActions.isEmpty();
-            IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterState, possibleEnemyActions, ((GameBoard) afterState).getEnemyPlayer()).compute();
+            IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterState, possibleEnemyActions, ((GameBoard) afterState).getCurrentPlayer()).compute();// Tomamos el current player porque el afterstate ya esta desde el punto de vista del enemigo
             assert bestEnemyAction != null;
             GameBoard finalBoard = (GameBoard) afterState.getCopy();
             int actualSquareIndex = actionToSquareIndex((Action) bestEnemyAction);
@@ -146,14 +152,11 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
 
     @Override
     public IsolatedComputation<Double> computeNumericRepresentationFor(Object[] output, IActor actor) {
-//        if ( this.perceptronConfiguration != null ) {
-//            return this.perceptronConfiguration.computeNumericRepresentationFor(this, output);
-//        } else {
-        return () -> {
-            assert output.length == 1;
-            return (Double) output[0] * ((Player) actor).getToken().getRepresentation();
-        };
-        //}
+        if ( this.perceptronConfiguration != null ) {
+            return this.perceptronConfiguration.computeNumericRepresentationFor(output, actor);
+        } else {
+            throw new IllegalStateException("Es necesario tener un PerceptronConfigurationTicTacToe valido");
+        }
     }
 
     @Override
@@ -198,6 +201,10 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         return playPanel.getBoard();
     }
 
+    public Player getCurrentActor() {
+        return playPanel.getBoard().getCurrentPlayer();
+    }
+
     @Override
     public void setCurrentState(IState nextTurnState) {
         GameBoard board = ((GameBoard) nextTurnState);
@@ -210,6 +217,9 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         assert board.getTurn() <= 9;
     }
 
+    public Players getCurrentlPlayer() {
+        return playPanel.getBoard().getCurrentPlayer().getType();
+    }
     @Override
     public double getFinalReward(IState finalState, int outputNeuron) {
         GameBoard board = (GameBoard) finalState;
@@ -296,7 +306,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         //        main(args);
         {
 
-        }
+    }
     }
 
     @Override
@@ -369,14 +379,6 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
 
     private void howToPlayMenuItemActionPerformed(ActionEvent e) {
         JOptionPane.showMessageDialog(this, howToPlay, "How To Play", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    public Players getCurrentlPlayer() {
-        return playPanel.getBoard().getCurrentPlayer().getType();
-    }
-
-    public Player getCurrentActor() {
-        return playPanel.getBoard().getCurrentPlayer();
     }
 
     private void initComponents() {

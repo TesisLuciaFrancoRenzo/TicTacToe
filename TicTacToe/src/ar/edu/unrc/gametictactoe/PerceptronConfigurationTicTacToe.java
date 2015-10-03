@@ -5,6 +5,7 @@
  */
 package ar.edu.unrc.gametictactoe;
 
+import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import java.util.List;
 import org.encog.engine.network.activation.ActivationFunction;
@@ -64,11 +65,11 @@ public abstract class PerceptronConfigurationTicTacToe<NeuralNetworkClass> imple
 
     /**
      *
-     * @param game
+     * @param actor
      * @param output <p>
      * @return
      */
-    public abstract IsolatedComputation<Double> computeNumericRepresentationFor(GameTicTacToe game, Object[] output);
+    public abstract IsolatedComputation<Double> computeNumericRepresentationFor(Object[] output, IActor actor);
 
     /**
      * @return the neuralNetwork

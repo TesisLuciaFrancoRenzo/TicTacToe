@@ -21,6 +21,8 @@ import java.util.ArrayList;
  */
 public class RandomExperimentInterface extends INeuralNetworkInterfaceForTicTacToe {
 
+    public static final String RANDOM = "Random";
+
     /**
      *
      * @param perceptronConfiguration
@@ -42,7 +44,6 @@ public class RandomExperimentInterface extends INeuralNetworkInterfaceForTicTacT
     public String getLibName() {
         return RANDOM;
     }
-    public static final String RANDOM = "Random";
 
     @Override
     public IPerceptronInterface getPerceptronInterface() {

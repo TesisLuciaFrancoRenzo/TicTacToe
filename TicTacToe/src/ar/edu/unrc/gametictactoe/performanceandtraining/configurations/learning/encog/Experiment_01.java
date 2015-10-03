@@ -43,14 +43,16 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Rev
         experiment.setLambda(0.7);
         experiment.setGamma(1);
         experiment.setExplorationRateToFixed(0.1);
-        experiment.setResetEligibilitiTraces(true);
+        experiment.setResetEligibilitiTraces(false);
+//        experiment.setResetEligibilitiTraces(true);
 //        experiment.setGamesToPlay(10_000_000);
 //        experiment.setSaveEvery(2_000_000);//para continuar el entrenamiento
-//        experiment.setSaveBackupEvery(125_000);//para estadisticas
-        experiment.setGamesToPlay(2_000);
+//        experiment.setSaveBackupEvery(100_000);//para estadisticas
+        experiment.setGamesToPlay(100_000);
         experiment.setSaveEvery(2_000_000);//para continuar el entrenamiento
-        experiment.setSaveBackupEvery(25);//para estadisticas
+        experiment.setSaveBackupEvery(1_000);//para estadisticas
         experiment.setInitializePerceptronRandomized(true);
+//        experiment.setInitializePerceptronRandomized(false);
 
         experiment.createLogs(false);
         //para calcualar estadisticas
@@ -79,8 +81,8 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Rev
             this.setExperimentName("Experiment_01");
         }
         this.setPerceptronName(this.getExperimentName());
-        this.setPlayer1Random(true);
-        this.setPlayer2Random(false);
+        this.setPlayer1Random(false);
+        this.setPlayer2Random(true);
         this.setPlayerForStatistics(Players.PLAYER2);
     }
 

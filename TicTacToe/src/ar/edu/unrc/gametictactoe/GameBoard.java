@@ -188,7 +188,7 @@ public class GameBoard implements IStatePerceptron {
     }
 
     @Override
-    public double getStateReward(int outputNeuron) {
+    public double getStateReward(int outputNeuron) {//TODO Que se lo pregunte al configuration tictactoe
         return 0d;
     }
 
