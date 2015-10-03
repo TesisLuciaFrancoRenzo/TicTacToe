@@ -201,6 +201,10 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         return playPanel.getBoard();
     }
 
+    /**
+     *
+     * @return
+     */
     public Player getCurrentActor() {
         return playPanel.getBoard().getCurrentPlayer();
     }
@@ -217,6 +221,10 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         assert board.getTurn() <= 9;
     }
 
+    /**
+     *
+     * @return
+     */
     public Players getCurrentlPlayer() {
         return playPanel.getBoard().getCurrentPlayer().getType();
     }

@@ -21,6 +21,9 @@ import java.util.ArrayList;
  */
 public class RandomExperimentInterface extends INeuralNetworkInterfaceForTicTacToe {
 
+    /**
+     *
+     */
     public static final String RANDOM = "Random";
 
     /**

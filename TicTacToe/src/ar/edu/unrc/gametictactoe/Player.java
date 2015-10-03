@@ -80,6 +80,10 @@ public class Player implements IActor {
         this.token = token;
     }
 
+    /**
+     *
+     * @return
+     */
     public Players getType() {
         return type;
     }

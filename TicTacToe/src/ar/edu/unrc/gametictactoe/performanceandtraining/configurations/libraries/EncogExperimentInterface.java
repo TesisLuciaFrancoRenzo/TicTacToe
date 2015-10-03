@@ -28,6 +28,10 @@ import org.encog.util.obj.SerializeObject;
  * @author lucia bressan, franco pellegrini, renzo bianchini
  */
 public class EncogExperimentInterface extends INeuralNetworkInterfaceForTicTacToe<BasicNetwork> {
+
+    /**
+     *
+     */
     public static final String ENCOG = "Encog";
 
     /**

@@ -237,10 +237,18 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         this.perceptronName = perceptronName;
     }
 
+    /**
+     *
+     * @return
+     */
     public Players getPlayerForStatistics() {
         return playerForStatistics;
     }
 
+    /**
+     *
+     * @param playerForStatistics
+     */
     public void setPlayerForStatistics(Players playerForStatistics) {
         this.playerForStatistics = playerForStatistics;
     }
@@ -273,6 +281,10 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
         this.saveEvery = saveEvery;
     }
 
+    /**
+     *
+     * @return
+     */
     public INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> getaIRandom() {
         return aIRandom;
     }
