@@ -48,9 +48,9 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Rev
 //        experiment.setGamesToPlay(10_000_000);
 //        experiment.setSaveEvery(2_000_000);//para continuar el entrenamiento
 //        experiment.setSaveBackupEvery(100_000);//para estadisticas
-        experiment.setGamesToPlay(100_000);
+        experiment.setGamesToPlay(1_000);
         experiment.setSaveEvery(2_000_000);//para continuar el entrenamiento
-        experiment.setSaveBackupEvery(1_000);//para estadisticas
+        experiment.setSaveBackupEvery(100);//para estadisticas
         experiment.setInitializePerceptronRandomized(true);
 //        experiment.setInitializePerceptronRandomized(false);
 

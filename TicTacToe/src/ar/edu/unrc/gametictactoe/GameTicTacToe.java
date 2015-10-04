@@ -4,7 +4,6 @@
  */
 package ar.edu.unrc.gametictactoe;
 
-import static ar.edu.unrc.gametictactoe.PlayPanel.actionToSquareIndex;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IAction;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IProblem;
@@ -108,14 +107,12 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
     public IState computeAfterState(IState turnInitialState, IAction action) {
         assert action != null;
         GameBoard afterState = (GameBoard) turnInitialState.getCopy();
-        int actualSquareIndex = actionToSquareIndex((Action) action);
-        playPanel.pickSquare(afterState, actualSquareIndex);
+        afterState.pickSquare((Action) action);
         if ( afterState.getCurrentPlayer().equals(player1) ) {
             afterState.setPlayer1Action((Action) action);
         } else {
             afterState.setPlayer2Action((Action) action);
         }
-        afterState.nextTurn(true);
         return afterState;
     }
 
@@ -138,14 +135,12 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
             IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterState, possibleEnemyActions, ((GameBoard) afterState).getCurrentPlayer()).compute();// Tomamos el current player porque el afterstate ya esta desde el punto de vista del enemigo
             assert bestEnemyAction != null;
             GameBoard finalBoard = (GameBoard) afterState.getCopy();
-            int actualSquareIndex = actionToSquareIndex((Action) bestEnemyAction);
-            playPanel.pickSquare(finalBoard, actualSquareIndex);
+            finalBoard.pickSquare((Action) bestEnemyAction);
             if ( finalBoard.getCurrentPlayer().equals(player1) ) {
                 finalBoard.setPlayer1Action((Action) bestEnemyAction);
             } else {
                 finalBoard.setPlayer2Action((Action) bestEnemyAction);
             }
-            finalBoard.nextTurn(true);
             return finalBoard;
         }
     }
@@ -212,13 +207,13 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
     @Override
     public void setCurrentState(IState nextTurnState) {
         GameBoard board = ((GameBoard) nextTurnState);
+        assert board.getTurn() <= 9;
         playPanel.setBoard(board);
         //board.printLastActions(playerToTrain);
-        Players winner = board.whoWin();
+        Players winner = board.getWinner();
         if ( winner != Players.NONE ) {
-            playPanel.endGame(board, winner);
+            playPanel.endGame(board);
         }
-        assert board.getTurn() <= 9;
     }
 
     /**
@@ -228,22 +223,10 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
     public Players getCurrentlPlayer() {
         return playPanel.getBoard().getCurrentPlayer().getType();
     }
+
     @Override
     public double getFinalReward(IState finalState, int outputNeuron) {
-        GameBoard board = (GameBoard) finalState;
-        Players winner = board.whoWin();
-        switch ( winner ) {
-            case DRAW:
-                return 0;
-            case PLAYER1:
-                return board.getCurrentPlayer().getToken().getRepresentation();
-            case PLAYER2:
-                //System.out.println(winner);
-                return board.getCurrentPlayer().getToken().getRepresentation();
-            default:
-                //System.err.println("");
-                throw new IllegalStateException("El estado deberia ser un estado final, y el resultado fue: " + winner);
-        }
+        return this.perceptronConfiguration.getFinalReward((GameBoard) finalState, outputNeuron);
     }
 
     /**
@@ -258,11 +241,8 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
      *
      * @return
      */
-//    public String getWinner() {
-//        return (this.playPanel.getBoard().whoWin().name());
-//    }
     public Players getWinner() {
-        return (this.playPanel.getBoard().whoWin());
+        return (this.playPanel.getBoard().getWinner());
     }
 
     @Override
@@ -293,7 +273,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         ArrayList<IAction> possibles = new ArrayList<>(initialBoard.getSquares().size());
         for ( int i = 0; i < initialBoard.getSquares().size(); i++ ) {
             if ( !initialBoard.getSquares().get(i).isClicked() ) {
-                possibles.add(PlayPanel.squareIndexToAction(i));
+                possibles.add(GameBoard.squareIndexToAction(i));
             }
         }
 //        System.out.println(possibles.toString());
@@ -314,7 +294,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         //        main(args);
         {
 
-    }
+        }
     }
 
     @Override
@@ -328,7 +308,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
      */
     public void processInput(Action action) {
         playPanel.mouseClickedOnSquare(action);
-        playPanel.getBoard().nextTurn(false);
+        playPanel.endGame(playPanel.getBoard());
     }
 
     /**

@@ -5,6 +5,15 @@
  */
 package ar.edu.unrc.gametictactoe;
 
+import static ar.edu.unrc.gametictactoe.Action.S0;
+import static ar.edu.unrc.gametictactoe.Action.S1;
+import static ar.edu.unrc.gametictactoe.Action.S2;
+import static ar.edu.unrc.gametictactoe.Action.S3;
+import static ar.edu.unrc.gametictactoe.Action.S4;
+import static ar.edu.unrc.gametictactoe.Action.S5;
+import static ar.edu.unrc.gametictactoe.Action.S6;
+import static ar.edu.unrc.gametictactoe.Action.S7;
+import static ar.edu.unrc.gametictactoe.Action.S8;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IState;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IStatePerceptron;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
@@ -26,6 +35,84 @@ public class GameBoard implements IStatePerceptron {
         {0, 4, 8},
         {2, 4, 6}
     };
+
+    /**
+     *
+     * @param action <p>
+     * @return
+     */
+    public static int actionToSquareIndex(Action action) {
+        switch ( action ) {
+            case S0: {
+                return 0;
+            }
+            case S1: {
+                return 1;
+            }
+            case S2: {
+                return 2;
+            }
+            case S3: {
+                return 3;
+            }
+            case S4: {
+                return 4;
+            }
+            case S5: {
+                return 5;
+            }
+            case S6: {
+                return 6;
+            }
+            case S7: {
+                return 7;
+            }
+            case S8: {
+                return 8;
+            }
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     *
+     * @param squareIndex <p>
+     * @return
+     */
+    public static Action squareIndexToAction(int squareIndex) {
+        switch ( squareIndex ) {
+            case 0: {
+                return S0;
+            }
+            case 1: {
+                return S1;
+            }
+            case 2: {
+                return S2;
+            }
+            case 3: {
+                return S3;
+            }
+            case 4: {
+                return S4;
+            }
+            case 5: {
+                return S5;
+            }
+            case 6: {
+                return S6;
+            }
+            case 7: {
+                return S7;
+            }
+            case 8: {
+                return S8;
+            }
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
     private Player currentPlayer;
 
     private final PlayPanel playPanel;
@@ -35,6 +122,8 @@ public class GameBoard implements IStatePerceptron {
     private ArrayList player2IndexList;
     private ArrayList<Square> squares;
     private int turn;
+    private Players winner;
+
     Action player1Action;
     Action player2Action;
 
@@ -55,6 +144,7 @@ public class GameBoard implements IStatePerceptron {
         this.playPanel = playPanel;
         this.player1Action = null;
         this.player2Action = null;
+        this.winner = Players.NONE;
     }
 
     @Override
@@ -73,6 +163,7 @@ public class GameBoard implements IStatePerceptron {
         copy.currentPlayer = this.currentPlayer;
         copy.player1Action = this.player1Action;
         copy.player2Action = this.player2Action;
+        copy.winner = this.winner;
         return copy;
     }
 
@@ -208,29 +299,54 @@ public class GameBoard implements IStatePerceptron {
         return winIndexes;
     }
 
-    @Override
-    public boolean isTerminalState() {
-        return whoWin() != Players.NONE;
+    /**
+     *
+     * @return
+     */
+    public Players getWinner() {
+        return winner;
     }
 
     /**
      *
-     * @param isThinking
+     * @param winner
      */
-    public void nextTurn(boolean isThinking) {
-        Players winner = whoWin();
-        if ( winner != Players.NONE ) {
-            if ( !isThinking ) {
-                playPanel.endGame(this, winner);
-            }
+    public void setWinner(Players winner) {
+        this.winner = winner;
+    }
+
+    @Override
+    public boolean isTerminalState() {
+        return computeWhoWin() != Players.NONE;
+    }
+
+    /**
+     *
+     * @param actualSquareIndex
+     */
+    public void pickSquare(int actualSquareIndex) {
+        Square actualSquare = squares.get(actualSquareIndex);
+        assert !actualSquare.isClicked();
+        actualSquare.setPaintType(currentPlayer.getToken());
+        if ( currentPlayer.getToken() == Token.O ) {
+            player2IndexList.add(0, actualSquareIndex);
         } else {
-            turn++;
-            if ( currentPlayer.equals(player1) ) {
-                this.currentPlayer = player2;
-            } else {
-                this.currentPlayer = player1;
-            }
+            player1IndexList.add(0, actualSquareIndex);
         }
+        actualSquare.setClicked();
+        computeWhoWin();
+        nextTurn();
+    }
+
+    /**
+     *
+     * @param action
+     * @return
+     */
+    public int pickSquare(Action action) {
+        int actualSquareIndex = actionToSquareIndex(action);
+        pickSquare(actualSquareIndex);
+        return actualSquareIndex;
     }
 
     @Override
@@ -244,7 +360,7 @@ public class GameBoard implements IStatePerceptron {
      *
      * @return
      */
-    public Players whoWin() {
+    private Players computeWhoWin() {
         ArrayList winList = new ArrayList();
         for ( int i = 0; i < getWinIndexes().length; i++ ) {
             winList.add(winIndexes[i][0]);
@@ -265,7 +381,38 @@ public class GameBoard implements IStatePerceptron {
         return Players.NONE;
     }
 
+    /**
+     *
+     */
+    private void nextTurn() {
+        winner = computeWhoWin();
+        if ( winner == Players.NONE ) {
+            turn++;
+            if ( currentPlayer.equals(player1) ) {
+                this.currentPlayer = player2;
+            } else {
+                this.currentPlayer = player1;
+            }
+        }
+    }
+//    public void nextTurn(boolean isThinking) {
+//        winner = computeWhoWin();
+//        if ( winner != Players.NONE ) {
+//            if ( !isThinking ) {
+//                playPanel.endGame(this, winner);
+//            }
+//        } else {
+//            turn++;
+//            if ( currentPlayer.equals(player1) ) {
+//                this.currentPlayer = player2;
+//            } else {
+//                this.currentPlayer = player1;
+//            }
+//        }
+//    }
+    
 //    void printLastActions(Player playerToTrain) {
+
 //        if ( playerToTrain.equals(player1) ) {
 //            System.out.print("* ");
 //        }
@@ -309,6 +456,7 @@ public class GameBoard implements IStatePerceptron {
         this.currentPlayer = player1;
         this.player1Action = null;
         this.player2Action = null;
+        this.winner = Players.NONE;
     }
 
 }

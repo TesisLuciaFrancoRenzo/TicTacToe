@@ -23,8 +23,8 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
     private boolean forceStop;
     private PerceptronConfigurationTicTacToe<NeuralNetworkClass> perceptronConfiguration;
     private String perceptronName;
-    private int tileToWin;
-
+    private boolean player1Human;
+    private boolean player2Human;
     /**
      *
      */
@@ -44,6 +44,38 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
      */
     public String getPerceptronFileName() {
         return perceptronName;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isPlayer1Human() {
+        return player1Human;
+    }
+
+    /**
+     *
+     * @param player1Human
+     */
+    public void setPlayer1Human(boolean player1Human) {
+        this.player1Human = player1Human;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isPlayer2Human() {
+        return player2Human;
+    }
+
+    /**
+     *
+     * @param player2Human
+     */
+    public void setPlayer2Human(boolean player2Human) {
+        this.player2Human = player2Human;
     }
 
     /**
@@ -139,33 +171,21 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
     }
 
     /**
-     * @return the tileToWin
-     */
-    protected int getTileToWin() {
-        return tileToWin;
-    }
-
-    /**
-     * @param tileToWin the tileToWin to set
-     */
-    protected void setTileToWin(int tileToWin) {
-        this.tileToWin = tileToWin;
-    }
-
-    /**
      * Se deben inicializar:
      * <ul>
      * <li>private int delayPerMove;</li>
      * <li>private IPlayingExperiment neuralNetworkInterfaceFor2048;</li>
      * <li>private String perceptronName;</li>
+     * <li>private boolean player1Human;</li>
+     * <li>rivate boolean player2Human;</li>
      * </ul>
      * <p>
      * Las siguientes variables se inicializan automaticamente, pero pueden ser
      * modificadas:
      * <ul>
-     * <li>private int tileToWin;</li>
      * <li>private String experimentName;</li>
-     * <li>private PerceptronConfiguration2048 perceptronConfiguration;</li>
+     * <li>private PerceptronConfigurationTicTacToe
+     * perceptronConfiguration;</li>
      * </ul>
      * <p>
      * @throws Exception

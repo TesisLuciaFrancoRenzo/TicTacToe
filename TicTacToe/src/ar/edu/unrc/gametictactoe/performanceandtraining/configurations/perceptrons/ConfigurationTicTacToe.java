@@ -8,6 +8,7 @@ package ar.edu.unrc.gametictactoe.performanceandtraining.configurations.perceptr
 import ar.edu.unrc.gametictactoe.GameBoard;
 import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import ar.edu.unrc.gametictactoe.Player;
+import ar.edu.unrc.gametictactoe.Players;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import java.util.List;
@@ -68,6 +69,23 @@ public class ConfigurationTicTacToe<NeuralNetworkClass> extends PerceptronConfig
     @Override
     public double getBoardReward(GameBoard board, int outputNeuron) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public double getFinalReward(GameBoard board, int outputNeuron) {
+        Players winner = board.getWinner();
+        switch ( winner ) {
+            case DRAW:
+                return 0;
+            case PLAYER1:
+                return board.getPlayer1().getToken().getRepresentation();
+            case PLAYER2:
+                //System.out.println(winner);
+                return board.getPlayer2().getToken().getRepresentation();
+            default:
+                //System.err.println("");
+                throw new IllegalStateException("El estado deberia ser un estado final, y el resultado fue: " + winner);
+        }
     }
 
 //    @Override

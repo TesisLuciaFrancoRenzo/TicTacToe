@@ -4,15 +4,6 @@
  */
 package ar.edu.unrc.gametictactoe;
 
-import static ar.edu.unrc.gametictactoe.Action.S0;
-import static ar.edu.unrc.gametictactoe.Action.S1;
-import static ar.edu.unrc.gametictactoe.Action.S2;
-import static ar.edu.unrc.gametictactoe.Action.S3;
-import static ar.edu.unrc.gametictactoe.Action.S4;
-import static ar.edu.unrc.gametictactoe.Action.S5;
-import static ar.edu.unrc.gametictactoe.Action.S6;
-import static ar.edu.unrc.gametictactoe.Action.S7;
-import static ar.edu.unrc.gametictactoe.Action.S8;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -32,85 +23,6 @@ import javax.swing.border.BevelBorder;
  */
 public class PlayPanel extends JPanel {
 
-    /**
-     *
-     * @param action
-     * <p>
-     * @return
-     */
-    public static int actionToSquareIndex(Action action) {
-        switch ( action ) {
-            case S0: {
-                return 0;
-            }
-            case S1: {
-                return 1;
-            }
-            case S2: {
-                return 2;
-            }
-            case S3: {
-                return 3;
-            }
-            case S4: {
-                return 4;
-            }
-            case S5: {
-                return 5;
-            }
-            case S6: {
-                return 6;
-            }
-            case S7: {
-                return 7;
-            }
-            case S8: {
-                return 8;
-            }
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    /**
-     *
-     * @param squareIndex
-     * <p>
-     * @return
-     */
-    public static Action squareIndexToAction(int squareIndex) {
-        switch ( squareIndex ) {
-            case 0: {
-                return S0;
-            }
-            case 1: {
-                return S1;
-            }
-            case 2: {
-                return S2;
-            }
-            case 3: {
-                return S3;
-            }
-            case 4: {
-                return S4;
-            }
-            case 5: {
-                return S5;
-            }
-            case 6: {
-                return S6;
-            }
-            case 7: {
-                return S7;
-            }
-            case 8: {
-                return S8;
-            }
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
     private GameBoard board;
 
     private final int delayPerMove;
@@ -139,30 +51,32 @@ public class PlayPanel extends JPanel {
     /**
      *
      * @param board
-     * @param winner
      */
-    public void endGame(GameBoard board, Players winner) {
-//        if ( !(board.getTurn() <= 9 && board.getTurn() >= 5) ) {
-//            System.out.println("mal");
-//        }
-        assert (board.getTurn() <= 9 && board.getTurn() >= 5);
+    public void endGame(GameBoard board) {
+        Players winner = board.getWinner();
         switch ( winner ) {
+            case NONE: {
+                break;
+            }
             case DRAW: {
+                assert (board.getTurn() <= 9 && board.getTurn() >= 5);
                 if ( repaint ) {
                     JOptionPane.showMessageDialog(this, " Empate");
                 }
                 break;
             }
             case PLAYER1: {
+                assert (board.getTurn() <= 9 && board.getTurn() >= 5);
                 winnerSetup(board.getPlayer1(), repaint);
                 break;
             }
             case PLAYER2: {
+                assert (board.getTurn() <= 9 && board.getTurn() >= 5);
                 winnerSetup(board.getPlayer2(), repaint);
                 break;
             }
             default:
-                throw new IllegalArgumentException("El parametro winner = " + winner + " no es válido en este contexto");
+                throw new IllegalStateException("El Ganador asociado al tablero = " + winner + " no es válido en este contexto");
         }
         //System.out.println(board.getPlayer1IndexList());
         //System.out.println(board.getPlayer2IndexList());
@@ -199,8 +113,7 @@ public class PlayPanel extends JPanel {
      * @param show
      */
     public void mouseClickedOnSquare(GameBoard board, Action action, boolean show) {
-        int actualSquareIndex = actionToSquareIndex(action);
-        pickSquare(board, actualSquareIndex);
+        int actualSquareIndex = board.pickSquare(action);
         if ( show ) {
             Square actualSquare = board.getSquares().get(actualSquareIndex);
             show(actualSquare);
@@ -208,30 +121,12 @@ public class PlayPanel extends JPanel {
 
     }
 
-    /**
-     *
-     * @param board
-     * @param actualSquareIndex
-     */
-    public void pickSquare(GameBoard board, int actualSquareIndex) {
-        Square actualSquare = board.getSquares().get(actualSquareIndex);
-        assert !actualSquare.isClicked();
-        actualSquare.setPaintType(board.getCurrentPlayer().getToken());
-        if ( board.getCurrentPlayer().getToken() == Token.O ) {
-            board.getPlayer2IndexList().add(0, actualSquareIndex);
-        } else {
-            board.getPlayer1IndexList().add(0, actualSquareIndex);
-        }
-        actualSquare.setClicked();
-
-    }
-
     private void mouseClickedOnSquare(GameBoard board, MouseEvent e) {
         Square actualSquare = (Square) e.getSource();
         if ( !actualSquare.isClicked() ) {
-            pickSquare(board, board.getSquares().indexOf(actualSquare));
+            board.pickSquare(board.getSquares().indexOf(actualSquare));
             show(actualSquare);
-            board.nextTurn(false);
+            this.endGame(board);
         }
     }
 

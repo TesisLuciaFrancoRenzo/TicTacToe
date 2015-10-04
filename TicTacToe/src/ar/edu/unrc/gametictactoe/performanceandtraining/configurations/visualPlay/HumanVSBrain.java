@@ -47,6 +47,8 @@ public class HumanVSBrain extends VisualExperiment {
     @Override
     protected void initializeVisual() throws Exception {
         setDelayPerMove(250);
+        setPlayer1Human(true);
+        setPlayer2Human(true);
     }
 
 }
