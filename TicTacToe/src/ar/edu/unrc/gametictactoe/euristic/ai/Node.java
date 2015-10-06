@@ -28,6 +28,10 @@ public class Node<T> {
         childs = new ArrayList<>();
     }
 
+    public void addChild(Node<T> node) {
+        childs.add(node);
+    }
+
     /**
      * @return the childs
      */
@@ -47,10 +51,6 @@ public class Node<T> {
      */
     public void setValue(T value) {
         this.value = value;
-    }
-
-    public void addChild(Node<T> node) {
-        childs.add(node);
     }
 
     public boolean isLeave() {

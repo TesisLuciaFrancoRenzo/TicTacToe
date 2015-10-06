@@ -318,6 +318,10 @@ public class GameBoard implements IStatePerceptron {
         return winner != Players.NONE;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<IAction> listAllPossibleActions() {
         ArrayList<IAction> possibles = new ArrayList<>(squares.size());
         for ( int i = 0; i < squares.size(); i++ ) {
