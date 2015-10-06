@@ -37,7 +37,7 @@ public class DesicionTree {
             newBoard.pickSquare((Action) a);
             Node<GameBoard> newNode = new Node<>();
             newNode.setValue(newBoard);
-            firstNode.addChild(newNode);
+            node.addChild(newNode);
             boardQuantity++;
             recursiveConstruction(newNode);
         });
