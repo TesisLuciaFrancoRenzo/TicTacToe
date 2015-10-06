@@ -10,6 +10,7 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import static java.lang.Thread.sleep;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -44,8 +45,7 @@ public class PlayPanel extends JPanel {
         this.panelSize = size;
         this.repaint = repaint;
         this.delayPerMove = delayPerMove;
-        this.board = new GameBoard(player1, player2);
-        this.uploadPanelWithSquares(board);
+        this.board = new GameBoard(player1, player2, this.createBoardSquares());
     }
 
     /**
@@ -121,6 +121,39 @@ public class PlayPanel extends JPanel {
 
     }
 
+//    private void uploadPanelWithSquares(GameBoard board) {
+//        Square square;
+//        setSize(panelSize.width, panelSize.height);
+//        for ( int i = 0; i < 9; i++ ) {
+//            add(square = new Square(panelSize.width, panelSize.height));
+//            board.getSquares().add(square);
+//            square.addMouseListener(new MouseAdapter() {
+//                @Override
+//                public void mouseClicked(MouseEvent e) {
+//                    super.mouseClicked(e);
+//                    mouseClickedOnSquare(board, e);
+//                }
+//            });
+//        }
+//    }
+    private ArrayList<Square> createBoardSquares() {
+        Square square;
+        setSize(panelSize.width, panelSize.height);
+        ArrayList<Square> squares = new ArrayList(9);
+        for ( int i = 0; i < 9; i++ ) {
+            add(square = new Square(panelSize.width, panelSize.height));
+            squares.add(square);
+            square.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    mouseClickedOnSquare(board, e);
+                }
+            });
+        }
+        return squares;
+    }
+
     private void mouseClickedOnSquare(GameBoard board, MouseEvent e) {
         Square actualSquare = (Square) e.getSource();
         if ( !actualSquare.isClicked() ) {
@@ -129,7 +162,6 @@ public class PlayPanel extends JPanel {
             this.endGame(board);
         }
     }
-
     private void show(Square actualSquare) {
         if ( repaint ) {
             actualSquare.repaint();
@@ -140,22 +172,6 @@ public class PlayPanel extends JPanel {
                     Logger.getLogger(GameTicTacToe.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
-    }
-
-    private void uploadPanelWithSquares(GameBoard board) {
-        Square square;
-        setSize(panelSize.width, panelSize.height);
-        for ( int i = 0; i < 9; i++ ) {
-            add(square = new Square(panelSize.width, panelSize.height));
-            board.getSquares().add(square);
-            square.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                    mouseClickedOnSquare(board, e);
-                }
-            });
         }
     }
 

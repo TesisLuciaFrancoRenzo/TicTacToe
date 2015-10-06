@@ -117,23 +117,24 @@ public class GameBoard implements IStatePerceptron {
     private Player currentPlayer;
 
     private final Player player1;
+    private Action player1Action;
     private ArrayList player1IndexList;
     private final Player player2;
+    private Action player2Action;
     private ArrayList player2IndexList;
     private ArrayList<Square> squares;
     private int turn;
     private Players winner;
 
-    private Action player1Action;
-    private Action player2Action;
 
     /**
      *
      * @param player1
      * @param player2
+     * @param squares
      */
-    public GameBoard(Player player1, Player player2) {
-        this.squares = new ArrayList(9);
+    public GameBoard(Player player1, Player player2, ArrayList<Square> squares) {
+        this.squares = squares;
         player2IndexList = new ArrayList(5);
         player1IndexList = new ArrayList(5);
         this.player1 = player1;
@@ -145,19 +146,9 @@ public class GameBoard implements IStatePerceptron {
         this.winner = Players.NONE;
     }
 
-    public ArrayList<IAction> listAllPossibleActions() {
-        ArrayList<IAction> possibles = new ArrayList<>(squares.size());
-        for ( int i = 0; i < squares.size(); i++ ) {
-            if ( !squares.get(i).isClicked() ) {
-                possibles.add(GameBoard.squareIndexToAction(i));
-            }
-        }
-        return possibles;
-    }
-
     @Override
     public IState getCopy() {
-        GameBoard copy = new GameBoard(player1, player2);
+        GameBoard copy = new GameBoard(player1, player2, null);
         for ( int i = 0; i < player2IndexList.size(); i++ ) {
             copy.player2IndexList.add(i, player2IndexList.get(i));
         }
@@ -328,6 +319,16 @@ public class GameBoard implements IStatePerceptron {
         return winner != Players.NONE;
     }
 
+    public ArrayList<IAction> listAllPossibleActions() {
+        ArrayList<IAction> possibles = new ArrayList<>(squares.size());
+        for ( int i = 0; i < squares.size(); i++ ) {
+            if ( !squares.get(i).isClicked() ) {
+                possibles.add(GameBoard.squareIndexToAction(i));
+            }
+        }
+        return possibles;
+    }
+
     /**
      *
      * @param actualSquareIndex
@@ -376,14 +377,17 @@ public class GameBoard implements IStatePerceptron {
             winList.add(winIndexes[i][2]);
             if ( player2IndexList.containsAll(winList) ) {
                 assert this.currentPlayer.equals(player2);
+                winner = Players.PLAYER2;
                 return Players.PLAYER2;
             } else if ( player1IndexList.containsAll(winList) ) {
                 assert this.currentPlayer.equals(player1);
+                winner = Players.PLAYER1;
                 return Players.PLAYER1;
             }
             winList.clear();
         }
         if ( player2IndexList.size() + player1IndexList.size() == 9 ) {
+            winner = Players.DRAW;
             return Players.DRAW;
         }
         return Players.NONE;
