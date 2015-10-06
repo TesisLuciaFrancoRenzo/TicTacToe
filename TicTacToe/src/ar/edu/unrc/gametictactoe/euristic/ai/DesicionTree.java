@@ -49,15 +49,15 @@ public class DesicionTree {
         recursiveConstruction(firstNode);
     }
 
-    public Node getNode(GameBoard board) {
-        return hashMap.get(board.encrypt());
-    }
-
     /**
      * @return the firstNode
      */
     public Node<GameBoard> getFirstNode() {
         return firstNode;
+    }
+
+    public Node getNode(GameBoard board) {
+        return hashMap.get(board.encrypt());
     }
 
     public long size() {
