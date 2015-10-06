@@ -269,15 +269,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
 
     @Override
     public ArrayList<IAction> listAllPossibleActions(IState turnInitialState) {
-        GameBoard initialBoard = (GameBoard) turnInitialState;
-        ArrayList<IAction> possibles = new ArrayList<>(initialBoard.getSquares().size());
-        for ( int i = 0; i < initialBoard.getSquares().size(); i++ ) {
-            if ( !initialBoard.getSquares().get(i).isClicked() ) {
-                possibles.add(GameBoard.squareIndexToAction(i));
-            }
-        }
-//        System.out.println(possibles.toString());
-        return possibles;
+        return ((GameBoard) turnInitialState).listAllPossibleActions();
     }
 
     /**

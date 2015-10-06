@@ -14,6 +14,7 @@ import static ar.edu.unrc.gametictactoe.Action.S5;
 import static ar.edu.unrc.gametictactoe.Action.S6;
 import static ar.edu.unrc.gametictactoe.Action.S7;
 import static ar.edu.unrc.gametictactoe.Action.S8;
+import ar.edu.unrc.tdlearning.perceptron.interfaces.IAction;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IState;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IStatePerceptron;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
@@ -142,6 +143,16 @@ public class GameBoard implements IStatePerceptron {
         this.player1Action = null;
         this.player2Action = null;
         this.winner = Players.NONE;
+    }
+
+    public ArrayList<IAction> listAllPossibleActions() {
+        ArrayList<IAction> possibles = new ArrayList<>(squares.size());
+        for ( int i = 0; i < squares.size(); i++ ) {
+            if ( !squares.get(i).isClicked() ) {
+                possibles.add(GameBoard.squareIndexToAction(i));
+            }
+        }
+        return possibles;
     }
 
     @Override
@@ -337,8 +348,7 @@ public class GameBoard implements IStatePerceptron {
 
     /**
      *
-     * @param action
-     * <p>
+     * @param action <p>
      * @return
      */
     public int pickSquare(Action action) {
