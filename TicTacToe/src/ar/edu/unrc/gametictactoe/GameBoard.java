@@ -115,7 +115,6 @@ public class GameBoard implements IStatePerceptron {
     }
     private Player currentPlayer;
 
-    private final PlayPanel playPanel;
     private final Player player1;
     private ArrayList player1IndexList;
     private final Player player2;
@@ -124,16 +123,15 @@ public class GameBoard implements IStatePerceptron {
     private int turn;
     private Players winner;
 
-    Action player1Action;
-    Action player2Action;
+    private Action player1Action;
+    private Action player2Action;
 
     /**
      *
      * @param player1
      * @param player2
-     * @param playPanel
      */
-    public GameBoard(Player player1, Player player2, PlayPanel playPanel) {
+    public GameBoard(Player player1, Player player2) {
         this.squares = new ArrayList(9);
         player2IndexList = new ArrayList(5);
         player1IndexList = new ArrayList(5);
@@ -141,7 +139,6 @@ public class GameBoard implements IStatePerceptron {
         this.player2 = player2;
         this.currentPlayer = player1;
         this.turn = 1;
-        this.playPanel = playPanel;
         this.player1Action = null;
         this.player2Action = null;
         this.winner = Players.NONE;
@@ -149,7 +146,7 @@ public class GameBoard implements IStatePerceptron {
 
     @Override
     public IState getCopy() {
-        GameBoard copy = new GameBoard(player1, player2, playPanel);
+        GameBoard copy = new GameBoard(player1, player2);
         for ( int i = 0; i < player2IndexList.size(); i++ ) {
             copy.player2IndexList.add(i, player2IndexList.get(i));
         }

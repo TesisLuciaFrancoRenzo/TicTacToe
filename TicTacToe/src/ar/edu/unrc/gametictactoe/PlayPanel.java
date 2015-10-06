@@ -44,7 +44,7 @@ public class PlayPanel extends JPanel {
         this.panelSize = size;
         this.repaint = repaint;
         this.delayPerMove = delayPerMove;
-        this.board = new GameBoard(player1, player2, this);
+        this.board = new GameBoard(player1, player2);
         this.uploadPanelWithSquares(board);
     }
 
