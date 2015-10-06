@@ -13,6 +13,8 @@ import ar.edu.unrc.gametictactoe.Square;
 import ar.edu.unrc.gametictactoe.Token;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IAction;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -20,36 +22,35 @@ import java.util.ArrayList;
  */
 public class DesicionTree {
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         Player player1 = new Player("Player 1", 0, Token.X, Players.PLAYER1);
         Player player2 = new Player("Player 2", 0, Token.O, Players.PLAYER2);
         DesicionTree tree = new DesicionTree(player1, player2);
-        System.out.println(tree.getBoardQuantity());
+        System.out.println(tree.size());
     }
 
-    private long boardQuantity;
-    private Node<GameBoard> firstNode;
+    private final Node<GameBoard> firstNode;
+    private final Map<Long, Node<GameBoard>> hashMap;
 
+    /**
+     *
+     * @param player1
+     * @param player2
+     */
     public DesicionTree(Player player1, Player player2) {
-        boardQuantity = 0;
+        hashMap = new HashMap<>();
         GameBoard emptyBoard = new GameBoard(player1, player2, createBoardSquares());
         firstNode = new Node<>();
         firstNode.setValue(emptyBoard);
         recursiveConstruction(firstNode);
     }
 
-    /**
-     * @return the boardQuantity
-     */
-    public long getBoardQuantity() {
-        return boardQuantity;
-    }
-
-    /**
-     * @param boardQuantity the boardQuantity to set
-     */
-    public void setBoardQuantity(long boardQuantity) {
-        this.boardQuantity = boardQuantity;
+    public Node getNode(GameBoard board) {
+        return hashMap.get(board.encrypt());
     }
 
     /**
@@ -57,6 +58,10 @@ public class DesicionTree {
      */
     public Node<GameBoard> getFirstNode() {
         return firstNode;
+    }
+
+    public long size() {
+        return hashMap.size();
     }
 
     private ArrayList<Square> createBoardSquares() {
@@ -68,7 +73,16 @@ public class DesicionTree {
     }
 
     private void recursiveConstruction(Node<GameBoard> node) {
+        System.out.println(node.getValue().encrypt());
         ArrayList<IAction> possibleActions;
+        long encript = node.getValue().encrypt();
+//        if ( hashMap.containsKey(encript) ) {
+//            GameBoard board = hashMap.get(encript).getValue();
+//            GameBoard thisboard = node.getValue();
+//            System.out.println("");
+//        }
+        assert !hashMap.containsKey(encript);
+        hashMap.put(node.getValue().encrypt(), node);
         if ( !node.getValue().isTerminalState() ) {
             possibleActions = node.getValue().listAllPossibleActions();
             possibleActions.stream().forEach((a) -> {
@@ -77,7 +91,6 @@ public class DesicionTree {
                 Node<GameBoard> newNode = new Node<>();
                 newNode.setValue(newBoard);
                 node.addChild(newNode);
-                setBoardQuantity(getBoardQuantity() + 1);
                 recursiveConstruction(newNode);
             });
         }

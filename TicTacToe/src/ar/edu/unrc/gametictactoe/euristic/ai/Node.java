@@ -18,16 +18,27 @@ public class Node<T> {
 
     private T value;
 
+    /**
+     *
+     */
     public Node() {
         value = null;
         childs = new ArrayList<>();
     }
 
+    /**
+     *
+     * @param value
+     */
     public Node(T value) {
         this.value = value;
         childs = new ArrayList<>();
     }
 
+    /**
+     *
+     * @param node
+     */
     public void addChild(Node<T> node) {
         childs.add(node);
     }
@@ -53,6 +64,10 @@ public class Node<T> {
         this.value = value;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isLeave() {
         return childs.isEmpty();
     }

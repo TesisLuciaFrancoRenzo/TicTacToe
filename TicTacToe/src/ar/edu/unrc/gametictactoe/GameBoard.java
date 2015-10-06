@@ -114,14 +114,15 @@ public class GameBoard implements IStatePerceptron {
                 throw new IllegalArgumentException();
         }
     }
+    private int creationTurn;
     private Player currentPlayer;
 
     private final Player player1;
     private Action player1Action;
-    private ArrayList player1IndexList;
+    private ArrayList<Integer> player1IndexList;
     private final Player player2;
     private Action player2Action;
-    private ArrayList player2IndexList;
+    private ArrayList<Integer> player2IndexList;
     private ArrayList<Square> squares;
     private int turn;
     private Players winner;
@@ -134,8 +135,8 @@ public class GameBoard implements IStatePerceptron {
      */
     public GameBoard(Player player1, Player player2, ArrayList<Square> squares) {
         this.squares = squares;
-        player2IndexList = new ArrayList(5);
-        player1IndexList = new ArrayList(5);
+        player2IndexList = new ArrayList<>(5);
+        player1IndexList = new ArrayList<>(5);
         this.player1 = player1;
         this.player2 = player2;
         this.currentPlayer = player1;
@@ -143,6 +144,28 @@ public class GameBoard implements IStatePerceptron {
         this.player1Action = null;
         this.player2Action = null;
         this.winner = Players.NONE;
+        this.creationTurn = 0;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public long encrypt() {
+        //TODO hacer assert y JUNIT de esto SI o SI
+        long hash = creationTurn;
+        for ( int i = 0; i < player1IndexList.size(); i++ ) {
+            assert player1IndexList.get(i) + 1 < 10;
+            hash += (player1IndexList.get(i) + 1) * Math.pow(10, i + 1);
+        }
+        for ( int i = 0; i < player2IndexList.size(); i++ ) {
+            assert player2IndexList.get(i) + 1 < 10;
+            hash += (player2IndexList.get(i) + 1) * Math.pow(10, player1IndexList.size() + i + 3);
+        }
+//        if ( hash >= 100 && (!Long.toString(hash).contains("00") || Long.toString(hash).contains("000")) ) {
+//            System.out.println("");
+//        }
+        return hash;
     }
 
     @Override
@@ -162,6 +185,7 @@ public class GameBoard implements IStatePerceptron {
         copy.player1Action = this.player1Action;
         copy.player2Action = this.player2Action;
         copy.winner = this.winner;
+        copy.creationTurn = this.creationTurn;
         return copy;
     }
 
@@ -213,14 +237,14 @@ public class GameBoard implements IStatePerceptron {
     /**
      * @return the player1IndexList
      */
-    public ArrayList getPlayer1IndexList() {
+    public ArrayList<Integer> getPlayer1IndexList() {
         return player1IndexList;
     }
 
     /**
      * @param player1IndexList the player1IndexList to set
      */
-    public void setPlayer1IndexList(ArrayList player1IndexList) {
+    public void setPlayer1IndexList(ArrayList<Integer> player1IndexList) {
         this.player1IndexList = player1IndexList;
     }
 
@@ -251,14 +275,14 @@ public class GameBoard implements IStatePerceptron {
     /**
      * @return the player2IndexList
      */
-    public ArrayList getPlayer2IndexList() {
+    public ArrayList<Integer> getPlayer2IndexList() {
         return player2IndexList;
     }
 
     /**
      * @param Player2IndexList the player2IndexList to set
      */
-    public void setPlayer2IndexList(ArrayList Player2IndexList) {
+    public void setPlayer2IndexList(ArrayList<Integer> Player2IndexList) {
         this.player2IndexList = Player2IndexList;
     }
 
@@ -348,6 +372,7 @@ public class GameBoard implements IStatePerceptron {
         actualSquare.setClicked();
         computeWhoWin();
         nextTurn();
+        creationTurn++;
     }
 
     /**
@@ -410,35 +435,7 @@ public class GameBoard implements IStatePerceptron {
             }
         }
     }
-//    public void nextTurn(boolean isThinking) {
-//        winner = computeWhoWin();
-//        if ( winner != Players.NONE ) {
-//            if ( !isThinking ) {
-//                playPanel.endGame(this, winner);
-//            }
-//        } else {
-//            turn++;
-//            if ( currentPlayer.equals(player1) ) {
-//                this.currentPlayer = player2;
-//            } else {
-//                this.currentPlayer = player1;
-//            }
-//        }
-//    }
 
-//    void printLastActions(Player playerToTrain) {
-//        if ( playerToTrain.equals(player1) ) {
-//            System.out.print("* ");
-//        }
-//        System.out.println(player1Action);
-//
-//        if ( player2Action != null ) {
-//            if ( playerToTrain.equals(player2) ) {
-//                System.out.print("* ");
-//            }
-//            System.out.println(player2Action);
-//        }
-//    }
     void printLastActions(Player playerToTrain) {
         if ( playerToTrain.equals(player1) ) {
             System.out.print("* ");
