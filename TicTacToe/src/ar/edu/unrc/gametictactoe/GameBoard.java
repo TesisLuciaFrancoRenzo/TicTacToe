@@ -126,7 +126,6 @@ public class GameBoard implements IStatePerceptron {
     private int turn;
     private Players winner;
 
-
     /**
      *
      * @param player1
@@ -148,7 +147,7 @@ public class GameBoard implements IStatePerceptron {
 
     @Override
     public IState getCopy() {
-        GameBoard copy = new GameBoard(player1, player2, null);
+        GameBoard copy = new GameBoard(player1, player2, new ArrayList(9));
         for ( int i = 0; i < player2IndexList.size(); i++ ) {
             copy.player2IndexList.add(i, player2IndexList.get(i));
         }
