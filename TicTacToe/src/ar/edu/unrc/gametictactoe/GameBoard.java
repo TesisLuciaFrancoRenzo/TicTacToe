@@ -317,7 +317,7 @@ public class GameBoard implements IStatePerceptron {
 
     @Override
     public boolean isTerminalState() {
-        return computeWhoWin() != Players.NONE;
+        return winner != Players.NONE;
     }
 
     /**
@@ -341,6 +341,7 @@ public class GameBoard implements IStatePerceptron {
     /**
      *
      * @param action
+     * <p>
      * @return
      */
     public int pickSquare(Action action) {
@@ -385,7 +386,7 @@ public class GameBoard implements IStatePerceptron {
      *
      */
     private void nextTurn() {
-        winner = computeWhoWin();
+        //winner = computeWhoWin();
         if ( winner == Players.NONE ) {
             turn++;
             if ( currentPlayer.equals(player1) ) {
@@ -410,9 +411,8 @@ public class GameBoard implements IStatePerceptron {
 //            }
 //        }
 //    }
-    
-//    void printLastActions(Player playerToTrain) {
 
+//    void printLastActions(Player playerToTrain) {
 //        if ( playerToTrain.equals(player1) ) {
 //            System.out.print("* ");
 //        }

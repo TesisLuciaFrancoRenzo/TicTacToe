@@ -27,8 +27,8 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> {
         String filePath;
         if ( args.length == 0 ) {
             filePath
-                    = ".." + File.separator
-                    + "Perceptrones ENTRENADOS" + File.separator;
+                    = ".." + File.separator + ".." + File.separator
+                    + "Perceptrones ENTRENADOS TicTacToe" + File.separator;
         } else {
             filePath = args[0];
         }
@@ -49,7 +49,7 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> {
     public void initialize() throws Exception {
         this.setExperimentName("Experiment_01");
         this.setPerceptronName(this.getExperimentName());
-    
+
         this.setPlayer1Random(false);
         this.setPlayer2Random(false);
     }

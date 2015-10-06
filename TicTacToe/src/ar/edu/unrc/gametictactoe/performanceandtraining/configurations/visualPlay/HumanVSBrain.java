@@ -25,8 +25,8 @@ public class HumanVSBrain extends VisualExperiment {
         String filePath;
         if ( args.length == 0 ) {
             filePath
-                    = ".." + File.separator
-                    + "Perceptrones ENTRENADOS" + File.separator;
+                    = ".." + File.separator + ".." + File.separator
+                    + "Perceptrones ENTRENADOS TicTacToe" + File.separator;
         } else {
             filePath = args[0];
         }

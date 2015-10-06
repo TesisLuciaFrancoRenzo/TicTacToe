@@ -29,8 +29,8 @@ public class Experiment_01 extends LearningExperiment<BasicNetwork> { //TODO Rev
         String filePath;
         if ( args.length == 0 ) {
             filePath
-                    = ".." + File.separator
-                    + "Perceptrones ENTRENADOS" + File.separator;
+                    = ".." + File.separator + ".." + File.separator
+                    + "Perceptrones ENTRENADOS TicTacToe" + File.separator;
         } else {
             filePath = args[0];
         }

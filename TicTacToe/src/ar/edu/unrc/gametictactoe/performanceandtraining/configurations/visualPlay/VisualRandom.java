@@ -19,14 +19,15 @@ public class VisualRandom extends VisualExperiment {
     /**
      *
      * @param args
+     * <p>
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
         String filePath;
         if ( args.length == 0 ) {
             filePath
-                    = ".." + File.separator
-                    + "Perceptrones ENTRENADOS" + File.separator;
+                    = ".." + File.separator + ".." + File.separator
+                    + "Perceptrones ENTRENADOS TicTacToe" + File.separator;
         } else {
             filePath = args[0];
         }
