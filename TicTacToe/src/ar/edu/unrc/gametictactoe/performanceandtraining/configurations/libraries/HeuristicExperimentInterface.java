@@ -5,6 +5,8 @@
  */
 package ar.edu.unrc.gametictactoe.performanceandtraining.configurations.libraries;
 
+import ar.edu.unrc.gametictactoe.Action;
+import ar.edu.unrc.gametictactoe.GameBoard;
 import ar.edu.unrc.gametictactoe.GameTicTacToe;
 import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import ar.edu.unrc.gametictactoe.heuristic.ai.DesicionTree;
@@ -13,6 +15,7 @@ import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import java.io.File;
+import java.util.List;
 
 /**
  *
@@ -25,7 +28,6 @@ public class HeuristicExperimentInterface extends INeuralNetworkInterfaceForTicT
      */
     public static final String RANDOM = "Heuristic";
     private final DesicionTree ai;
-    private boolean initialized;
 
     /**
      *
@@ -33,11 +35,8 @@ public class HeuristicExperimentInterface extends INeuralNetworkInterfaceForTicT
      */
     public HeuristicExperimentInterface(PerceptronConfigurationTicTacToe perceptronConfiguration) {
         super(perceptronConfiguration);
-        System.out.print("Inicializando IA heurística...");
         ai = new DesicionTree();
-        System.out.println(" LISTO.");
     }
-
 
     /**
      *
@@ -60,6 +59,7 @@ public class HeuristicExperimentInterface extends INeuralNetworkInterfaceForTicT
 
     @Override
     public void loadOrCreatePerceptron(File perceptronFile, boolean randomizedIfNotExist) throws Exception {
+        ai.construct(perceptronFile);
     }
 
     @Override
@@ -68,7 +68,9 @@ public class HeuristicExperimentInterface extends INeuralNetworkInterfaceForTicT
             throw new IllegalStateException("No se puede realizar movimientos sobre un tablero en estado terminal (juego finalizado)");
         }
         return () -> {
-            game.processInput(ai.computeBestAction(game));
+            List<Action> action = ai.solutionsFor((GameBoard) game.getBoard());
+            int randomMove = TDLambdaLearning.randomBetween(0, action.size() - 1);
+            game.processInput(action.get(randomMove));
             return null;
         };
     }
