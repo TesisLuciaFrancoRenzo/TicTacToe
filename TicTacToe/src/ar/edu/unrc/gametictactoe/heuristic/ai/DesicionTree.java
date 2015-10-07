@@ -118,6 +118,28 @@ public class DesicionTree {
         }
     }
 
+    /**
+     * @return the firstNode
+     */
+    public Node<Movement> getFirstNode() {
+        if ( !iaLoaded ) {
+            throw new IllegalStateException("se debe ejecutar el metodo construct antes de usar este objeto");
+        }
+        return firstNode;
+    }
+
+    /**
+     *
+     * @param board <p>
+     * @return
+     */
+    public Node<Movement> getNode(GameBoard board) {
+        if ( !iaLoaded ) {
+            throw new IllegalStateException("se debe ejecutar el metodo construct antes de usar este objeto");
+        }
+        return hashMap.get(board.encrypt());
+    }
+
     public List<Action> solutionsFor(GameBoard board) {
         if ( !iaLoaded ) {
             throw new IllegalStateException("se debe ejecutar el metodo construct antes de usar este objeto");
@@ -225,26 +247,16 @@ public class DesicionTree {
         return actions;
     }
 
-    /**
-     * @return the firstNode
-     */
-    public Node<Movement> getFirstNode() {
-        if ( !iaLoaded ) {
-            throw new IllegalStateException("se debe ejecutar el metodo construct antes de usar este objeto");
-        }
-        return firstNode;
-    }
-
-    /**
-     *
-     * @param board <p>
-     * @return
-     */
-    public Node<Movement> getNode(GameBoard board) {
-        if ( !iaLoaded ) {
-            throw new IllegalStateException("se debe ejecutar el metodo construct antes de usar este objeto");
-        }
-        return hashMap.get(board.encrypt());
+    private String hashMapIAToString() {
+        StringBuilder output = new StringBuilder();
+        hashMapIA.entrySet().stream().forEach((entry) -> {
+            output.append(entry.getKey()).append("=");
+            entry.getValue().stream().forEach((a) -> {
+                output.append(GameBoard.actionToSquareIndex(a)).append(" ");
+            });
+            output.append("\n");
+        });
+        return output.toString();
     }
 
     private void loadHashMapIA(String string) {
@@ -264,18 +276,6 @@ public class DesicionTree {
             }
             hashMapIA.put(Long.parseLong(renglon.substring(0, index).trim()), actions);
         }
-    }
-
-    private String hashMapIAToString() {
-        StringBuilder output = new StringBuilder();
-        hashMapIA.entrySet().stream().forEach((entry) -> {
-            output.append(entry.getKey()).append("=");
-            entry.getValue().stream().forEach((a) -> {
-                output.append(GameBoard.actionToSquareIndex(a)).append(" ");
-            });
-            output.append("\n");
-        });
-        return output.toString();
     }
 
     private void recursiveConstruction(Node<Movement> node) {
