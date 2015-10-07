@@ -20,6 +20,11 @@ public class Movement {
     private int winPlayer1count;
     private int winPlayer2count;
 
+    /**
+     *
+     * @param board
+     * @param actionToCreateBoard
+     */
     public Movement(GameBoard board, Action actionToCreateBoard) {
         this.board = board;
         this.actionToCreateBoard = actionToCreateBoard;
@@ -28,26 +33,47 @@ public class Movement {
         winPlayer2count = 0;
     }
 
+    /**
+     *
+     */
     public void addDraw() {
         drawCount++;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void addDraw(int value) {
         drawCount += value;
     }
 
+    /**
+     *
+     */
     public void addPlayer1Win() {
         winPlayer1count++;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void addPlayer1Win(int value) {
         winPlayer1count += value;
     }
 
+    /**
+     *
+     */
     public void addPlayer2Win() {
         winPlayer2count++;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void addPlayer2Win(int value) {
         winPlayer2count += value;
     }

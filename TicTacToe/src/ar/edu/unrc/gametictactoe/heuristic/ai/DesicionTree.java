@@ -27,14 +27,39 @@ import java.util.stream.Collectors;
  */
 public class DesicionTree {
 
+//    public static DesicionTree loadFromFile(File file) {
+//        System.out.print("Inicializando IA heurística...");
+//        try {
+//            // Read from disk using FileInputStream
+//            FileInputStream f_in = new FileInputStream(file);
+//            // Read object using ObjectInputStream
+//            ObjectInputStream obj_in = new ObjectInputStream(f_in);
+//            // Read an object
+//            DesicionTree obj = (DesicionTree) obj_in.readObject();
+//            System.out.println(" cargada exitosamente del archivo: \"" + file + "\".");
+//            return obj;
+//        } catch ( IOException | ClassNotFoundException exception ) {
+//            System.out.print(" no se puede cargar archivo, creando nueva instancia de la IA...");
+//            DesicionTree aiTree = new DesicionTree();
+//            try {
+//                aiTree.saveToFile(file);
+//                System.out.println(" Exito.");
+//                System.out.println("IA Guardada exitosamente del archivo: \"" + file + "\".");
+//            } catch ( Exception ex ) {
+//                System.out.println(" Fracaso, no se pudo guardar IA en el archivo: \"" + file + "\".");
+//                Logger.getLogger(DesicionTree.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            return aiTree;
+//        }
+//    }
     /**
      *
      * @param args
      */
     public static void main(String[] args) {
-        System.out.print("Inicializando IA heurística...");
+        System.out.print("Creando nueva instancia de la IA...");
         DesicionTree tree = new DesicionTree();
-        System.out.println(" LISTO. Tamaño = " + tree.size() + ".");
+        System.out.println("Listo. Cantidad de tableros válidos computados = " + tree.size() + ".");
 
         GameBoard board = new GameBoard(new Player("Player 1", 0, Token.X, Players.PLAYER1), new Player("Player 2", 0, Token.O, Players.PLAYER2), createBoardSquares());
 
@@ -49,6 +74,14 @@ public class DesicionTree {
 
         action = tree.computeBestAction(board);
         board.pickSquare(action);
+    }
+
+    private static ArrayList<Square> createBoardSquares() {
+        ArrayList<Square> squares = new ArrayList(9);
+        for ( int i = 0; i < 9; i++ ) {
+            squares.add(new Square(1, 1));
+        }
+        return squares;
     }
 
     private final Node<Movement> firstNode;
@@ -159,14 +192,6 @@ public class DesicionTree {
         return hashMap.size();
     }
 
-    private static ArrayList<Square> createBoardSquares() {
-        ArrayList<Square> squares = new ArrayList(9);
-        for ( int i = 0; i < 9; i++ ) {
-            squares.add(new Square(1, 1));
-        }
-        return squares;
-    }
-
     private void recursiveConstruction(Node<Movement> node) {
 //        System.out.println(node.getValue().encrypt());
         GameBoard currentBoard = node.getValue().getBoard();
@@ -225,4 +250,11 @@ public class DesicionTree {
         }
     }
 
+//    private void saveToFile(File file) throws Exception {
+//        file.delete();
+//        FileOutputStream fout = new FileOutputStream(file);
+//        try ( ObjectOutputStream oos = new ObjectOutputStream(fout) ) {
+//            oos.writeObject(this);
+//        }
+//    }
 }

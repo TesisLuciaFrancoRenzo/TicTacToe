@@ -19,7 +19,6 @@ public enum Players {
      *
      */
     PLAYER2,
-
     /**
      *
      */

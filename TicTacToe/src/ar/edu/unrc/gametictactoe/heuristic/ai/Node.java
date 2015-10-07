@@ -5,6 +5,7 @@
  */
 package ar.edu.unrc.gametictactoe.heuristic.ai;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  * @author franco
  * @param <T>
  */
-public class Node<T> {
+public class Node<T> implements Serializable {
 
     private final ArrayList<Node<T>> branchChilds;
     private final ArrayList<Node<T>> leaveChilds;

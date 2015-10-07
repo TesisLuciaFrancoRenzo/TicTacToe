@@ -15,7 +15,7 @@ public class Player implements IActor {
     private String name;
     private int score;
     private Token token;
-    private Players type;
+    private final Players type;
     private boolean winner;
 
     /**

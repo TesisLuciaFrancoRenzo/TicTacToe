@@ -8,18 +8,19 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.io.Serializable;
 import javax.swing.JComponent;
 
 /**
  *
  * @author Gyarmati János
  */
-public class Square extends JComponent {
+public class Square extends JComponent implements Serializable {
 
     private boolean clicked;
-    private int height;
+    private final int height;
     private Token paintType;
-    private int width;
+    private final int width;
 
     /**
      *
