@@ -39,7 +39,7 @@ public class DesicionTree {
      */
     public static void main(String[] args) {
         DesicionTree tree = new DesicionTree();
-        tree.construct(new File("test.bin"));
+        tree.construct(new File("../../Perceptrones ENTRENADOS TicTacToe/heuristics.bin"));
 
         GameBoard board = new GameBoard(new Player("Player 1", 0, Token.X, Players.PLAYER1), new Player("Player 2", 0, Token.O, Players.PLAYER2), createBoardSquares());
 
@@ -88,6 +88,10 @@ public class DesicionTree {
         iaLoaded = false;
     }
 
+    /**
+     *
+     * @param file
+     */
     public void construct(File file) {
         iaLoaded = true;
         System.out.print("Inicializando IA heurística...");
@@ -140,6 +144,11 @@ public class DesicionTree {
         return hashMap.get(board.encrypt());
     }
 
+    /**
+     *
+     * @param board
+     * @return
+     */
     public List<Action> solutionsFor(GameBoard board) {
         if ( !iaLoaded ) {
             throw new IllegalStateException("se debe ejecutar el metodo construct antes de usar este objeto");

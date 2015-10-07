@@ -26,7 +26,7 @@ public class HeuristicExperimentInterface extends INeuralNetworkInterfaceForTicT
     /**
      *
      */
-    public static final String RANDOM = "Heuristic";
+    public static final String HEURISTIC = "Heuristic";
     private final DesicionTree ai;
 
     /**
@@ -36,6 +36,7 @@ public class HeuristicExperimentInterface extends INeuralNetworkInterfaceForTicT
     public HeuristicExperimentInterface(PerceptronConfigurationTicTacToe perceptronConfiguration) {
         super(perceptronConfiguration);
         ai = new DesicionTree();
+        ai.construct(new File("../../Perceptrones ENTRENADOS TicTacToe/heuristics.bin"));
     }
 
     /**
@@ -49,7 +50,7 @@ public class HeuristicExperimentInterface extends INeuralNetworkInterfaceForTicT
 
     @Override
     public String getLibName() {
-        return RANDOM;
+        return HEURISTIC;
     }
 
     @Override
@@ -59,7 +60,6 @@ public class HeuristicExperimentInterface extends INeuralNetworkInterfaceForTicT
 
     @Override
     public void loadOrCreatePerceptron(File perceptronFile, boolean randomizedIfNotExist) throws Exception {
-        ai.construct(perceptronFile);
     }
 
     @Override
