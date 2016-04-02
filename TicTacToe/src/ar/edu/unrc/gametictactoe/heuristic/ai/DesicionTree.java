@@ -1,7 +1,20 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016  Lucia Bressan <lucyluz333@gmial.com>,
+ *                     Franco Pellegrini <francogpellegrini@gmail.com>,
+ *                     Renzo Bianchini <renzobianchini85@gmail.com
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ar.edu.unrc.gametictactoe.heuristic.ai;
 
@@ -29,7 +42,7 @@ import java.util.stream.Collectors;
 
 /**
  *
- * @author franco
+ * @author lucia bressan, franco pellegrini, renzo bianchini
  */
 public class DesicionTree {
 
@@ -147,6 +160,7 @@ public class DesicionTree {
     /**
      *
      * @param board
+     *
      * @return
      */
     public List<Action> solutionsFor(GameBoard board) {
@@ -169,88 +183,86 @@ public class DesicionTree {
             curentNode.getLeaveChilds().stream().forEach((node) -> {
                 actions.add(node.getValue().getActionToCreateBoard());
             });
-        } else {
-            if ( curentNode.getValue().getBoard().getCurrentPlayer().getType() == PLAYER1 ) {
-                List<Node<Movement>> bestActions = curentNode.getBranchChilds().stream()
-                        .filter(n -> n.getValue().getWinPlayer1count() > 0)
-                        .sorted((n1, n2) -> Integer.compare(n1.getValue().getWinPlayer1count(), n2.getValue().getWinPlayer1count()))
-                        .collect(Collectors.toList());
-                if ( !bestActions.isEmpty() ) { //Si hay una buena jugada para player 1
-                    int bestNumber = bestActions.get(bestActions.size() - 1).getValue().getWinPlayer1count();
-                    bestActions.stream()
-                            .filter(n -> n.getValue().getWinPlayer1count() == bestNumber)
-                            .forEach((node) -> {
-                                actions.add(node.getValue().getActionToCreateBoard());
-                            });
-                } else {
-                    bestActions = curentNode.getBranchChilds().stream()
-                            .filter(n -> n.getValue().getDrawCount() > 0)
-                            .sorted((n1, n2) -> Integer.compare(n1.getValue().getDrawCount(), n2.getValue().getDrawCount()))
-                            .collect(Collectors.toList());
-                    if ( !bestActions.isEmpty() ) { //Si hay una buena jugada para empatar
-                        int bestNumber = bestActions.get(bestActions.size() - 1).getValue().getDrawCount();
-                        bestActions.stream()
-                                .filter(n -> n.getValue().getDrawCount() == bestNumber)
-                                .forEach((node) -> {
-                                    actions.add(node.getValue().getActionToCreateBoard());
-                                });
-                    } else { //Si hay una buena jugada para dificultarle el trabajo a player 2
-                        bestActions = curentNode.getBranchChilds().stream()
-                                .filter(n -> n.getValue().getWinPlayer2count() > 0)
-                                .sorted((n1, n2) -> Integer.compare(n1.getValue().getWinPlayer2count(), n2.getValue().getWinPlayer2count()))
-                                .collect(Collectors.toList());
-
-                        int worstNumber = bestActions.get(0).getValue().getWinPlayer2count();
-                        bestActions.stream()
-                                .filter(n -> n.getValue().getWinPlayer2count() == worstNumber)
-                                .forEach((node) -> {
-                                    actions.add(node.getValue().getActionToCreateBoard());
-                                });
-                    }
-                }
-            } else if ( curentNode.getValue().getBoard().getCurrentPlayer().getType() == PLAYER2 ) {
-                List<Node<Movement>> bestActions = curentNode.getBranchChilds().stream()
-                        .filter(n -> n.getValue().getWinPlayer2count() > 0)
-                        .sorted((n1, n2) -> Integer.compare(n1.getValue().getWinPlayer2count(), n2.getValue().getWinPlayer2count()))
-                        .collect(Collectors.toList());
-                if ( !bestActions.isEmpty() ) { //Si hay una buena jugada para player 2
-                    int bestNumber = bestActions.get(bestActions.size() - 1).getValue().getWinPlayer2count();
-                    bestActions.stream()
-                            .filter(n -> n.getValue().getWinPlayer2count() == bestNumber)
-                            .forEach((node) -> {
-                                actions.add(node.getValue().getActionToCreateBoard());
-                            });
-                } else {
-                    bestActions = curentNode.getBranchChilds().stream()
-                            .filter(n -> n.getValue().getDrawCount() > 0)
-                            .sorted((n1, n2) -> Integer.compare(n1.getValue().getDrawCount(), n2.getValue().getDrawCount()))
-                            .collect(Collectors.toList());
-                    if ( !bestActions.isEmpty() ) { //Si hay una buena jugada para empatar
-                        int bestNumber = bestActions.get(bestActions.size() - 1).getValue().getDrawCount();
-                        bestActions.stream()
-                                .filter(n -> n.getValue().getDrawCount() == bestNumber)
-                                .forEach((node) -> {
-                                    actions.add(node.getValue().getActionToCreateBoard());
-                                });
-                    } else { //Si hay una buena jugada para dificultarle el trabajo a player 1
-                        bestActions = curentNode.getBranchChilds().stream()
-                                .filter(n -> n.getValue().getWinPlayer1count() > 0)
-                                .sorted((n1, n2) -> Integer.compare(n1.getValue().getWinPlayer1count(), n2.getValue().getWinPlayer1count()))
-                                .collect(Collectors.toList());
-                        if ( bestActions.isEmpty() ) {
-                            System.err.println("cac");
-                        }
-                        int worstNumber = bestActions.get(0).getValue().getWinPlayer1count();
-                        bestActions.stream()
-                                .filter(n -> n.getValue().getWinPlayer1count() == worstNumber)
-                                .forEach((node) -> {
-                                    actions.add(node.getValue().getActionToCreateBoard());
-                                });
-                    }
-                }
+        } else if ( curentNode.getValue().getBoard().getCurrentPlayer().getType() == PLAYER1 ) {
+            List<Node<Movement>> bestActions = curentNode.getBranchChilds().stream()
+                    .filter(n -> n.getValue().getWinPlayer1count() > 0)
+                    .sorted((n1, n2) -> Integer.compare(n1.getValue().getWinPlayer1count(), n2.getValue().getWinPlayer1count()))
+                    .collect(Collectors.toList());
+            if ( !bestActions.isEmpty() ) { //Si hay una buena jugada para player 1
+                int bestNumber = bestActions.get(bestActions.size() - 1).getValue().getWinPlayer1count();
+                bestActions.stream()
+                        .filter(n -> n.getValue().getWinPlayer1count() == bestNumber)
+                        .forEach((node) -> {
+                            actions.add(node.getValue().getActionToCreateBoard());
+                        });
             } else {
-                throw new IllegalStateException("No se reconoce el jugador actual");
+                bestActions = curentNode.getBranchChilds().stream()
+                        .filter(n -> n.getValue().getDrawCount() > 0)
+                        .sorted((n1, n2) -> Integer.compare(n1.getValue().getDrawCount(), n2.getValue().getDrawCount()))
+                        .collect(Collectors.toList());
+                if ( !bestActions.isEmpty() ) { //Si hay una buena jugada para empatar
+                    int bestNumber = bestActions.get(bestActions.size() - 1).getValue().getDrawCount();
+                    bestActions.stream()
+                            .filter(n -> n.getValue().getDrawCount() == bestNumber)
+                            .forEach((node) -> {
+                                actions.add(node.getValue().getActionToCreateBoard());
+                            });
+                } else { //Si hay una buena jugada para dificultarle el trabajo a player 2
+                    bestActions = curentNode.getBranchChilds().stream()
+                            .filter(n -> n.getValue().getWinPlayer2count() > 0)
+                            .sorted((n1, n2) -> Integer.compare(n1.getValue().getWinPlayer2count(), n2.getValue().getWinPlayer2count()))
+                            .collect(Collectors.toList());
+
+                    int worstNumber = bestActions.get(0).getValue().getWinPlayer2count();
+                    bestActions.stream()
+                            .filter(n -> n.getValue().getWinPlayer2count() == worstNumber)
+                            .forEach((node) -> {
+                                actions.add(node.getValue().getActionToCreateBoard());
+                            });
+                }
             }
+        } else if ( curentNode.getValue().getBoard().getCurrentPlayer().getType() == PLAYER2 ) {
+            List<Node<Movement>> bestActions = curentNode.getBranchChilds().stream()
+                    .filter(n -> n.getValue().getWinPlayer2count() > 0)
+                    .sorted((n1, n2) -> Integer.compare(n1.getValue().getWinPlayer2count(), n2.getValue().getWinPlayer2count()))
+                    .collect(Collectors.toList());
+            if ( !bestActions.isEmpty() ) { //Si hay una buena jugada para player 2
+                int bestNumber = bestActions.get(bestActions.size() - 1).getValue().getWinPlayer2count();
+                bestActions.stream()
+                        .filter(n -> n.getValue().getWinPlayer2count() == bestNumber)
+                        .forEach((node) -> {
+                            actions.add(node.getValue().getActionToCreateBoard());
+                        });
+            } else {
+                bestActions = curentNode.getBranchChilds().stream()
+                        .filter(n -> n.getValue().getDrawCount() > 0)
+                        .sorted((n1, n2) -> Integer.compare(n1.getValue().getDrawCount(), n2.getValue().getDrawCount()))
+                        .collect(Collectors.toList());
+                if ( !bestActions.isEmpty() ) { //Si hay una buena jugada para empatar
+                    int bestNumber = bestActions.get(bestActions.size() - 1).getValue().getDrawCount();
+                    bestActions.stream()
+                            .filter(n -> n.getValue().getDrawCount() == bestNumber)
+                            .forEach((node) -> {
+                                actions.add(node.getValue().getActionToCreateBoard());
+                            });
+                } else { //Si hay una buena jugada para dificultarle el trabajo a player 1
+                    bestActions = curentNode.getBranchChilds().stream()
+                            .filter(n -> n.getValue().getWinPlayer1count() > 0)
+                            .sorted((n1, n2) -> Integer.compare(n1.getValue().getWinPlayer1count(), n2.getValue().getWinPlayer1count()))
+                            .collect(Collectors.toList());
+                    if ( bestActions.isEmpty() ) {
+                        System.err.println("cac");
+                    }
+                    int worstNumber = bestActions.get(0).getValue().getWinPlayer1count();
+                    bestActions.stream()
+                            .filter(n -> n.getValue().getWinPlayer1count() == worstNumber)
+                            .forEach((node) -> {
+                                actions.add(node.getValue().getActionToCreateBoard());
+                            });
+                }
+            }
+        } else {
+            throw new IllegalStateException("No se reconoce el jugador actual");
         }
         assert !actions.isEmpty();
         return actions;
