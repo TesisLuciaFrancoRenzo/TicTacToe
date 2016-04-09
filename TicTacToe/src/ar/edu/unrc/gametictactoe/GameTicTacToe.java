@@ -23,7 +23,6 @@ import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IProblem;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IState;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IStatePerceptron;
-import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -146,7 +145,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         } else {
             ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(afterState);
             assert !possibleEnemyActions.isEmpty();
-            IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterState, possibleEnemyActions, ((GameBoard) afterState).getCurrentPlayer()).compute();// Tomamos el current player porque el afterstate ya esta desde el punto de vista del enemigo
+            IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, afterState, possibleEnemyActions, ((GameBoard) afterState).getCurrentPlayer());// Tomamos el current player porque el afterstate ya esta desde el punto de vista del enemigo
             assert bestEnemyAction != null;
             GameBoard finalBoard = (GameBoard) afterState.getCopy();
             finalBoard.pickSquare((Action) bestEnemyAction);
@@ -160,7 +159,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
     }
 
     @Override
-    public IsolatedComputation<Double> computeNumericRepresentationFor(Object[] output, IActor actor) {
+    public Double computeNumericRepresentationFor(Object[] output, IActor actor) {
         if ( this.perceptronConfiguration != null ) {
             return this.perceptronConfiguration.computeNumericRepresentationFor(output, actor);
         } else {
@@ -174,26 +173,24 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
     }
 
     @Override
-    public IsolatedComputation<Object[]> evaluateBoardWithPerceptron(IState state) {
-        return () -> {
-            //dependiendo de que tipo de red neuronal utilizamos, evaluamos las entradas y calculamos una salida
-            if ( perceptronConfiguration != null && perceptronConfiguration.getNeuralNetwork() != null ) {
-                if ( perceptronConfiguration.getNeuralNetwork() instanceof BasicNetwork ) { //es sobre la libreria encog
-                    double[] inputs = new double[perceptronConfiguration.neuronQuantityInLayer[0]];
-                    for ( int i = 0; i < perceptronConfiguration.neuronQuantityInLayer[0]; i++ ) {
-                        inputs[i] = ((IStatePerceptron) state).translateToPerceptronInput(i).compute();
-                    } //TODO reeemplazar esto por algo mas elegante
-                    MLData inputData = new BasicMLData(inputs);
-                    MLData output = ((BasicNetwork) perceptronConfiguration.getNeuralNetwork()).compute(inputData);
-                    Double[] out = new Double[output.getData().length];
-                    for ( int i = 0; i < output.size(); i++ ) {
-                        out[i] = output.getData()[i];
-                    }
-                    return out;
+    public Object[] evaluateBoardWithPerceptron(IState state) {
+        //dependiendo de que tipo de red neuronal utilizamos, evaluamos las entradas y calculamos una salida
+        if ( perceptronConfiguration != null && perceptronConfiguration.getNeuralNetwork() != null ) {
+            if ( perceptronConfiguration.getNeuralNetwork() instanceof BasicNetwork ) { //es sobre la libreria encog
+                double[] inputs = new double[perceptronConfiguration.neuronQuantityInLayer[0]];
+                for ( int i = 0; i < perceptronConfiguration.neuronQuantityInLayer[0]; i++ ) {
+                    inputs[i] = ((IStatePerceptron) state).translateToPerceptronInput(i);
+                } //TODO reeemplazar esto por algo mas elegante
+                MLData inputData = new BasicMLData(inputs);
+                MLData output = ((BasicNetwork) perceptronConfiguration.getNeuralNetwork()).compute(inputData);
+                Double[] out = new Double[output.getData().length];
+                for ( int i = 0; i < output.size(); i++ ) {
+                    out[i] = output.getData()[i];
                 }
+                return out;
             }
-            throw new UnsupportedOperationException("only Encog and NTupleSystem is implemented");
-        };
+        }
+        throw new UnsupportedOperationException("only Encog and NTupleSystem is implemented");
     }
 
     @Override
@@ -265,7 +262,7 @@ public final class GameTicTacToe<NeuralNetworkClass> extends JFrame implements I
         GameBoard board = (GameBoard) this.playPanel.getBoard();
         if ( ((Player) actor).equals(this.player2) ) {
             ArrayList<IAction> possibleEnemyActions = this.listAllPossibleActions(board);
-            IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, board, possibleEnemyActions, ((GameBoard) board).getCurrentPlayer()).compute();
+            IAction bestEnemyAction = this.learningAlgorithm.computeBestPossibleAction(this, board, possibleEnemyActions, ((GameBoard) board).getCurrentPlayer());
             playPanel.setBoard((GameBoard) computeAfterState(board, bestEnemyAction));
             //playPanel.getBoard().printLastActions(playerToTrain);
             return playPanel.getBoard();

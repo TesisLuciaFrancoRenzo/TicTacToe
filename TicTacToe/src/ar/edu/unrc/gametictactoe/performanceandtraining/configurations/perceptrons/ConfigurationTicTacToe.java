@@ -23,7 +23,6 @@ import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import ar.edu.unrc.gametictactoe.Player;
 import ar.edu.unrc.gametictactoe.Players;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
-import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import java.util.List;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationTANH;
@@ -56,22 +55,16 @@ public class ConfigurationTicTacToe<NeuralNetworkClass> extends PerceptronConfig
     }
 
     @Override
-    public IsolatedComputation calculateNormalizedPerceptronInput(GameBoard board, List<Double> normalizedPerceptronInput) {
-        return () -> {
-            for ( int i = 0; i < 9; i++ ) {
-                normalizedPerceptronInput.set(i, (double) board.getSquares().get(i).getPaintType().getRepresentation());
-            }
-            return null;
-        };
-//throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void calculateNormalizedPerceptronInput(GameBoard board, List<Double> normalizedPerceptronInput) {
+        for ( int i = 0; i < 9; i++ ) {
+            normalizedPerceptronInput.set(i, (double) board.getSquares().get(i).getPaintType().getRepresentation());
+        }
     }
 
     @Override
-    public IsolatedComputation<Double> computeNumericRepresentationFor(Object[] output, IActor actor) {
-        return () -> {
-            assert output.length == 1;
-            return (Double) output[0] * ((Player) actor).getToken().getRepresentation();
-        };
+    public Double computeNumericRepresentationFor(Object[] output, IActor actor) {
+        assert output.length == 1;
+        return (Double) output[0] * ((Player) actor).getToken().getRepresentation();
     }
 
     @Override

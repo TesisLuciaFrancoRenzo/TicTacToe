@@ -23,7 +23,6 @@ import ar.edu.unrc.gametictactoe.GameTicTacToe;
 import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IAction;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
-import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import java.io.File;
 import java.util.List;
@@ -96,18 +95,13 @@ public abstract class INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> im
      * @param learningMethod metodo usado para entrenar y evaluar, o null si se
      *                       utiliza una IA al azar
      * <p>
-     * @return
      */
-    public IsolatedComputation playATurn(GameTicTacToe<NeuralNetworkClass> game, TDLambdaLearning learningMethod) {
-        return () -> {
-            // evaluamos cada accion aplicada al estado inicial y elegimos la mejor
-            // accion basada en las predicciones del problema
-            List<IAction> possibleActions = game.listAllPossibleActions(game.getBoard());
-            Action bestAction = (Action) learningMethod.computeBestPossibleAction(game, game.getBoard(), possibleActions, game.getCurrentActor()).compute();
-            game.processInput(bestAction);
-
-            return null;
-        };
+    public void playATurn(GameTicTacToe<NeuralNetworkClass> game, TDLambdaLearning learningMethod) {
+        // evaluamos cada accion aplicada al estado inicial y elegimos la mejor
+        // accion basada en las predicciones del problema
+        List<IAction> possibleActions = game.listAllPossibleActions(game.getBoard());
+        Action bestAction = (Action) learningMethod.computeBestPossibleAction(game, game.getBoard(), possibleActions, game.getCurrentActor());
+        game.processInput(bestAction);
     }
 
     /**

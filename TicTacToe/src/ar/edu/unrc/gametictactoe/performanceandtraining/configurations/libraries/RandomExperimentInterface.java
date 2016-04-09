@@ -23,7 +23,6 @@ import ar.edu.unrc.gametictactoe.GameTicTacToe;
 import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.INeuralNetworkInterfaceForTicTacToe;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
-import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import java.io.File;
 import java.util.ArrayList;
@@ -71,13 +70,10 @@ public class RandomExperimentInterface extends INeuralNetworkInterfaceForTicTacT
     }
 
     @Override
-    public IsolatedComputation playATurn(GameTicTacToe game, TDLambdaLearning learningMethod) {
-        return () -> {
-            ArrayList<Action> possibleActions = game.listAllPossibleActions(game.getBoard());
-            int randomMove = TDLambdaLearning.randomBetween(0, possibleActions.size() - 1);
-            game.processInput(possibleActions.get(randomMove));
-            return null;
-        };
+    public void playATurn(GameTicTacToe game, TDLambdaLearning learningMethod) {
+        ArrayList<Action> possibleActions = game.listAllPossibleActions(game.getBoard());
+        int randomMove = TDLambdaLearning.randomBetween(0, possibleActions.size() - 1);
+        game.processInput(possibleActions.get(randomMove));
     }
 
     @Override

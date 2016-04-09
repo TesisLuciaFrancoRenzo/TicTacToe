@@ -291,17 +291,17 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
                             switch ( games.get(i).getCurrentlPlayer() ) {
                                 case PLAYER1: {
                                     if ( this.learningExperiment.isPlayer1Random() ) {
-                                        this.learningExperiment.getaIRandom().playATurn(games.get(i), tdLambdaLearning.get(i)).compute();
+                                        this.learningExperiment.getaIRandom().playATurn(games.get(i), tdLambdaLearning.get(i));
                                     } else {
-                                        neuralNetworkInterfaces.get(i).playATurn(games.get(i), tdLambdaLearning.get(i)).compute();
+                                        neuralNetworkInterfaces.get(i).playATurn(games.get(i), tdLambdaLearning.get(i));
                                     }
                                     break;
                                 }
                                 case PLAYER2: {
                                     if ( this.learningExperiment.isPlayer2Random() ) {
-                                        this.learningExperiment.getaIRandom().playATurn(games.get(i), tdLambdaLearning.get(i)).compute();
+                                        this.learningExperiment.getaIRandom().playATurn(games.get(i), tdLambdaLearning.get(i));
                                     } else {
-                                        neuralNetworkInterfaces.get(i).playATurn(games.get(i), tdLambdaLearning.get(i)).compute();
+                                        neuralNetworkInterfaces.get(i).playATurn(games.get(i), tdLambdaLearning.get(i));
                                     }
                                     break;
                                 }

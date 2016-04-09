@@ -236,7 +236,7 @@ public abstract class VisualExperiment<NeuralNetworkClass> {
             this.learningExperiment.getaINeuralNetwork().loadOrCreatePerceptron(perceptronFile, true);
         }
         while ( !game.isTerminalState() && !forceStop ) {
-            this.learningExperiment.getaINeuralNetwork().playATurn(game, learningExperiment.getLearningAlgorithm()).compute();
+            this.learningExperiment.getaINeuralNetwork().playATurn(game, learningExperiment.getLearningAlgorithm());
         }
         if ( !forceStop ) {
             //sleep(5_000);

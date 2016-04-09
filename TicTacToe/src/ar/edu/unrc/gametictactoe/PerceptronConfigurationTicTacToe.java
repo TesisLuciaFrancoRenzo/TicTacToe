@@ -19,7 +19,6 @@
 package ar.edu.unrc.gametictactoe;
 
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IActor;
-import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import java.util.List;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.util.arrayutil.NormalizedField;
@@ -67,9 +66,8 @@ public abstract class PerceptronConfigurationTicTacToe<NeuralNetworkClass> imple
      *
      * @param board
      * @param normalizedPerceptronInput <p>
-     * @return
      */
-    public abstract IsolatedComputation calculateNormalizedPerceptronInput(GameBoard board, List<Double> normalizedPerceptronInput);
+    public abstract void calculateNormalizedPerceptronInput(GameBoard board, List<Double> normalizedPerceptronInput);
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -82,7 +80,7 @@ public abstract class PerceptronConfigurationTicTacToe<NeuralNetworkClass> imple
      * @param output <p>
      * @return
      */
-    public abstract IsolatedComputation<Double> computeNumericRepresentationFor(Object[] output, IActor actor);
+    public abstract Double computeNumericRepresentationFor(Object[] output, IActor actor);
 
     /**
      * @return the neuralNetwork

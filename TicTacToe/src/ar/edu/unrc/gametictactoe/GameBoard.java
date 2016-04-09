@@ -30,7 +30,6 @@ import static ar.edu.unrc.gametictactoe.Action.S8;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IAction;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IState;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IStatePerceptron;
-import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import java.util.ArrayList;
 
 /**
@@ -400,10 +399,8 @@ public class GameBoard implements IStatePerceptron {
     }
 
     @Override
-    public IsolatedComputation<Double> translateToPerceptronInput(int neuronIndex) {
-        return () -> {
-            return ((Square) this.squares.get(neuronIndex)).getPaintType().getRepresentation() * 1d;
-        };
+    public Double translateToPerceptronInput(int neuronIndex) {
+        return ((Square) this.squares.get(neuronIndex)).getPaintType().getRepresentation() * 1d;
     }
 
     /**

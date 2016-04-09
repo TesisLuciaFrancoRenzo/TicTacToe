@@ -25,7 +25,6 @@ import ar.edu.unrc.gametictactoe.PerceptronConfigurationTicTacToe;
 import ar.edu.unrc.gametictactoe.heuristic.ai.DesicionTree;
 import ar.edu.unrc.gametictactoe.performanceandtraining.configurations.INeuralNetworkInterfaceForTicTacToe;
 import ar.edu.unrc.tdlearning.perceptron.interfaces.IPerceptronInterface;
-import ar.edu.unrc.tdlearning.perceptron.interfaces.IsolatedComputation;
 import ar.edu.unrc.tdlearning.perceptron.learning.TDLambdaLearning;
 import java.io.File;
 import java.util.List;
@@ -76,16 +75,13 @@ public class HeuristicExperimentInterface extends INeuralNetworkInterfaceForTicT
     }
 
     @Override
-    public IsolatedComputation playATurn(GameTicTacToe game, TDLambdaLearning learningMethod) {
+    public void playATurn(GameTicTacToe game, TDLambdaLearning learningMethod) {
         if ( game.getBoard().isTerminalState() ) {
             throw new IllegalStateException("No se puede realizar movimientos sobre un tablero en estado terminal (juego finalizado)");
         }
-        return () -> {
-            List<Action> action = ai.solutionsFor((GameBoard) game.getBoard());
-            int randomMove = TDLambdaLearning.randomBetween(0, action.size() - 1);
-            game.processInput(action.get(randomMove));
-            return null;
-        };
+        List<Action> action = ai.solutionsFor((GameBoard) game.getBoard());
+        int randomMove = TDLambdaLearning.randomBetween(0, action.size() - 1);
+        game.processInput(action.get(randomMove));
     }
 
     @Override
