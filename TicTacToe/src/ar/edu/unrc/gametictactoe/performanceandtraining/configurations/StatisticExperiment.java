@@ -48,6 +48,21 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
+import static java.lang.Math.round;
 
 /**
  *
@@ -504,12 +519,12 @@ public abstract class StatisticExperiment<NeuralNetworkClass> {
             dirPathFile.mkdirs();
         }
         String filePath = dirPath + fileName;
-        File randomPerceptronFile = new File(dirPath + this.getExperimentName() + LearningExperiment._RANDOM + ".ser");
+        File randomPerceptronFile = new File(dirPath + this.getExperimentName() + LearningExperiment.RANDOM + ".ser");
 
         //hacemos estadisticas del perceptron random, si es necesario
         Map<File, StatisticForCalc> resultsRandom = new HashMap<>();
-        System.out.print("Starting " + this.getExperimentName() + LearningExperiment._RANDOM + " Statistics... ");
-        processFile(dirPath + this.getExperimentName() + LearningExperiment._RANDOM, delayPerMove);
+        System.out.print("Starting " + this.getExperimentName() + LearningExperiment.RANDOM + " Statistics... ");
+        processFile(dirPath + this.getExperimentName() + LearningExperiment.RANDOM, delayPerMove);
         resultsRandom.put(randomPerceptronFile, getStatistics());
 
         //calculamos las estadisticas de los backup si es necesario

@@ -47,22 +47,23 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     /**
      *
      */
-    public static final String _CONFIG = "_config";
+    public static final String CONFIG = "_config";
 
     /**
      *
      */
-    public static final String _RANDOM = "_random";
+    public static final String RANDOM = "_random";
 
     /**
      *
      */
-    public static final String _TRAINED = "_trained";
+    public static final String TRAINED = "_trained";
     private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aINeuralNetwork;
     private INeuralNetworkInterfaceForTicTacToe<NeuralNetworkClass> aIRandom;
     private double[] alpha;
     private int annealingT;
     private int backupNumber;
+    private boolean[] concurrencyInLayer;
     private long countDraws;
     private long countPlayer1Wins;
     private long countPlayer2Wins;
@@ -135,6 +136,22 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     }
 
     /**
+     *
+     * @return
+     */
+    public boolean[] getConcurrencyInLayer() {
+        return concurrencyInLayer;
+    }
+
+    /**
+     *
+     * @param concurrencyInLayer
+     */
+    public void setConcurrencyInLayer(boolean[] concurrencyInLayer) {
+        this.concurrencyInLayer = concurrencyInLayer;
+    }
+
+    /**
      * @return the experimentName
      */
     public String getExperimentName() {
@@ -204,6 +221,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
     public double getLambda() {
         return lambda;
     }
+
 
     /**
      * @param lambda the lambda to set
@@ -556,7 +574,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
             }
             if ( i % saveBackupEvery == 0 ) {
                 backupNumber++;
-                perceptronFileBackup = new File(filePath + _TRAINED + "_" + dateFormater.format(now) + "_BackupN-" + String.format("%0" + zeroNumbers + "d", backupNumber)
+                perceptronFileBackup = new File(filePath + TRAINED + "_" + dateFormater.format(now) + "_BackupN-" + String.format("%0" + zeroNumbers + "d", backupNumber)
                         + ".ser");
                 aINeuralNetwork.savePerceptron(perceptronFileBackup);
                 System.out.println("============ Perceptron Exportado Exitosamente (BACKUP " + backupNumber + ") ============");
@@ -673,8 +691,8 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
             dirPathFile.mkdirs();
         }
         String filePath = dirPath + perceptronName;
-        File perceptronFile = new File(filePath + _TRAINED + ".ser");
-        File configFile = new File(filePath + _CONFIG + ".txt");
+        File perceptronFile = new File(filePath + TRAINED + ".ser");
+        File configFile = new File(filePath + CONFIG + ".txt");
 
         backupNumber = 0;
         lastSavedGamePlayedNumber = 0;
@@ -723,7 +741,7 @@ public abstract class LearningExperiment<NeuralNetworkClass> {
             zeroNumbers = Integer.toString(this.gamesToPlay / this.saveBackupEvery).length();
         }
 
-        File randomPerceptronFile = new File(filePath + _RANDOM + ".ser");
+        File randomPerceptronFile = new File(filePath + RANDOM + ".ser");
 
         boolean backupRandomPerceptron = false;
         if ( !perceptronFile.exists() ) {//ver por que existe el archivo
